@@ -1,13 +1,28 @@
 import { Link, useParams } from "react-router-dom";
 import { useGetProductsQuery } from "../pages/redux/api/productApiSlice";
 import Loader from "../components/Loader";
-import Message from "../components/Message";
 import Header from "../components/Header";
 import Product from "./Products/Product";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const Home = () => {
   const { keyword } = useParams();
   const { data, isLoading, isError } = useGetProductsQuery({ keyword });
+  const [products,setProducts] = useState([])
+
+  useEffect(() => {
+    if (data && data.products) {
+      setProducts(data.products);
+    }
+  }, [data]);
+
+  
+  useEffect(() => {
+    if (isError) {
+      toast.error("Something went wrong! Please try again.");
+    }
+  }, [isError]);
 
   return (
     <>
@@ -15,10 +30,6 @@ const Home = () => {
       {!keyword && <Header />}
       {isLoading ? (
         <Loader />
-      ) : isError ? (
-        <Message variant="danger">
-          {isError?.error || "Something went wrong!"}
-        </Message>
       ) : (
         <>
           <main>
@@ -36,11 +47,11 @@ const Home = () => {
             </div>
 
             <div>
-              {data.products.length === 0 ? (
+              {products.length === 0 ? (
                 <p className="text-center mt-10">No products found.</p>
               ) : (
                 <div className="flex justify-center flex-wrap mt-[2rem]">
-                  {data.products.map((product) => (
+                  {products.map((product) => (
                     <div key={product._id}>
                       <Product product={product} />
                     </div>
