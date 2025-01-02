@@ -17,6 +17,7 @@ import { useLogoutMutation } from "../redux/api/userApiSlice";
 import { logout } from "../redux/features/auth/authSlice";
 import FavoriteCount from "../Products/FavoriteCount";
 import { toast } from "react-toastify";
+
 const Navigation = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const [dropdownOpen, setDropdownOpen] = useState(false);
