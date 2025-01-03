@@ -18,7 +18,8 @@ import {
 router
   .route("/")
   .get(fetchProducts)
-  .post(authenticate, authorizeAdmin, formidable(), addProduct);
+  .post(authenticate, authorizeAdmin, addProduct);
+//removed this formidable() in middlewRE
 
 router.route("/allproducts").get(fetchAllProducts);
 router

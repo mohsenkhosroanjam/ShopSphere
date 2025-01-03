@@ -8,7 +8,7 @@ import cors from 'cors';
 const app = express();
 
 const corsOptions = {
-  origin: 'https://shop-sphere-2n6k.vercel.app', 
+  origin: 'https://shop-sphere-2n6k.vercel.app'||"http:localhost:5173", 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true, 
 };
@@ -45,4 +45,4 @@ app.get("/", (req, res) => {
   res.send("API is running!");
 });
 
-export default app;
+app.listen(port);
