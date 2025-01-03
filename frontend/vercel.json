@@ -1,8 +1,13 @@
 {
   "rewrites": [
     {
+      "source": "/api/(.*)",
+      "destination": "https://shop-sphere-liard.vercel.app/api/(.*)"   
+    },
+    {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": "/index.html" 
     }
   ]
 }
+
