@@ -6,32 +6,27 @@ import cookieParser from "cookie-parser";
 import cors from 'cors';
 
 const app = express();
-
-<<<<<<< HEAD
+const allowedOrigins = ['http://localhost:5173', 'https://shop-sphere-2n6k.vercel.app'];
 const corsOptions = {
-  origin: 'https://shop-sphere-2n6k.vercel.app'||"http:localhost:5173", 
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+    } else {
+        callback(new Error('Not allowed by CORS'));
+    }
+},
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true, 
 };
-=======
-// const corsOptions = {
-//   origin: process.env.NODE_ENV === 'production'
-//     ? 'https://shop-sphere-2n6k.vercel.app'
-//     : 'http://localhost:5000',  
-//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//   credentials: true,
-// };
->>>>>>> 7b1c8df7979ad2266094ca10baf5185c3f980b89
 
-
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 
 
 //Utils
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
-// import productRoutes from "./routes/productRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 
 dotenv.config();
@@ -46,7 +41,7 @@ app.use(cookieParser());
 
 app.use("/api/users", userRoutes);
 app.use("/api/category", categoryRoutes);
-// app.use("/api/products", productRoutes);
+app.use("/api/products", productRoutes);
 app.use("/api/upload", uploadRoutes);
 
 const __dirname = path.resolve();
