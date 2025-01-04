@@ -3,27 +3,18 @@ import path from "path";
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import cors from 'cors';
+import { useCors } from './middleware/cors.js';
 dotenv.config();
 
 const app = express();
-
-const corsOptions = {
-  origin: process.env.NODE_ENV === 'production'
-    ? 'https://shop-sphere-2n6k.vercel.app'
-    : 'http://localhost:5173/',  
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true,
-};
+useCors(app);
 
 
-app.use(cors(corsOptions));
-
-console.log("CORS Origin: ", corsOptions.origin);
+// console.log("CORS Origin: ", corsOptions.origin);
 // console.log("API URL: ", process.env.VITE_BACKEND_URL);
 
 //Utils
-import connectDB from "./config/db.js";
+// import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 // import productRoutes from "./routes/productRoutes.js";
@@ -31,7 +22,7 @@ import uploadRoutes from "./routes/uploadRoutes.js";
 
 const port = process.env.PORT || 5000;
 
-connectDB();
+// connectDB();
 
 // app.use(express.static('public'));
 app.use(express.json());

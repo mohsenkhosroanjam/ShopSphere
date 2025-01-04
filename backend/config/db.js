@@ -1,20 +1,39 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+import config from './config.js'; // Ensure this path is correct
+import logger from '../utils/logger.js';
 
-const connectDB = async () => {
+let mainDbConnection;
+
+const urlDB = config.DATABASE_URL;
+
+export const connectToDatabases = async () => {
   try {
-    if (!process.env.MONGO_URI) {
-      console.error("MongoDB connection URI is missing in environment variables.");
-      process.exit(1);
-    }
+    mainDbConnection = mongoose.createConnection(urlDB, {
+      serverSelectionTimeoutMS: 30000,
+    });
 
-    const conn = await mongoose.connect(process.env.MONGO_URI);
+    mainDbConnection.on('connected', () => logger.info('Connected to main MongoDB database'));
+    mainDbConnection.on('error', (err) => logger.error('Error connecting to main MongoDB database:', err));
 
-    console.log(`Successfully connected to MongoDB: ${conn.connection.host} 👍`);
-  } catch (error) {
-    console.error(`Database Connection Error: ${error.message}`);
-    console.error(error.stack);
-    process.exit(1);
+    await Promise.all([mainDbConnection.asPromise()]);
+  } catch (err) {
+    logger.error('Error connecting to MongoDB databases:', err);
+    throw err;
   }
 };
 
-export default connectDB;
+export const getMainDb = () => mainDbConnection;
+
+export const closeConnections = async () => {
+  try {
+    await mainDbConnection.close();
+    logger.info('All MongoDB connections closed');
+  } catch (err) {
+    logger.error('Error closing MongoDB connections:', err);
+  }
+};
+
+connectToDatabases().catch((err) => {
+  logger.error('Failed to initialize database connections:', err);
+  process.exit(1);
+});
