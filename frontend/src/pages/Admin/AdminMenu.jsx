@@ -1,22 +1,44 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { FaTimes } from "react-icons/fa";
 
 const AdminMenu = () => {
   const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef(null);
+
   const toggleMenu = () => {
     setShowMenu(!showMenu);
   };
+
+  const handleOutsideClick = (event) => {
+    if (menuRef.current && !menuRef.current.contains(event.target)) {
+      setShowMenu(false);
+    }
+  };
+
+  useEffect(() => {
+    if (showMenu) {
+      window.addEventListener("mousedown", handleOutsideClick);
+    } else {
+      window.removeEventListener("mousedown", handleOutsideClick);
+    }
+
+    return () => {
+      window.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [showMenu]);
+
   return (
     <>
       <button
+        aria-label={showMenu ? "Close Admin Menu" : "Open Admin Menu"}
         className={`${
-          showMenu ? "top-2 right-2 " : "top-5 right-5"
-        } bg-[#151515] p-2 fixed rounded-lg`}
+          showMenu ? "top-2 right-2" : "top-5 right-5"
+        } bg-[#151515] p-2 fixed rounded-lg z-50 transition-all duration-300`}
         onClick={toggleMenu}
       >
         {showMenu ? (
-          <FaTimes color=" white" />
+          <FaTimes color="white" />
         ) : (
           <>
             <div className="w-6 h-0.5 bg-gray-200 my-1"></div>
@@ -25,75 +47,33 @@ const AdminMenu = () => {
           </>
         )}
       </button>
+
       {showMenu && (
-        <section className="bg-[#151515] p-4 fixed top-5 right-7">
-          <ul className="list-none mt-2">
-            <li>
-              <NavLink
-                className="list-item py-2 px-3 block mb-5 hover:bg-[#2E2D2D] rounded-sm"
-                to="/admin/dashboard"
-                style={({ isActive }) => ({
-                  color: isActive ? "greenyellow" : "white",
-                })}
-              >
-                Admin DashBoard
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                className="list-item py-2 px-3 block mb-5 hover:bg-[#2E2D2D] rounded-sm"
-                to="/admin/categorylist"
-                style={({ isActive }) => ({
-                  color: isActive ? "greenyellow" : "white",
-                })}
-              >
-                Create Category
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                className="list-item py-2 px-3 block mb-5 hover:bg-[#2E2D2D] rounded-sm"
-                to="/admin/productlist"
-                style={({ isActive }) => ({
-                  color: isActive ? "greenyellow" : "white",
-                })}
-              >
-                Create Product
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                className="list-item py-2 px-3 block mb-5 hover:bg-[#2E2D2D] rounded-sm"
-                to="/admin/allproductslist"
-                style={({ isActive }) => ({
-                  color: isActive ? "greenyellow" : "white",
-                })}
-              >
-                All Product
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                className="list-item py-2 px-3 block mb-5 hover:bg-[#2E2D2D] rounded-sm"
-                to="/admin/userlist"
-                style={({ isActive }) => ({
-                  color: isActive ? "greenyellow" : "white",
-                })}
-              >
-                Manage Users
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                className="list-item py-2 px-3 block mb-5 hover:bg-[#2E2D2D] rounded-sm"
-                to="/admin/orderlist"
-                style={({ isActive }) => ({
-                  color: isActive ? "greenyellow" : "white",
-                })}
-              >
-                Manage Orders
-              </NavLink>
-            </li>
+        <section
+          ref={menuRef}
+          className="bg-[#151515] p-4 fixed top-5 right-7 rounded-lg shadow-lg transition-transform duration-300 z-40"
+        >
+          <ul className="mt-2">
+            {[
+              { path: "/admin/dashboard", label: "Admin Dashboard" },
+              { path: "/admin/categorylist", label: "Create Category" },
+              { path: "/admin/productlist", label: "Create Product" },
+              { path: "/admin/allproductslist", label: "All Products" },
+              { path: "/admin/userlist", label: "Manage Users" },
+              { path: "/admin/orderlist", label: "Manage Orders" },
+            ].map((item) => (
+              <li key={item.path}>
+                <NavLink
+                  className="py-2 px-3 block mb-5 hover:bg-[#2E2D2D] rounded-sm transition-all duration-200"
+                  to={item.path}
+                  style={({ isActive }) => ({
+                    color: isActive ? "greenyellow" : "white",
+                  })}
+                >
+                  {item.label}
+                </NavLink>
+              </li>
+            ))}
           </ul>
         </section>
       )}
