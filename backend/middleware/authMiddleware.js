@@ -5,7 +5,7 @@ import asyncHandler from "./asyncHandler.js";
 const authenticate = asyncHandler(async (req, res, next) => {
   let token;
   //read JWT from the 'jwt' cookie
-
+  
   token = req.cookies.jwt;
 
   if (token) {
@@ -25,6 +25,7 @@ const authenticate = asyncHandler(async (req, res, next) => {
 
 // check for the admin
 const authorizeAdmin = asyncHandler(async (req, res, next) => {
+  console.log(req.user);
   if (req.user && req.user.isAdmin) {
     next();
   } else {
