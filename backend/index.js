@@ -8,13 +8,15 @@ dotenv.config();
 
 const app = express();
 
-const allowedOrigins = ['http://localhost:5173', 'https://shop-sphere-2n6k.vercel.app'];
+const allowedOrigins = ['http://localhost:5173'];
 const corsOptions = {
   origin: function (origin, callback) {
+    console.log("Request Origin: ", origin);
     if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
+        return callback(null, true);
     } else {
-        callback(new Error('Not allowed by CORS'));
+      console.error(`Blocked by CORS: ${origin}`);
+        return callback(new Error('Not allowed by CORS'));
     }
 },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
