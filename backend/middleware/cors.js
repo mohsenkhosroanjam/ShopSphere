@@ -2,10 +2,7 @@ import cors from 'cors';
 
 const allowedOrigins = [
   'https://shop-sphere-2n6k-ce6rt74a5-anwishtas-projects.vercel.app',
-  'https://shop-sphere-liard.vercel.app',
-  'https://shop-sphere-2n6k.vercel.app',
   'http://localhost:5173',
-  'http://localhost:3000'
 ];
 
 const corsOptions = {

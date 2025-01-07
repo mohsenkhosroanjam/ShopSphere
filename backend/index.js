@@ -23,12 +23,6 @@ const app = express();
 //   credentials: true, 
 // };
 
-
-
-
-
-
-
 app.use(useCors);
 
 
