@@ -6,6 +6,7 @@ import {
   faInstagram,
   faLinkedinIn,
 } from "@fortawesome/free-brands-svg-icons";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -53,22 +54,27 @@ const Footer = () => {
           <ul className="space-y-2">
             <li>
               <a href="/products" className="text-gray-300 hover:text-white">
-                Shop All Products
+                <Link to="/shop">Shop All Products</Link>
+                
               </a>
             </li>
             <li>
               <a href="/offers" className="text-gray-300 hover:text-white">
-                Offers
+                <Link to="/shop">Offers</Link>
+              
+                
               </a>
             </li>
             <li>
               <a href="/blog" className="text-gray-300 hover:text-white">
-                Blog
+              <Link to="/shop"> Blog</Link>
+               
               </a>
             </li>
             <li>
               <a href="/faq" className="text-gray-300 hover:text-white">
-                FAQs
+              <Link to="/shop">FAQs</Link>
+                
               </a>
             </li>
           </ul>

@@ -9,7 +9,7 @@ const Header = () => {
     return <Loader />;
   }
   if (error) {
-    return <div>Error</div>;
+    return <div></div>;
   }
   return (
     <>
