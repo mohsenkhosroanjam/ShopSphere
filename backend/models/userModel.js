@@ -20,6 +20,12 @@ const userSchema = mongoose.Schema(
       required: true,
       default: false,
     },
+    photoURL: {
+      type: String, 
+    },
+    googleId: {
+      type: String,
+    }
   },
   {
     timestamps: true,

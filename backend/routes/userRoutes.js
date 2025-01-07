@@ -8,7 +8,9 @@ import {
   updateCurrentUserProfile,
   deleteUserById,
   getUserById,
-  updateById
+  updateById,
+  googleSignIn,
+  googleLogin
 } from "../controllers/userController.js";
 import { authenticate, authorizeAdmin } from "../middleware/authMiddleware.js";
 const router = express.Router();
@@ -19,6 +21,8 @@ router
   .get(authenticate, authorizeAdmin, getAllUsers);
 router.post("/auth", loginUser);
 router.post("/logout", logoutCurrentUser);
+router.post("/google-signin", googleSignIn);
+router.post("/google-login", googleLogin);
 
 router
   .route("/profile")

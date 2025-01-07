@@ -2,10 +2,13 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Loader from "../../components/Loader";
-import { useLoginMutation } from "../redux/api/userApiSlice";
+import { useLoginMutation, useGoogleLoginMutation } from "../redux/api/userApiSlice";
 import { setCredientials } from "../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
 import { LOGIN_BG } from "../../Utils/constants";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "../../firebaseConfig";  
+import GoogleLoginButton from "../../Utils/googleBtn";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
@@ -15,7 +18,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const formRef = useRef();
-
+  const [googleLogin, { isLoading: googleLoginLoading }] = useGoogleLoginMutation();
   const [login, { isLoading }] = useLoginMutation();
   const { userInfo } = useSelector((state) => state.auth);
   const { search } = useLocation();
@@ -38,6 +41,32 @@ const Login = () => {
       toast.success(`Logged In`)
     } catch (error) {
       toast.error(error?.data?.message || error.message);
+    }
+  };
+
+  const handleGoogleLogIn = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      console.log("Google Sign-In Successful!");
+      console.log("User Data:", user);
+
+      console.log(user);
+      const res = await googleLogin({
+        googleId: user.uid,
+        email: user.email,
+        username: user.displayName,
+        photoURL: user.photoURL,
+      }).unwrap();
+
+      console.log(res);
+      dispatch(setCredientials({ ...res }));
+      toast.success(`Logged In`);
+      navigate('/home');
+    } catch (error) {
+      console.error("Google Sign-In Error:", error);
+      toast.error(error.message);
     }
   };
 
@@ -116,6 +145,8 @@ const Login = () => {
                     )}
                   </button>
                 </div>
+
+                <GoogleLoginButton onClick={handleGoogleLogIn} />
 
                 <div className="mt-6 text-center">
                   <p className="text-white">
