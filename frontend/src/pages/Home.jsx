@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import Product from "./Products/Product";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import Footer from "../components/Footer";
 
 const Home = () => {
   const { keyword } = useParams();
@@ -60,6 +61,7 @@ const Home = () => {
               )}
             </div>
           </main>
+          <Footer/>
         </>
       )}
     </>
