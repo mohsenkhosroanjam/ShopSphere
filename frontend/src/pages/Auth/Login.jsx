@@ -6,13 +6,10 @@ import { useLoginMutation, useGoogleLoginMutation } from "../redux/api/userApiSl
 import { setCredientials } from "../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
 import { LOGIN_BG } from "../../Utils/constants";
-<<<<<<< HEAD
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../../firebaseConfig";  
 import GoogleLoginButton from "../../Utils/googleBtn";
-=======
 import { FaEye, FaEyeSlash } from "react-icons/fa";
->>>>>>> origin/main
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -21,11 +18,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const formRef = useRef();
-<<<<<<< HEAD
   const [googleLogin, { isLoading: googleLoginLoading }] = useGoogleLoginMutation();
-=======
-
->>>>>>> origin/main
   const [login, { isLoading }] = useLoginMutation();
   const { userInfo } = useSelector((state) => state.auth);
   const { search } = useLocation();
