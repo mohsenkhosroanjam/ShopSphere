@@ -3,7 +3,7 @@ import path from "path";
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import useCors  from './middleware/cors.js';
+import {useCors } from './middleware/cors.js';
 dotenv.config();
 
 import { EventEmitter } from "events";
