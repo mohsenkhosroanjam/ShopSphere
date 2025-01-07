@@ -6,17 +6,26 @@ import { useLoginMutation, useGoogleLoginMutation } from "../redux/api/userApiSl
 import { setCredientials } from "../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
 import { LOGIN_BG } from "../../Utils/constants";
+<<<<<<< HEAD
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../../firebaseConfig";  
 import GoogleLoginButton from "../../Utils/googleBtn";
+=======
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+>>>>>>> origin/main
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
   const formRef = useRef();
+<<<<<<< HEAD
   const [googleLogin, { isLoading: googleLoginLoading }] = useGoogleLoginMutation();
+=======
+
+>>>>>>> origin/main
   const [login, { isLoading }] = useLoginMutation();
   const { userInfo } = useSelector((state) => state.auth);
   const { search } = useLocation();
@@ -106,12 +115,12 @@ const Login = () => {
                   />
                 </div>
 
-                <div className="form-control">
+                <div className="form-control relative">
                   <label className="label text-sm font-medium">
                     <span className="label-text text-white">Password</span>
                   </label>
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     id="password"
                     className="input w-full p-3 bg-transparent border border-white/20 rounded 
                              transition-all duration-200 focus:border-pink-500 text-white"
@@ -119,6 +128,10 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
+                  <span onClick={()=>setShowPassword((prev)=>!prev)} className="cursor-pointer absolute right-5 top-10">
+                    {showPassword ? <FaEye /> : <FaEyeSlash />}
+                  </span>
+
                 </div>
 
                 <div className="mt-8">

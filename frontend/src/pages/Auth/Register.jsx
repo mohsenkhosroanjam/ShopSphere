@@ -146,7 +146,7 @@ const Register = () => {
                     <span className="label-text text-white">Confirm Password</span>
                   </label>
                   <input
-                    type="password"
+                    type="text"
                     id="confirmPassword"
                     className="input w-full p-3 bg-transparent border border-white/30 rounded 
                              transition-all duration-200 focus:border-pink-500 text-white placeholder-gray-400"
