@@ -6,11 +6,12 @@ import Product from "./Products/Product";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Footer from "../components/Footer";
+import HomeImage from "../assets/HomeFinal.png"
 
 const Home = () => {
   const { keyword } = useParams();
   const { data, isLoading, isError } = useGetProductsQuery({ keyword });
-  const [products,setProducts] = useState([])
+
 
   useEffect(() => {
     if (data && data.products) {
@@ -27,43 +28,40 @@ const Home = () => {
 
   return (
     <>
-    <div className="flex justify-center">Home</div>
-      {!keyword && <Header />}
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <>
-          <main>
-            <div className="flex justify-between items-center">
-              <h1 className="ml-[20rem] mt-[10rem] text-[3rem]">
-                Special Products
-              </h1>
-              <Link
-                to="/shop"
-                className="bg-pink-600 font-bold rounded-full py-2 px-10 mr-[18rem] mt-[10rem]"
-                aria-label="Go to Shop"
-              >
-                Shop
-              </Link>
-            </div>
-
-            <div>
-              {products.length === 0 ? (
-                <p className="text-center mt-10">No products found.</p>
-              ) : (
-                <div className="flex justify-center flex-wrap mt-[2rem]">
-                  {products.map((product) => (
-                    <div key={product._id}>
-                      <Product product={product} />    
-                    </div>
-                  ))}
+        {!keyword && <Header />}
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <div className="bg-black text-white min-h-screen flex flex-col ml-10">
+            <section className="flex flex-col lg:flex-row items-center w-full mb-10 justify-between pl-10 py-[50px] bg-gradient-to-b from-gray-900 to-black">
+              <div className="text-center lg:text-left max-w-2xl">
+                <h1 className="text-6xl font-sans font-extrabold text-gray-200 mb-6">
+                  Shop the Latest Styles,<span className='text-pink-500'>Anytime</span>
+                </h1>
+                <p className="text-gray-400 text-lg mb-8">
+                  Discover the trendiest apparel, accessories, and more at prices you'll love. Your new look is just a click away!
+                </p>
+                <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 w-full overflow-hidden">
+                  <button className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-md shadow-md transition">
+                    <Link to="/shop" >Start Shopping</Link>
+                  </button>
+                  <button className="bg-transparent text-pink-500 border border-pink-500 hover:bg-pink-500 hover:text-white px-6 py-3 rounded-md shadow-md transition">
+                  <Link to="/shop" >Explore Deals </Link>
+                  </button>
                 </div>
-              )}
-            </div>
-          </main>
+              </div>
+
+              <div className="mt-10 lg:mt-0">
+                <img
+                  src={HomeImage}
+                  alt="Featured Product"
+                  className="max-w-full rounded-lg shadow-lg"
+                />
+              </div>
+          </section>
           <Footer/>
-        </>
-      )}
+      </div>
+        )}
     </>
   );
 };
