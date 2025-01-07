@@ -8,7 +8,7 @@ dotenv.config();
 
 const app = express();
 
-const allowedOrigins = ['http://localhost:5173'];
+const allowedOrigins = ['http://localhost:5173', 'https://shop-sphere-2n6k-ce6rt74a5-anwishtas-projects.vercel.app'];
 const corsOptions = {
   origin: function (origin, callback) {
     console.log("Request Origin: ", origin);
