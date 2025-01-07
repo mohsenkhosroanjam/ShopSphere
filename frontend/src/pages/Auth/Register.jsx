@@ -4,8 +4,11 @@ import { useSelector, useDispatch } from "react-redux";
 import Loader from "../../components/Loader";
 import { setCredientials } from "../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
-import { useRegisterMutation } from "../redux/api/userApiSlice";
+import { useRegisterMutation, useGoogleSignInMutation } from "../redux/api/userApiSlice";
 import { LOGIN_BG } from "../../Utils/constants";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "../../firebaseConfig";  
+import GoogleLoginButton from "../../Utils/googleBtn";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -18,6 +21,7 @@ const Register = () => {
   const formRef = useRef();
 
   const [register, { isLoading }] = useRegisterMutation();
+  const [googleSignIn, { isLoading: googleSignInLoading }] = useGoogleSignInMutation();
   const { userInfo } = useSelector((state) => state.auth);
 
   const { search } = useLocation();
@@ -44,6 +48,28 @@ const Register = () => {
       } catch (error) {
         toast.error(error.data.message);
       }
+    }
+  };
+
+  
+  const handleGoogleSignIn = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      const res = await googleSignIn({
+        googleId: user.uid,
+        email: user.email,
+        username: user.displayName,
+        photoURL: user.photoURL,
+      }).unwrap();
+      dispatch(setCredientials({ ...res }));
+      toast.success(`SignUp Successfully`)
+      navigate('/home');
+    } catch (error) {
+      console.error("Google Sign-In Error:", error);
+      toast.error(error.message);
     }
   };
 
@@ -148,7 +174,7 @@ const Register = () => {
                     )}
                   </button>
                 </div>
-
+                <GoogleLoginButton onClick={handleGoogleSignIn} />
                 <div className="mt-6 text-center">
                   <p className="text-white">
                     Already have an account?{" "}

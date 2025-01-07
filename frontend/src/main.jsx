@@ -34,6 +34,7 @@ import SplShop from "./pages/SplShop/SplShop.jsx";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
+      <Route path="home" element={<Home/>} />
       <Route path="login" element={<Login />} />
       <Route path="register" element={<Register />} />
       <Route index={true} path='/' element={<Home/>} />

@@ -3,6 +3,22 @@ import { USERS_URL } from "../constants";
 
 export const userApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    googleLogin: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/google-login`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    googleSignIn: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/google-signin`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+
     login: builder.mutation({
       query: (data) => ({
         url: `${USERS_URL}/auth`,
@@ -68,6 +84,8 @@ export const userApiSlice = apiSlice.injectEndpoints({
 });
 
 export const {
+  useGoogleLoginMutation,
+  useGoogleSignInMutation,
   useLoginMutation,
   useLogoutMutation,
   useRegisterMutation,

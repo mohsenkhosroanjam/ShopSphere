@@ -168,6 +168,105 @@ const updateById = asyncHandler(async (req, res) => {
   }
 });
 
+const googleSignIn = asyncHandler(async (req, res) => {
+  const { googleId, email, username, photoURL } = req.body;
+
+  if (!googleId || !email) {
+    res.status(400);
+    throw new Error("Google authentication data missing");
+  }
+
+  let existingUser = await User.findOne({ googleId });
+  
+  if (!existingUser) {
+    existingUser = await User.findOne({ email });
+  }
+
+  if (existingUser) {
+    existingUser.googleId = googleId;
+    existingUser.photoURL = existingUser?.photoURL || photoURL;
+    await existingUser.save();
+
+    generateToken(res, existingUser._id);
+    res.status(200).json({
+      _id: existingUser._id,
+      username: existingUser.username,
+      email: existingUser.email,
+      isAdmin: existingUser.isAdmin,
+      photoURL: existingUser.photoURL
+    });
+    return;
+  }
+
+  const newUser = new User({
+    username,
+    email,
+    googleId,
+    photoURL,
+    password: 'google-password'
+  });
+
+  try {
+    await newUser.save();
+    generateToken(res, newUser._id);
+    res.status(201).json({
+      _id: newUser._id,
+      username: newUser.username,
+      email: newUser.email,
+      isAdmin: newUser.isAdmin,
+      photoURL: newUser.photoURL
+    });
+  } catch (error) {
+    res.status(400);
+    throw new Error("Error creating user with Google authentication");
+  }
+});
+
+const googleLogin = asyncHandler(async (req, res) => {
+  console.log(req.body);
+
+  const { googleId, email, username, photoURL } = req.body;
+
+  if (!googleId || !email) {
+    res.status(400);
+    throw new Error("Google authentication data missing");
+  }
+
+  let existingUser = await User.findOne({ googleId });
+
+  if (!existingUser) {
+    existingUser = new User({
+      username,
+      email,
+      googleId,
+      photoURL,
+      password: "google-password" 
+    });
+
+    try {
+      await existingUser.save();
+    } catch (error) {
+      res.status(400);
+      console.log(error);
+      throw new Error("Error creating new user during Google login");
+    }
+  }
+
+  try {
+    generateToken(res, existingUser._id);
+    res.status(200).json({
+      _id: existingUser._id,
+      username: existingUser.username,
+      email: existingUser.email,
+      isAdmin: existingUser.isAdmin,
+      photoURL: existingUser.photoURL
+    });
+  } catch (error) {
+    res.status(400);
+    throw new Error("Error logging in with Google");
+  }
+});
+
 export {
   createUser,
   loginUser,
@@ -177,5 +276,7 @@ export {
   updateCurrentUserProfile,
   deleteUserById,
   getUserById,
-  updateById
+  updateById,
+  googleSignIn,
+  googleLogin
 };
