@@ -3,8 +3,12 @@ import path from "path";
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import { useCors } from './middleware/cors.js';
+import useCors  from './middleware/cors.js';
 dotenv.config();
+
+import { EventEmitter } from "events";
+
+EventEmitter.defaultMaxListeners = 20; // Increase limit to 20
 
 const app = express();
 
