@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Loader from "../../components/Loader";
 import { setCredientials } from "../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
 import { useRegisterMutation } from "../redux/api/userApiSlice";
+import { LOGIN_BG } from "../../Utils/constants";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -14,6 +15,7 @@ const Register = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const formRef = useRef();
 
   const [register, { isLoading }] = useRegisterMutation();
   const { userInfo } = useSelector((state) => state.auth);
@@ -32,7 +34,7 @@ const Register = () => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      toast.error("Password doesnot match");
+      toast.error("Password does not match");
     } else {
       try {
         const res = await register({ username, email, password }).unwrap();
@@ -40,103 +42,129 @@ const Register = () => {
         navigate(redirect);
         toast.success("Account successfully created");
       } catch (error) {
-        console.log(error);
         toast.error(error.data.message);
       }
     }
   };
 
   return (
-    <section className="pl-[10rem]">
-      <div className="mr-[4rem] mt-[5rem]">
-        <h1 className="text-2xl font-semibold mb-4">Register</h1>
-        <form onSubmit={submitHandler} className="container w-[40rem]">
-          <div className="my-[2rem]">
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-white"
-            >
-              Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              className="w-1/4 md:w-1/2 lg:w-full mt-1 p-2 border rounded "
-              placeholder="Enter name"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
+    <div className="min-h-screen relative">
+      <div className="absolute inset-0">
+        <img
+          src={LOGIN_BG}
+          alt="background"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/50"></div>
+      </div>
+
+      <div className="relative min-h-screen flex items-center justify-center">
+        <div className="w-full max-w-4xl px-4 py-8 sm:px-6 lg:px-8 flex justify-center" ref={formRef}>
+          <div className="card border border-pink-500/60 shadow-lg shadow-black/80 bg-black bg-opacity-20 rounded-xl hover:border-pink-500/80 backdrop-blur-sm w-11/12 md:w-8/12">
+            <div className="card-body p-8">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-white">Create an account</h2>
+                <p className="mt-2 text-white/80">
+                  Fill in your details to get started
+                </p>
+              </div>
+
+              <form onSubmit={submitHandler} className="space-y-6">
+                <div className="form-control">
+                  <label className="label text-sm font-medium">
+                    <span className="label-text text-white">Name</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    className="input w-full p-3 bg-transparent border border-white/30 rounded 
+                             transition-all duration-200 focus:border-pink-500 text-white placeholder-gray-400"
+                    placeholder="Enter name"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                </div>
+
+                <div className="form-control">
+                  <label className="label text-sm font-medium">
+                    <span className="label-text text-white">Email</span>
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    className="input w-full p-3 bg-transparent border border-white/30 rounded 
+                             transition-all duration-200 focus:border-pink-500 text-white placeholder-gray-400"
+                    placeholder="Enter email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+
+                <div className="form-control">
+                  <label className="label text-sm font-medium">
+                    <span className="label-text text-white">Password</span>
+                  </label>
+                  <input
+                    type="password"
+                    id="password"
+                    className="input w-full p-3 bg-transparent border border-white/30 rounded 
+                             transition-all duration-200 focus:border-pink-500 text-white placeholder-gray-400"
+                    placeholder="Enter password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+
+                <div className="form-control">
+                  <label className="label text-sm font-medium">
+                    <span className="label-text text-white">Confirm Password</span>
+                  </label>
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    className="input w-full p-3 bg-transparent border border-white/30 rounded 
+                             transition-all duration-200 focus:border-pink-500 text-white placeholder-gray-400"
+                    placeholder="Confirm password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                </div>
+
+                <div className="mt-8">
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full bg-pink-500 text-white py-3 px-4 rounded font-semibold
+                             transition-all duration-200 hover:bg-pink-600 hover:shadow-lg
+                             disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center justify-center space-x-2">
+                        <Loader />
+                        <span>Please wait...</span>
+                      </div>
+                    ) : (
+                      "Create Account"
+                    )}
+                  </button>
+                </div>
+
+                <div className="mt-6 text-center">
+                  <p className="text-white">
+                    Already have an account?{" "}
+                    <Link
+                      to={redirect ? `/login?redirect=${redirect}` : "/login"}
+                      className="text-pink-500 hover:text-pink-400 transition-colors duration-200 underline">
+                      Sign in
+                      </Link>
+                  </p>
+                </div>
+              </form>
+            </div>
           </div>
-          <div className="my-[2rem]">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-white"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              className="w-1/4 md:w-1/2 lg:w-full mt-1 p-2 border rounded"
-              placeholder="Enter email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="my-[2rem]">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-white"
-            >
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              className="w-1/4 md:w-1/2 lg:w-full mt-1 p-2 border rounded"
-              placeholder="Enter password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <div className="my-[2rem]">
-            <label
-              htmlFor="confirmPassword"
-              className="block text-sm font-medium text-white"
-            >
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              id="confirmPassword"
-              className="w-1/4 md:w-1/2 lg:w-full mt-1 p-2 border rounded"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-          </div>
-          <button
-            disabled={isLoading}
-            type="submit"
-            className="bg-pink-500 text-white px-4 py-2 rounded cursor-pointer my-[1rem]"
-          >
-            Submit
-          </button>
-          {isLoading && <Loader />}
-        </form>
-        <div className="mt-4">
-          <p className="text-white">
-            Already have an account?{" "}
-            <Link
-              to={redirect ? `/login?redirect=${redirect}` : "/login"}
-              className="text-pink-500 hover:underline"
-            >
-              Login
-            </Link>
-          </p>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

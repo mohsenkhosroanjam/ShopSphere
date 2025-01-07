@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import AdminMenu from "./AdminMenu";
 
 const ProductList = () => {
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
@@ -24,8 +24,23 @@ const ProductList = () => {
   const [createProduct] = useCreateProductMutation();
   const { data: categories } = useFetchCategoriesQuery();
 
+  // Form Validation
+  const validateForm = () => {
+    if (!name || !description || !price || !category || !quantity || !brand || !stock) {
+      toast.error("Please fill out all fields.");
+      return false;
+    }
+    if (!image) {
+      toast.error("Please upload an image.");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) return;
 
     try {
       const productData = new FormData();
@@ -41,14 +56,15 @@ const ProductList = () => {
       const { data } = await createProduct(productData);
 
       if (data.error) {
-        toast.error("Product create failed. Try Again.");
+        toast.error("Product creation failed. Try Again.");
       } else {
-        toast.success(`${data.name} is created`);
+        toast.success(`${data.name} has been created successfully!`);
+        resetForm();
         navigate("/");
       }
     } catch (error) {
       console.error(error);
-      toast.error("Product create failed. Try Again.");
+      toast.error("An error occurred. Please try again.");
     }
   };
 
@@ -59,11 +75,24 @@ const ProductList = () => {
     try {
       const res = await uploadProductImage(formData).unwrap();
       toast.success(res.message);
-      setImage(res.image);
+      setImage(e.target.files[0]);
       setImageUrl(res.image);
     } catch (error) {
-      toast.error(error?.data?.message || error.error);
+      toast.error(error?.data?.message || "Image upload failed.");
     }
+  };
+
+  // Reset Form
+  const resetForm = () => {
+    setName("");
+    setDescription("");
+    setPrice("");
+    setCategory("");
+    setQuantity("");
+    setBrand("");
+    setStock(0);
+    setImage(null);
+    setImageUrl(null);
   };
 
   return (
@@ -71,14 +100,14 @@ const ProductList = () => {
       <div className="flex flex-col md:flex-row">
         <AdminMenu />
         <div className="md:w-3/4 p-3">
-          <div className="h-12">Create Product</div>
+          <div className="h-12 text-2xl font-bold">Create Product</div>
 
           {imageUrl && (
-            <div className="text-center">
+            <div className="text-center my-5">
               <img
                 src={imageUrl}
                 alt="product"
-                className="block mx-auto max-h-[200px]"
+                className="block mx-auto max-h-[200px] rounded-lg"
               />
             </div>
           )}
@@ -86,13 +115,12 @@ const ProductList = () => {
           <div className="mb-3">
             <label className="border text-white px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11">
               {image ? image.name : "Upload Image"}
-
               <input
                 type="file"
                 name="image"
                 accept="image/*"
                 onChange={uploadFileHandler}
-                className={!image ? "hidden" : "text-white"}
+                className="hidden"
               />
             </label>
           </div>
@@ -108,8 +136,8 @@ const ProductList = () => {
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
-              <div className="two ml-10 ">
-                <label htmlFor="name block">Price</label> <br />
+              <div className="two ml-10">
+                <label htmlFor="price">Price</label> <br />
                 <input
                   type="number"
                   className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
@@ -118,9 +146,10 @@ const ProductList = () => {
                 />
               </div>
             </div>
+
             <div className="flex flex-wrap">
               <div className="one">
-                <label htmlFor="name block">Quantity</label> <br />
+                <label htmlFor="quantity">Quantity</label> <br />
                 <input
                   type="number"
                   className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
@@ -128,8 +157,8 @@ const ProductList = () => {
                   onChange={(e) => setQuantity(e.target.value)}
                 />
               </div>
-              <div className="two ml-10 ">
-                <label htmlFor="name block">Brand</label> <br />
+              <div className="two ml-10">
+                <label htmlFor="brand">Brand</label> <br />
                 <input
                   type="text"
                   className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
@@ -139,11 +168,8 @@ const ProductList = () => {
               </div>
             </div>
 
-            <label htmlFor="" className="my-5">
-              Description
-            </label>
+            <label htmlFor="description">Description</label>
             <textarea
-              type="text"
               className="p-2 mb-3 bg-[#101011] border rounded-lg w-[95%] text-white"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -151,9 +177,9 @@ const ProductList = () => {
 
             <div className="flex justify-between">
               <div>
-                <label htmlFor="name block">Count In Stock</label> <br />
+                <label>Count In Stock</label> <br />
                 <input
-                  type="text"
+                  type="number"
                   className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
                   value={stock}
                   onChange={(e) => setStock(e.target.value)}
@@ -161,12 +187,15 @@ const ProductList = () => {
               </div>
 
               <div>
-                <label htmlFor="">Category</label> <br />
+                <label>Category</label> <br />
                 <select
-                  placeholder="Choose Category"
                   className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
                   onChange={(e) => setCategory(e.target.value)}
+                  value={category}
                 >
+                  <option value="" disabled>
+                    Choose Category
+                  </option>
                   {categories?.map((c) => (
                     <option key={c._id} value={c._id}>
                       {c.name}

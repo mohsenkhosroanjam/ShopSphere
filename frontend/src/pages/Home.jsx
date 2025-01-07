@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import Product from "./Products/Product";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import Footer from "../components/Footer";
 
 const Home = () => {
   const { keyword } = useParams();
@@ -53,13 +54,14 @@ const Home = () => {
                 <div className="flex justify-center flex-wrap mt-[2rem]">
                   {products.map((product) => (
                     <div key={product._id}>
-                      <Product product={product} />
+                      <Product product={product} />    
                     </div>
                   ))}
                 </div>
               )}
             </div>
           </main>
+          <Footer/>
         </>
       )}
     </>

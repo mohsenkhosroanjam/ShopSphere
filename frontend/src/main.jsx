@@ -28,6 +28,8 @@ import ProductUpdate from "./pages/Admin/ProductUpdate.jsx";
 import AllProducts from "./pages/Admin/AllProducts.jsx";
 import Favorites from "./pages/Products/Favorites.jsx";
 import ProductDetails from "./pages/Products/ProductDetails.jsx";
+import Shop from "./pages/Shop/Shop.jsx";
+import SplShop from "./pages/SplShop/SplShop.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -37,6 +39,8 @@ const router = createBrowserRouter(
       <Route index={true} path='/' element={<Home/>} />
       <Route path="/favorite" element={<Favorites/>} />
       <Route path="/product/:id" element={<ProductDetails/>} />
+      <Route path="/Shop" element={<Shop/>}/>
+      <Route path='/specialshop' element={<SplShop />}/>
 
       <Route path="" element={<PrivateRoute />}>
         <Route path="profile" element={<Profile />} />

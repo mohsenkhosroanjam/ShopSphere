@@ -1,16 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Loader from "../../components/Loader";
 import { useLoginMutation } from "../redux/api/userApiSlice";
 import { setCredientials } from "../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
+import { LOGIN_BG } from "../../Utils/constants";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const formRef = useRef();
+  
   const [login, { isLoading }] = useLoginMutation();
   const { userInfo } = useSelector((state) => state.auth);
   const { search } = useLocation();
@@ -37,70 +40,93 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <section className="pl-[10rem] flex flex-wrap">
-        <div className="mr-[4rem] mt-[5rem]">
-          <h1 className="text-2xl font-semibold mb-4">Sign In</h1>
+    <div className="min-h-screen relative">
+      <div className="absolute inset-0">
+        <img
+          src={LOGIN_BG}
+          alt="background"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/50"></div>
+      </div>
 
-          <form onSubmit={submitHandler} className="container w-[40rem]">
-            <div className=".my-[2rem]">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-white"
-              >
-                Email Address
-              </label>
+      <div className="relative min-h-screen flex items-center justify-center">
+        <div className="w-full max-w-4xl px-4 py-8 sm:px-6 lg:px-8 flex justify-center" ref={formRef}>
+          <div className="card border border-pink-500/40 rounded-xl  bg-black bg-opacity-20 hover:border-pink-500/80 backdrop-blur-sm w-8/12">
+            <div className="card-body p-8">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-white">Welcome back</h2>
+                <p className="mt-2 text-white/70">
+                  Sign in to your account
+                </p>
+              </div>
 
-              <input
-                type="email"
-                id="email"
-                className="mt-1 p-2 border rounded w-full"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <form onSubmit={submitHandler} className="space-y-6">
+                <div className="form-control">
+                  <label className="label text-sm font-medium">
+                    <span className="label-text text-white">Email Address</span>
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    className="input w-full p-3 bg-transparent border border-white/20 rounded 
+                             transition-all duration-200 focus:border-pink-500 text-white"
+                    placeholder="Enter email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+
+                <div className="form-control">
+                  <label className="label text-sm font-medium">
+                    <span className="label-text text-white">Password</span>
+                  </label>
+                  <input
+                    type="password"
+                    id="password"
+                    className="input w-full p-3 bg-transparent border border-white/20 rounded 
+                             transition-all duration-200 focus:border-pink-500 text-white"
+                    placeholder="Enter password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+
+                <div className="mt-8">
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full bg-pink-500 text-white py-3 px-4 rounded font-semibold
+                             transition-all duration-200 hover:bg-pink-600 hover:shadow-lg
+                             disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center justify-center space-x-2">
+                        <Loader />
+                        <span>Please wait...</span>
+                      </div>
+                    ) : (
+                      "Sign In"
+                    )}
+                  </button>
+                </div>
+
+                <div className="mt-6 text-center">
+                  <p className="text-white">
+                    New Customer?{" "}
+                    <Link
+                      to="/register"
+                      className="text-pink-500 hover:text-pink-400 transition-colors duration-200"
+                    >
+                      Create an account
+                    </Link>
+                  </p>
+                </div>
+              </form>
             </div>
-            <div className="my-[2rem]">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-white"
-              >
-                Password
-              </label>
-
-              <input
-                type="password"
-                id="password"
-                className="mt-1 p-2 border rounded w-full"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-
-            <button
-              disabled={isLoading}
-              type="submit"
-              className="bg-pink-500 text-white px-4 py-2 rounded cursor-pointer my-[1rem]"
-            >
-              {isLoading ? "Signing In..." : "Sign In"}
-            </button>
-            {isLoading && <Loader />}
-          </form>
-          <div className="mt-4">
-            <p className="text-white">
-              New Customer ?{" "}
-              <Link to="/register" className="text-pink-500 hover:underline">
-                Register
-              </Link>
-            </p>
           </div>
         </div>
-
-        <img
-          src="https://plus.unsplash.com/premium_photo-1676009551532-c73be6605e3a?q=80&w=1888&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-          alt=""
-          className="h-[40rem] w-[35%] right-0 absolute xl:block sm:hidden rounded-lg"
-        />
-      </section>
+      </div>
     </div>
   );
 };

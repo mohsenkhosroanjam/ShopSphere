@@ -1,0 +1,1 @@
+export const LOGIN_BG = "https://cdn.pixabay.com/photo/2019/05/05/18/58/girl-4181395_960_720.jpg"
