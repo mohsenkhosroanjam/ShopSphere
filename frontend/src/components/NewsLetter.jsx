@@ -29,7 +29,7 @@ const NewsletterSection = () => {
     };
 
     return (
-        <section className="w-full py-16 px-4 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden">
+        <section className="w-full py-16 px-4 bg-gradient-to-b from-[#000000] to-[#0F172A] relative overflow-hidden">
             <div className="max-w-4xl mx-auto text-center relative z-10">
                 <div className="animate-fade-in-slide-down">
                     <h2 className="text-4xl font-bold mb-4 text-white hover:text-pink-500 relative inline-block transition-colors duration-300 after:content-[''] after:absolute after:w-full after:h-0.5 after:bottom-0 after:left-0 after:bg-gradient-to-r after:from-pink-500 after:to-purple-500 after:origin-left after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:ease-out">

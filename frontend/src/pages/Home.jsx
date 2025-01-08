@@ -34,8 +34,8 @@ const Home = () => {
           <Loader />
         ) : (
           <div className="bg-black text-white min-h-screen flex flex-col ml-10">
-            <section className="flex flex-col lg:flex-row items-center w-full mb-10 justify-between pl-10 py-[50px] bg-gradient-to-b from-gray-900 to-black">
-              <div className="text-center lg:text-left max-w-2xl">
+            <section className="flex flex-col lg:flex-row items-center w-full mb-10 justify-between pl-10 py-[50px] bg-gradient-to-t from-[#000000] to-[#0F172A]">
+              <div className="text-center lg:text-left max-w-2xl ml-6">
                 <h1 className="text-6xl font-sans font-extrabold text-gray-200 mb-6">
                   Shop the Latest Styles,<span className='text-pink-500'>Anytime</span>
                 </h1>
@@ -47,7 +47,7 @@ const Home = () => {
                     <Link to="/shop" >Start Shopping</Link>
                   </button>
                   <button className="bg-transparent text-pink-500 border border-pink-500 hover:bg-pink-500 hover:text-white px-6 py-3 rounded-md shadow-md transition">
-                  <Link to="/shop" >Explore Deals </Link>
+                  <Link to="/specialshop" >Explore Deals </Link>
                   </button>
                 </div>
               </div>
