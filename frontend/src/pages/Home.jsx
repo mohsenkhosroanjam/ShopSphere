@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Footer from "../components/Footer";
 import HomeImage from "../assets/HomeFinal.png"
+import NewsletterSection from "../components/NewsLetter";
 
 const Home = () => {
   const { keyword } = useParams();
@@ -59,6 +60,7 @@ const Home = () => {
                 />
               </div>
           </section>
+          <NewsletterSection/>
           <Footer/>
       </div>
         )}
