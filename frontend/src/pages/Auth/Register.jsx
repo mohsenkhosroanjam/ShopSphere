@@ -78,6 +78,13 @@ const Register = () => {
 
   return (
     <div className="min-h-screen relative">
+      {/* Loader for API calls */}
+      {(isLoading || googleSignInLoading) && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-50">
+          <Loader />
+        </div>
+      )}
+
       <div className="absolute inset-0">
         <img
           src={LOGIN_BG}
