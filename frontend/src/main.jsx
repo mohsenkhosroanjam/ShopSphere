@@ -11,7 +11,7 @@ import {
 import { createBrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./pages/redux/store.js";
-import Home from "./pages/Home.jsx"
+import Home from "./pages/Home.jsx";
 //private route
 import PrivateRoute from "./components/PrivateRoute.jsx";
 
@@ -31,20 +31,22 @@ import ProductDetails from "./pages/Products/ProductDetails.jsx";
 import Shop from "./pages/Shop/Shop.jsx";
 import SplShop from "./pages/SplShop/SplShop.jsx";
 import Cart from "./components/Cart.jsx";
-import { CartProvider } from './components/CartContext';
+import FAQ from "./pages/FAQ.jsx";
+import { CartProvider } from "./components/CartContext";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
-      <Route path="home" element={<Home/>} />
+      <Route path="home" element={<Home />} />
       <Route path="login" element={<Login />} />
       <Route path="register" element={<Register />} />
-      <Route index={true} path='/' element={<Home/>} />
-      <Route path="/favorite" element={<Favorites/>} />
-      <Route path="/product/:id" element={<ProductDetails/>} />
-      <Route path="/Shop" element={<Shop/>}/>
-      <Route path='/specialshop' element={<SplShop />}/>
+      <Route index={true} path="/" element={<Home />} />
+      <Route path="/favorite" element={<Favorites />} />
+      <Route path="/product/:id" element={<ProductDetails />} />
+      <Route path="/Shop" element={<Shop />} />
+      <Route path="/specialshop" element={<SplShop />} />
       <Route path="/cart" element={<Cart />} />
+      <Route path="/faq" element={<FAQ />} />
 
       <Route path="" element={<PrivateRoute />}>
         <Route path="profile" element={<Profile />} />
@@ -53,7 +55,7 @@ const router = createBrowserRouter(
       <Route path="/admin" element={<AdminRoute />}>
         <Route path="userlist" element={<UserList />} />
         <Route path="categorylist" element={<CategoryList />} />
-        <Route path="allproductslist" element={<AllProducts />} />  
+        <Route path="allproductslist" element={<AllProducts />} />
         <Route path="productlist" element={<ProductList />} />
         <Route path="product/update/:_id" element={<ProductUpdate />} />
       </Route>
