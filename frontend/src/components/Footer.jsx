@@ -53,29 +53,20 @@ const Footer = () => {
           <h4 className="text-xl font-semibold mb-4">Quick Links</h4>
           <ul className="space-y-2">
             <li>
-              <a href="/products" className="text-gray-300 hover:text-white">
-                <Link to="/shop">Shop All Products</Link>
-                
-              </a>
+                {/* change "/shop" to "/products" when you have the products page */}
+                <Link to="/shop" className="text-gray-300 hover:text-white">Shop All Products</Link>
             </li>
             <li>
-              <a href="/offers" className="text-gray-300 hover:text-white">
-                <Link to="/shop">Offers</Link>
-              
-                
-              </a>
+                {/* change "/offers" to "/offers" when you have the offers page */}
+                <Link to="/shop" className="text-gray-300 hover:text-white">Offers</Link>
             </li>
             <li>
-              <a href="/blog" className="text-gray-300 hover:text-white">
-              <Link to="/shop"> Blog</Link>
-               
-              </a>
+              {/* change "/shop" to "/blog" when you have the blog page */}
+              <Link to="/shop" className="text-gray-300 hover:text-white"> Blog</Link>
             </li>
             <li>
-              <a href="/faq" className="text-gray-300 hover:text-white">
-              <Link to="/shop">FAQs</Link>
-                
-              </a>
+              {/* change "/shop" to "/faq" when you have the faq page */}
+              <Link to="/shop" className="text-gray-300 hover:text-white">FAQs</Link>
             </li>
           </ul>
         </div>
