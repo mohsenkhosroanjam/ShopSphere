@@ -53,54 +53,82 @@ const Footer = () => {
           <h4 className="text-xl font-semibold mb-4">Quick Links</h4>
           <ul className="space-y-2">
             <li>
-                {/* change "/shop" to "/products" when you have the products page */}
-                <Link to="/shop" className="text-gray-300 hover:text-white">Shop All Products</Link>
+              {/* change "/shop" to "/products" when you have the products page */}
+              <Link to="/shop" className="text-gray-300 hover:text-white">
+                Shop All Products
+              </Link>
             </li>
             <li>
-                {/* change "/offers" to "/offers" when you have the offers page */}
-                <Link to="/shop" className="text-gray-300 hover:text-white">Offers</Link>
+              {/* change "/offers" to "/offers" when you have the offers page */}
+              <Link to="/shop" className="text-gray-300 hover:text-white">
+                Offers
+              </Link>
             </li>
             <li>
               {/* change "/shop" to "/blog" when you have the blog page */}
-              <Link to="/shop" className="text-gray-300 hover:text-white"> Blog</Link>
+              <Link to="/shop" className="text-gray-300 hover:text-white">
+                {" "}
+                Blog
+              </Link>
             </li>
             <li>
-              {/* change "/shop" to "/faq" when you have the faq page */}
-              <Link to="/shop" className="text-gray-300 hover:text-white">FAQs</Link>
+              {/* path tp  "/faq" to load FAQ section */}
+              <Link to="/faq" className="text-gray-300 hover:text-white">
+                FAQs
+              </Link>
             </li>
           </ul>
         </div>
 
         {/* Social Media Section */}
         <div>
-        <h4 className="text-xl font-semibold mb-4">Follow Us</h4>
-        <div className="flex space-x-4">
-  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-    <FontAwesomeIcon
-      icon={faFacebookF}
-      className="text-gray-300 text-xl transition-transform duration-300 hover:scale-125 hover:text-blue-600"
-    />
-  </a>
-  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-    <FontAwesomeIcon
-      icon={faTwitter}
-      className="text-gray-300 text-xl transition-transform duration-300 hover:scale-125 hover:text-blue-400"
-    />
-  </a>
-  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-    <FontAwesomeIcon
-      icon={faInstagram}
-      className="text-gray-300 text-xl transition-transform duration-300 hover:scale-125 hover:text-orange-700"
-    />
-  </a>
-  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-    <FontAwesomeIcon
-      icon={faLinkedinIn}
-      className="text-gray-300 text-xl transition-transform duration-300 hover:scale-125 hover:text-blue-500"
-    />
-  </a>
-</div>
-
+          <h4 className="text-xl font-semibold mb-4">Follow Us</h4>
+          <div className="flex space-x-4">
+            <a
+              href="https://facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+            >
+              <FontAwesomeIcon
+                icon={faFacebookF}
+                className="text-gray-300 text-xl transition-transform duration-300 hover:scale-125 hover:text-blue-600"
+              />
+            </a>
+            <a
+              href="https://twitter.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Twitter"
+            >
+              <FontAwesomeIcon
+                icon={faTwitter}
+                className="text-gray-300 text-xl transition-transform duration-300 hover:scale-125 hover:text-blue-400"
+              />
+            </a>
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
+              <FontAwesomeIcon
+                icon={faInstagram}
+                className="text-gray-300 text-xl transition-transform duration-300 hover:scale-125 hover:text-orange-700"
+              />
+            </a>
+            <a
+              href="https://linkedin.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+            >
+              <FontAwesomeIcon
+                icon={faLinkedinIn}
+                className="text-gray-300 text-xl transition-transform duration-300 hover:scale-125 hover:text-blue-500"
+              />
+            </a>
+          </div>
         </div>
       </div>
 
