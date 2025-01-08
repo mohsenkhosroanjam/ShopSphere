@@ -2,6 +2,7 @@ import cors from "cors";
 
 const allowedOrigins = [
   "http://localhost:5173",
+  "https://shop-sphere-2n6k.vercel.app",
   "https://shop-sphere-2n6k-ce6rt74a5-anwishtas-projects.vercel.app",
 ];
 
