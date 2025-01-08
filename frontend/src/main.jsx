@@ -31,6 +31,7 @@ import ProductDetails from "./pages/Products/ProductDetails.jsx";
 import Shop from "./pages/Shop/Shop.jsx";
 import SplShop from "./pages/SplShop/SplShop.jsx";
 import Cart from "./components/Cart.jsx";
+import { CartProvider } from './components/CartContext';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -62,6 +63,8 @@ const router = createBrowserRouter(
 
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
-    <RouterProvider router={router} />
+    <CartProvider>
+      <RouterProvider router={router} />
+    </CartProvider>
   </Provider>
 );

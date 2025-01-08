@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom"
 import HeartIcon from "./HeartIcon"
+import { useCart } from '../../components/CartContext';
+
 const Product = ({ product }) => {
+  const { addToCart } = useCart();
+
   return (
     <div className="w-[30rem] ml-[2rem] p-3 relative">
       <div className="relative">
@@ -14,6 +18,12 @@ const Product = ({ product }) => {
             <span className="bg-pink-100 text-pink-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-pink-900 dark:text-pink-300">$ {product.price}</span>
           </h2>
         </Link>
+        <button
+          className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-md mt-2 w-full transition-all duration-300 transform hover:scale-105"
+          onClick={() => addToCart(product)}
+        >
+          Add to Cart
+        </button>
       </div>
     </div>
   )

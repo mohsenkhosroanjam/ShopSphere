@@ -1,26 +1,11 @@
-
 import React, { useState } from 'react'
 import { Minus, Plus, Trash2 } from 'lucide-react'
 import { Button } from "../components/Button"
 import { Input } from "../components/Input"
+import { useCart } from './CartContext';
 
 function Cart() {
-  const [cartItems, setCartItems] = useState([
-    { id: 1, name: "Wireless Earbuds", price: 79.99, quantity: 1 },
-    { id: 2, name: "Smartphone Case", price: 19.99, quantity: 2 },
-    { id: 3, name: "USB-C Cable", price: 9.99, quantity: 3 },
-  ])
-
-  const updateQuantity = (id, newQuantity) => {
-    if (newQuantity < 1) return
-    setCartItems(cartItems.map(item => 
-      item.id === id ? { ...item, quantity: newQuantity } : item
-    ))
-  }
-
-  const removeItem = (id) => {
-    setCartItems(cartItems.filter(item => item.id !== id))
-  }
+  const { cartItems, updateQuantity, removeFromCart } = useCart();
 
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)
@@ -64,7 +49,7 @@ function Cart() {
                   <Button
                     variant="destructive"
                     size="icon"
-                    onClick={() => removeItem(item.id)}
+                    onClick={() => removeFromCart(item.id)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>

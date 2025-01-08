@@ -17,6 +17,7 @@ import {
 } from "react-icons/fa";
 import moment from "moment";
 import HeartIcon from "./HeartIcon";
+import { useCart } from '../../components/CartContext';
 
 const ProductDetails = () => {
   const { id: productId } = useParams();
@@ -37,6 +38,8 @@ const ProductDetails = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const [createReview, { isLoading: loadingProductReview }] =
     useCreateReviewMutation();
+  const { addToCart } = useCart();
+
   return (
     <div className="max-w-full px-[16%]">
       <div className="pt-2">
@@ -75,6 +78,12 @@ const ProductDetails = () => {
             <p className="text-2xl md:text-5xl my-4 font-extrabold">
               $ {product.price}
             </p>
+            <button
+              className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-md mt-2 w-full transition-all duration-300 transform hover:scale-105"
+              onClick={() => addToCart(product, qty)}
+            >
+              Add to Cart
+            </button>
             <div className="flex items-center justify-between w-[20rem]">
               <div className="one">
                 <h1 className="flex items-center mb-6">
