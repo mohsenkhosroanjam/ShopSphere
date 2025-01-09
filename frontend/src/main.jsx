@@ -33,6 +33,7 @@ import SplShop from "./pages/SplShop/SplShop.jsx";
 import Cart from "./components/Cart.jsx";
 import FAQ from "./pages/FAQ.jsx";
 import { CartProvider } from "./components/CartContext";
+import Contact from "./components/Contact"
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -47,6 +48,7 @@ const router = createBrowserRouter(
       <Route path="/specialshop" element={<SplShop />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/faq" element={<FAQ />} />
+      <Route path="/contact" element={<Contact />} />
 
       <Route path="" element={<PrivateRoute />}>
         <Route path="profile" element={<Profile />} />
