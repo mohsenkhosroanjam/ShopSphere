@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../../components/CartContext';
 import HeartIcon from "../Products/HeartIcon";
+import { useEffect } from 'react';
 
 const products = [
   {
@@ -107,10 +108,49 @@ const products = [
   },
 ];
 
-
-
 export default function ShopPage() {
   const { addToCart } = useCart();
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animate-slide-in");
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    document.querySelectorAll(".product-box").forEach((box, index) => {
+      if (index >= 3) observer.observe(box);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.innerHTML = `
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-slide-in {
+        animation: slideIn 0.5s ease-out forwards;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
 
   return (
     <div className="min-h-screen bg-black p-6">
@@ -129,10 +169,10 @@ export default function ShopPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 mx-16 my-16">
           {products.length > 0 ? (
-            products.map((product) => (
+            products.map((product, index) => (
               <div
                 key={product.id}
-                className="bg-pink-500 shadow-md rounded-lg p-4 transform hover:scale-105 hover:shadow-lg transition duration-300 relative"
+                className="bg-pink-500 shadow-md rounded-lg p-4 transform hover:scale-105 hover:shadow-lg transition duration-300 relative product-box"
               >
                 <h2 className="text-xl font-bold text-white mb-2">{product.name}</h2>
                 <p className="text-lg text-white font-semibold mb-4">${product.price}</p>
@@ -158,13 +198,7 @@ export default function ShopPage() {
             </div>
           )}
         </div>
-
-
       </div>
     </div>
   );
 }
-
-
-
-
