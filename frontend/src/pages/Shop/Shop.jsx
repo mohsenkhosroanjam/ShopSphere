@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../../components/CartContext';
+import HeartIcon from "../Products/HeartIcon";
 
 const products = [
   {
@@ -87,23 +88,23 @@ const products = [
     image: "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/mbp16-spacegray-select-202110"
   },
   {
-      id: 13,
-      name: "Samsung Galaxy Tab S7",
-      price: 649.99,
-      image: "https://m.media-amazon.com/images/I/71h6PpGaz9L._AC_SL1500_.jpg"
-    },
-    {
-      id: 10,
-      name: "Canon EOS Rebel T7 DSLR Camera",
-      price: 449.99,
-      image: "https://m.media-amazon.com/images/I/71ZYxtmYkPL._AC_UF1000,1000_QL80_.jpg"
-    },
-    {
-      id: 12,
-      name: "Apple AirPods Pro",
-      price: 249.00,
-      image: "https://m.media-amazon.com/images/I/71zny7BTRlL._AC_SL1500_.jpg"
-    },
+    id: 13,
+    name: "Samsung Galaxy Tab S7",
+    price: 649.99,
+    image: "https://m.media-amazon.com/images/I/71h6PpGaz9L._AC_SL1500_.jpg"
+  },
+  {
+    id: 10,
+    name: "Canon EOS Rebel T7 DSLR Camera",
+    price: 449.99,
+    image: "https://m.media-amazon.com/images/I/71ZYxtmYkPL._AC_UF1000,1000_QL80_.jpg"
+  },
+  {
+    id: 12,
+    name: "Apple AirPods Pro",
+    price: 249.00,
+    image: "https://m.media-amazon.com/images/I/71zny7BTRlL._AC_SL1500_.jpg"
+  },
 ];
 
 
@@ -120,27 +121,28 @@ export default function ShopPage() {
         </div>
 
         <Link
-            to="/specialshop"
-            className="absolute top-10 right-40 bg-gradient-to-r from-white to-pink-500 text-black font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl hover:from-pink-500 hover:to-pink-600 transition duration-300 ease-in-out transform hover:scale-105"
-          >
-            Tap to explore exclusive products
-          </Link>
+          to="/specialshop"
+          className="absolute top-10 right-40 bg-gradient-to-r from-white to-pink-500 text-black font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl hover:from-pink-500 hover:to-pink-600 transition duration-300 ease-in-out transform hover:scale-105"
+        >
+          Tap to explore exclusive products
+        </Link>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 mx-16 my-16">
           {products.length > 0 ? (
             products.map((product) => (
               <div
                 key={product.id}
-                className="bg-pink-500 shadow-md rounded-lg p-4 transform hover:scale-105 hover:shadow-lg transition duration-300"
+                className="bg-pink-500 shadow-md rounded-lg p-4 transform hover:scale-105 hover:shadow-lg transition duration-300 relative"
               >
                 <h2 className="text-xl font-bold text-white mb-2">{product.name}</h2>
                 <p className="text-lg text-white font-semibold mb-4">${product.price}</p>
-                <div className="w-full h-40 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
-                <img
+                <div className="w-full h-40 bg-gray-200 rounded-md flex items-center justify-center text-gray-500 relative">
+                  <img
                     src={product.image}
                     alt={product.name}
                     className="object-contain w-full h-full"
                   />
+                  <HeartIcon product={product} />
                 </div>
                 <button
                   onClick={() => addToCart(product)}
