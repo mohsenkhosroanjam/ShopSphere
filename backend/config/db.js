@@ -4,7 +4,7 @@ import logger from '../utils/logger.js';
 
 let mainDbConnection;
 
-const urlDB = 'mongodb://127.0.0.1:27017/Store';
+const urlDB = 'mongodb://127.0.0.1:27017/Store'||process.env.MONGO_URI;
 
 export const connectDB = async () => {
   try {
