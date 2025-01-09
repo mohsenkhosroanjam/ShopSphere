@@ -18,7 +18,7 @@ import {
 router
   .route("/")
   .get(fetchProducts)
-  .post(authenticate, authorizeAdmin, formidable(), addProduct);
+  .post(authenticate, authorizeAdmin, addProduct);
 
 router.route("/allproducts").get(fetchAllProducts);
 router

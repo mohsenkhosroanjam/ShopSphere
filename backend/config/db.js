@@ -4,26 +4,26 @@ import logger from '../utils/logger.js';
 
 let mainDbConnection;
 
-const urlDB = config.DATABASE_URL;
+const urlDB = 'mongodb://127.0.0.1:27017/Store';
 
-export const connectToDatabases = async () => {
+export const connectDB = async () => {
   try {
-    // Establish the connection
-    mainDbConnection = mongoose.createConnection(urlDB, {
-      serverSelectionTimeoutMS: 30000,
-    });
+    // if (!process.env.MONGO_URI) {
+    //   console.error("MongoDB connection URI is missing in environment variables.");
+    //   process.exit(1);
+    // }
 
-    mainDbConnection.on('connected', () => logger.info('Connected to main MongoDB database'));
-    mainDbConnection.on('error', (err) => logger.error(`Error connecting to main MongoDB database: ${err.message}`));
+    const conn = await mongoose.connect(urlDB);
 
-    // Wait for the connection
-    await mainDbConnection.asPromise();
-    logger.info('Main database connection established successfully.');
-  } catch (err) {
-    logger.error(`Error connecting to MongoDB databases: ${err.message}`);
-    throw err;
+    console.log(`Successfully connected to MongoDB: ${conn.connection.host} 👍`);
+  } catch (error) {
+    console.error(`Database Connection Error: ${error.message}`);
+    console.error(error.stack);
+    process.exit(1);
   }
 };
+
+export default connectDB;
 
 export const getMainDb = () => {
   if (!mainDbConnection) {
@@ -44,7 +44,7 @@ export const closeConnections = async () => {
 };
 
 // Initialize connection
-connectToDatabases().catch((err) => {
+connectDB().catch((err) => {
   logger.error(`Failed to initialize database connections: ${err.message}`);
   process.exit(1);
 });

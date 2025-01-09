@@ -84,7 +84,7 @@ const removeProduct = asyncHandler(async (req, res) => {
 const fetchProducts = asyncHandler(async (req, res) => {
   try {
     const pageSize = 6;
-
+    console.log("ehohho")
     const keyword = req.query.keyword
       ? {
           name: {
@@ -112,6 +112,7 @@ const fetchProducts = asyncHandler(async (req, res) => {
 const fetchProductsById = asyncHandler(async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
+   
     if (product) {
       return res.json(product);
     } else {
