@@ -12,6 +12,9 @@ const Footer = () => {
             <p className="text-sm text-gray-400 leading-relaxed">
               Elevating your shopping experience with  <br /> curated fashion that speaks your style.
             </p>
+            <div className="text-sm text-gray-400 hover:text-[#EC4899] transition-colors duration-200">
+              <Link to='/termsAndConditions'>Terms and Condition</Link>
+            </div>
             <div className="flex space-x-5 pt-2">
               <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
                 <FontAwesomeIcon
