@@ -112,7 +112,7 @@ We welcome contributions to make ShopSphere better! To contribute:
 
 ---
 
-<h3>Project Contributers: <h3>
+## Project Contributers:
 <a href="https://github.com/Anwishta/ShopSphere/graphs/contributors">
 <img src="https://contributors-img.web.app/image?repo=Anwishta/ShopSphere"/>
 
