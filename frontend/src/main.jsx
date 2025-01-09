@@ -12,6 +12,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./pages/redux/store.js";
 import Home from "./pages/Home.jsx";
+import TermsAndConditions from "./pages/Footer/TermsAndConditions.jsx";
 //private route
 import PrivateRoute from "./components/PrivateRoute.jsx";
 
@@ -49,6 +50,7 @@ const router = createBrowserRouter(
       <Route path="/cart" element={<Cart />} />
       <Route path="/faq" element={<FAQ />} />
       <Route path="/contact" element={<Contact />} />
+      <Route path="/termsAndConditions" element={<TermsAndConditions />} />
 
       <Route path="" element={<PrivateRoute />}>
         <Route path="profile" element={<Profile />} />
