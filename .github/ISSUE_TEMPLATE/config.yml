@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Contribution Guidelines
+    url: https://github.com/Anwishta/ShopSphere/blob/main/Contribution.md
+    about: Please read the contribution guidelines before creating an issue.
+  - name: Security Vulnerabilities
+    url: https://github.com/Anwishta/ShopSphere/blob/main/.github/SECURITY.md
+    about: Please report security vulnerabilities as per the guidelines.
