@@ -17,7 +17,7 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [showConfirmPassword,setShowConfirmPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -39,7 +39,6 @@ const Register = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-
     if (password !== confirmPassword) {
       toast.error("Password does not match");
     } else {
@@ -54,13 +53,11 @@ const Register = () => {
     }
   };
 
-  
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-
       const res = await googleSignIn({
         googleId: user.uid,
         email: user.email,
@@ -68,17 +65,15 @@ const Register = () => {
         photoURL: user.photoURL,
       }).unwrap();
       dispatch(setCredientials({ ...res }));
-      toast.success(`SignUp Successfully`)
+      toast.success(`SignUp Successfully`);
       navigate('/home');
     } catch (error) {
-      console.error("Google Sign-In Error:", error);
       toast.error(error.message);
     }
   };
 
   return (
     <div className="min-h-screen relative">
-      {/* Loader for API calls */}
       {(isLoading || googleSignInLoading) && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-50">
           <Loader />
@@ -95,7 +90,10 @@ const Register = () => {
       </div>
 
       <div className="relative min-h-screen flex items-center justify-center">
-        <div className="w-full max-w-4xl px-4 py-8 sm:px-6 lg:px-8 flex justify-center" ref={formRef}>
+        <div
+          className="w-full max-w-4xl px-4 py-8 sm:px-6 lg:px-8 flex justify-center animate-slide-in"
+          ref={formRef}
+        >
           <div className="card border border-pink-500/60 shadow-lg shadow-black/80 bg-black bg-opacity-20 rounded-xl hover:border-pink-500/80 backdrop-blur-sm w-11/12 md:w-8/12">
             <div className="card-body p-8">
               <div className="text-center mb-8">
@@ -149,7 +147,7 @@ const Register = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
-                  <span onClick={()=>setShowPassword((prev)=>!prev)} className="cursor-pointer absolute right-5 top-10">
+                  <span onClick={() => setShowPassword((prev) => !prev)} className="cursor-pointer absolute right-5 top-10">
                     {showPassword ? <FaEye /> : <FaEyeSlash />}
                   </span>
                 </div>
@@ -196,9 +194,10 @@ const Register = () => {
                     Already have an account?{" "}
                     <Link
                       to={redirect ? `/login?redirect=${redirect}` : "/login"}
-                      className="text-pink-500 hover:text-pink-400 transition-colors duration-200 underline">
+                      className="text-pink-500 hover:text-pink-400 transition-colors duration-200 underline"
+                    >
                       Sign in
-                      </Link>
+                    </Link>
                   </p>
                 </div>
               </form>
@@ -211,3 +210,25 @@ const Register = () => {
 };
 
 export default Register;
+
+const styles = `
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 1s ease-out forwards;
+}
+`;
+
+const styleSheet = document.createElement("style");
+styleSheet.type = "text/css";
+styleSheet.innerText = styles;
+document.head.appendChild(styleSheet);

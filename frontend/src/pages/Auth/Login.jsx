@@ -38,7 +38,7 @@ const Login = () => {
       const res = await login({ email, password }).unwrap();
       console.log(res);
       dispatch(setCredientials({ ...res }));
-      toast.success(`Logged In`)
+      toast.success(`Logged In`);
     } catch (error) {
       toast.error(error?.data?.message || error.message);
     }
@@ -52,7 +52,6 @@ const Login = () => {
       console.log("Google Sign-In Successful!");
       console.log("User Data:", user);
 
-      console.log(user);
       const res = await googleLogin({
         googleId: user.uid,
         email: user.email,
@@ -88,14 +87,15 @@ const Login = () => {
       </div>
 
       <div className="relative min-h-screen flex items-center justify-center">
-        <div className="w-full max-w-4xl px-4 py-8 sm:px-6 lg:px-8 flex justify-center" ref={formRef}>
-          <div className="card border border-pink-500/40 rounded-xl  bg-black bg-opacity-20 hover:border-pink-500/80 backdrop-blur-sm w-8/12">
+        <div
+          className="w-full max-w-4xl px-4 py-8 sm:px-6 lg:px-8 flex justify-center animate-slide-in"
+          ref={formRef}
+        >
+          <div className="card border border-pink-500/40 rounded-xl bg-black bg-opacity-20 hover:border-pink-500/80 backdrop-blur-sm w-8/12">
             <div className="card-body p-8">
               <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold text-white">Welcome back</h2>
-                <p className="mt-2 text-white/70">
-                  Sign in to your account
-                </p>
+                <p className="mt-2 text-white/70">Sign in to your account</p>
               </div>
 
               <form onSubmit={submitHandler} className="space-y-6">
@@ -127,10 +127,12 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
-                  <span onClick={()=>setShowPassword((prev)=>!prev)} className="cursor-pointer absolute right-5 top-10">
+                  <span
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="cursor-pointer absolute right-5 top-10"
+                  >
                     {showPassword ? <FaEye /> : <FaEyeSlash />}
                   </span>
-
                 </div>
 
                 <div className="mt-8">
@@ -175,3 +177,25 @@ const Login = () => {
 };
 
 export default Login;
+
+const styles = `
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 1s ease-out forwards;
+}
+`;
+
+const styleSheet = document.createElement("style");
+styleSheet.type = "text/css";
+styleSheet.innerText = styles;
+document.head.appendChild(styleSheet);
