@@ -1,0 +1,192 @@
+[
+    {
+      "name": "Smartphone XYZ",
+      "offer": 20,
+      "image": "/images/smartphone.jpg",
+      "rating": 4.7,
+      "ratedPeople": 201,
+      "price": 899,
+      "category": "Electronic"
+    },
+    {
+      "name": "Leather Jacket",
+      "offer": 15,
+      "image": "/images/jacket.jpg",
+      "rating": 4.8,
+      "ratedPeople": 130,
+      "price": 599,
+      "category": "Fashion"
+    },
+    {
+      "name": "Beauty Face Cream",
+      "offer": 25,
+      "image": "/images/cream.jpg",
+      "rating": 4.6,
+      "ratedPeople": 340,
+      "price": 199,
+      "category": "Beauty"
+    },
+    {
+      "name": "Football Shoes",
+      "offer": 10,
+      "image": "/images/footwear.png",
+      "rating": 4.5,
+      "ratedPeople": 215,
+      "price": 1299,
+      "category": "Footwear"
+    },
+    {
+      "name": "Yoga Mat",
+      "offer": 30,
+      "image": "/images/yoga-mat.jpg",
+      "rating": 4.9,
+      "ratedPeople": 89,
+      "price": 499,
+      "category": "Fitness"
+    },
+    {
+      "name": "Sports Watch",
+      "offer": 12,
+      "image": "/images/watch.jpg",
+      "rating": 4.7,
+      "ratedPeople": 520,
+      "price": 1599,
+      "category": "Sports"
+    },
+    {
+      "name": "Sunglasses",
+      "offer": 18,
+      "image": "/images/sunglasses.jpg",
+      "rating": 4.3,
+      "ratedPeople": 50,
+      "price": 799,
+      "category": "Accessories"
+    },
+    {
+      "name": "Laptop Pro 15",
+      "offer": 25,
+      "image": "/images/laptop.jpg",
+      "rating": 4.8,
+      "ratedPeople": 450,
+      "price": 1299,
+      "category": "Electronic"
+    },
+    {
+      "name": "Men's Sneakers",
+      "offer": 20,
+      "image": "/images/sneakers.png",
+      "rating": 4.5,
+      "ratedPeople": 210,
+      "price": 699,
+      "category": "Footwear"
+    },
+    {
+      "name": "Perfume Set",
+      "offer": 15,
+      "image": "/images/perfume.jpg",
+      "rating": 4.7,
+      "ratedPeople": 120,
+      "price": 499,
+      "category": "Beauty"
+    },
+    {
+      "name": "Treadmill Machine",
+      "offer": 30,
+      "image": "/images/treadmill.jpg",
+      "rating": 4.9,
+      "ratedPeople": 65,
+      "price": 2999,
+      "category": "Fitness"
+    },
+    {
+      "name": "Sports Backpack",
+      "offer": 18,
+      "image": "/images/backpack.jpg",
+      "rating": 4.6,
+      "ratedPeople": 340,
+      "price": 899,
+      "category": "Sports"
+    },
+    {
+      "name": "Luxury Watch",
+      "offer": 10,
+      "image": "/images/luxury-watch.jpg",
+      "rating": 4.8,
+      "ratedPeople": 180,
+      "price": 2499,
+      "category": "Accessories"
+    },
+    {
+      "name": "Women's Handbag",
+      "offer": 22,
+      "image": "/images/handbag.jpg",
+      "rating": 4.4,
+      "ratedPeople": 150,
+      "price": 1199,
+      "category": "Fashion"
+    },
+    {
+      "name": "Wireless Earbuds",
+      "offer": 15,
+      "image": "/images/wireless-earbuds.jpg",
+      "rating": 4.7,
+      "ratedPeople": 380,
+      "price": 1499,
+      "category": "Electronic"
+    },
+    {
+      "name": "Casual T-Shirt",
+      "offer": 20,
+      "image": "/images/tshirt.jpg",
+      "rating": 4.6,
+      "ratedPeople": 220,
+      "price": 499,
+      "category": "Fashion"
+    },
+    {
+      "name": "Skin Care Kit",
+      "offer": 18,
+      "image": "/images/skin-care.jpg",
+      "rating": 4.5,
+      "ratedPeople": 300,
+      "price": 899,
+      "category": "Beauty"
+    },
+    {
+      "name": "Yoga Mat",
+      "offer": 25,
+      "image": "/images/yoga-mat.jpg",
+      "rating": 4.8,
+      "ratedPeople": 190,
+      "price": 399,
+      "category": "Fitness"
+    },
+    {
+      "name": "Running Shoes",
+      "offer": 30,
+      "image": "/images/running-shoes.jpg",
+      "rating": 4.9,
+      "ratedPeople": 320,
+      "price": 1099,
+      "category": "Footwear"
+    },
+    {
+      "name": "Baseball Cap",
+      "offer": 10,
+      "image": "/images/baseball-cap.jpg",
+      "rating": 4.3,
+      "ratedPeople": 150,
+      "price": 199,
+      "category": "Sports"
+    },
+    {
+      "name": "Leather Wallet",
+      "offer": 20,
+      "image": "/images/leather-wallet.jpg",
+      "rating": 4.7,
+      "ratedPeople": 250,
+      "price": 699,
+      "category": "Accessories"
+    }
+  ]
+  
