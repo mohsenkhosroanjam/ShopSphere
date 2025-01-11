@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
@@ -7,24 +8,32 @@ import { useSelector } from 'react-redux';
 function Cart() {
   const { userInfo } = useSelector((state) => state.auth);
   const { data: cartProducts, isLoading, error } = useFetchCartQuery(userInfo._id);
-  // Update cart quantity
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error loading cart</p>;
+  const [loadError, setLoadError] = useState("");
+
+  
+  useEffect(() => {
+    if (error) {
+      setLoadError(error.message);
+    }
+  }, [error]);
+
+  if (isLoading) return <p className="flex flex-col justify-center text-center text-5xl text-bold min-h-full items-center">Loading...</p>;
 
   // Calculate total price
   const calculateTotal = () => {
-    return cartProducts?.reduce(
-      (total, item) => total + (item.productId.price || 0) * (item.quantity || 1),
-      0
-    ).toFixed(2);
+    return (
+      cartProducts?.reduce(
+        (total, item) => total + (item.productId.price || 0) * (item.quantity || 1),
+        0
+      )?.toFixed(2) || "0.00"
+    );
   };
-  
 
   return (
     <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-8">Your Cart</h1>
-      {cartProducts?.length === 0 ? (
-        <p className="text-center text-gray-500">Your cart is empty</p>
+      <h1 className="text-3xl font-bold mb-8 text-center">Your Cart</h1>
+      {loadError || !cartProducts || cartProducts.length === 0 ? (
+        <p className="text-center text-gray-500">{loadError || "Your cart is empty"}</p>
       ) : (
         <>
           <div className="space-y-4">

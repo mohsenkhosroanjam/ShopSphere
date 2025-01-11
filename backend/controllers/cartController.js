@@ -50,7 +50,7 @@ export const fetchCart = asyncHandler(async (req, res) => {
   const cart = await Cart.findOne({ userId }).populate("products.productId");
 
   if (!cart) {
-    return res.status(404).json({ error: "Cart not found for this user" });
+    return res.status(404).json({ message: "Cart is Empty" });
   }
 
   // Return populated products
