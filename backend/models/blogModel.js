@@ -1,0 +1,44 @@
+import mongoose from "mongoose";
+
+// create a blog model
+
+const blogSchema = mongoose.Schema({
+    title: {
+        type: String,
+        required: true,
+        maxLength: 50,
+    },
+    content: {
+        type: String,
+        required: true,
+    },
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "User",
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+    slug: {
+        type: String,
+        unique: true,
+    },
+    excerpt: {
+        type: String,
+        maxLength: 200,
+    },
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
+    }
+});
+
+// Create a slug before saving
+blogSchema.pre('save', function(next) {
+    this.slug = this.title.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-');
+    next();
+});
+
+export default mongoose.model("Blog", blogSchema);

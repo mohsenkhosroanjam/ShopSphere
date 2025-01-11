@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const userSchema = mongoose.Schema(
   {
     username: {
@@ -25,7 +24,11 @@ const userSchema = mongoose.Schema(
     },
     googleId: {
       type: String,
-    }
+    },
+    blogs:[{
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Blog"
+    }]
   },
   {
     timestamps: true,
