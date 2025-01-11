@@ -35,6 +35,8 @@ import Cart from "./components/Cart.jsx";
 import FAQ from "./pages/FAQ.jsx";
 import { CartProvider } from "./components/CartContext";
 import Contact from "./components/Contact"
+import Offers from "./pages/Offer/index.jsx";
+import Offer from "./pages/Offer/index.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -63,6 +65,7 @@ const router = createBrowserRouter(
         <Route path="productlist" element={<ProductList />} />
         <Route path="product/update/:_id" element={<ProductUpdate />} />
       </Route>
+      <Route path="/offers" element={<Offer />} />
     </Route>
   )
 );

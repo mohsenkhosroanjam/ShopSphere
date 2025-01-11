@@ -6,7 +6,7 @@ import {
 } from "../redux/features/favorites/favoriteSlice";
 import { toast } from "react-toastify";
 
-const HeartIcon = ({ product }) => {
+const HeartIcon = ({ product ,className}) => {
     const dispatch = useDispatch();
     const favorites = useSelector((state) => state.favorites.favorites);
     const userInfo = useSelector((state) => state.auth?.userInfo);
@@ -37,13 +37,13 @@ const HeartIcon = ({ product }) => {
 
     return (
         <div
-            className="absolute top-2 right-2 cursor-pointer z-10"
+            className={className ? className : "absolute top-2 right-2 cursor-pointer z-10"}
             onClick={toggleFavorite}
         >
             {isFavorite ? (
                 <FaHeart className="text-pink-500 text-xl hover:scale-110 transition-transform" />
             ) : (
-                <FaRegHeart className="text-white text-xl hover:scale-110 transition-transform" />
+                <FaRegHeart className="text-black text-xl hover:scale-110 transition-transform" />
             )}
         </div>
     );
