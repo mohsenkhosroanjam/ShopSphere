@@ -2,29 +2,36 @@ import Blog from '../models/blogModel.js';
 import User from '../models/userModel.js';
 import asyncHandler from '../middleware/asyncHandler.js';
 
-// @desc    Create a new blog
-// @route   POST /api/blogs
-// @access  Private/Admin
 const createBlog = asyncHandler(async (req, res) => {
     const { title, content, excerpt, category, author } = req.body;
 
     if (!title || !content || !author) {
-        return res.status(400).json({ message: 'title, content, auther is required' });
+        return res.status(400).json({ message: 'Title, content, and author are required' });
     }
 
     const user = await User.findById(author);
 
-    if(!user) {
-        return res.status(400).json({ message: 'User not found' });
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    const existingBlog = await Blog.findOne({ title });
+
+    if (existingBlog) {
+        return res.status(400).json({ message: 'Blog with this title already exists' });
     }
 
     const blog = await Blog.create({
         title,
         content,
-        excerpt,
+        excerpt: excerpt || content.substring(0, 197) + '...',
         category,
-        author 
+        slug: title.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-'),
+        author
     });
+
+    user.blogs.push(blog._id);
+    await user.save();
 
     if (blog) {
         res.status(201).json(blog);
@@ -34,9 +41,6 @@ const createBlog = asyncHandler(async (req, res) => {
     }
 });
 
-// @desc    Get all blogs
-// @route   GET /api/blogs
-// @access  Public
 const getBlogs = asyncHandler(async (req, res) => {
     const blogs = await Blog.find({})
         .populate('author', 'username')
@@ -46,9 +50,6 @@ const getBlogs = asyncHandler(async (req, res) => {
     res.json(blogs);
 });
 
-// @desc    Get blog by ID
-// @route   GET /api/blogs/:id
-// @access  Public
 const getBlogById = asyncHandler(async (req, res) => {
     const blog = await Blog.findById(req.params.id)
         .populate('author', 'username')

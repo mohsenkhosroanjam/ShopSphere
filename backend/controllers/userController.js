@@ -23,12 +23,13 @@ const createUser = asyncHandler(async (req, res) => {
 
   try {
     await newUser.save();
-    generateToken(res, newUser._id);
+    const token = generateToken(res, newUser._id);
     res.status(201).json({
       _id: newUser._id,
       username: newUser.username,
       email: newUser.email,
       isAdmin: newUser.isAdmin,
+      token: token
     });
   } catch (error) {
     res.status(400);
@@ -45,12 +46,13 @@ const loginUser = asyncHandler(async (req, res) => {
       existingUser.password
     );
     if (isPasswordValid) {
-      generateToken(res, existingUser._id);
+      const token = generateToken(res, existingUser._id);
       res.status(200).json({
         _id: existingUser._id,
         username: existingUser.username,
         email: existingUser.email,
         isAdmin: existingUser.isAdmin,
+        token: token
       });
       return;
     }
@@ -208,13 +210,14 @@ const googleSignIn = asyncHandler(async (req, res) => {
 
   try {
     await newUser.save();
-    generateToken(res, newUser._id);
+    const token = generateToken(res, newUser._id);
     res.status(201).json({
       _id: newUser._id,
       username: newUser.username,
       email: newUser.email,
       isAdmin: newUser.isAdmin,
-      photoURL: newUser.photoURL
+      photoURL: newUser.photoURL,
+      token: token
     });
   } catch (error) {
     res.status(400);
@@ -253,13 +256,14 @@ const googleLogin = asyncHandler(async (req, res) => {
   }
 
   try {
-    generateToken(res, existingUser._id);
+    const token = generateToken(res, existingUser._id);
     res.status(200).json({
       _id: existingUser._id,
       username: existingUser.username,
       email: existingUser.email,
       isAdmin: existingUser.isAdmin,
-      photoURL: existingUser.photoURL
+      photoURL: existingUser.photoURL,
+      token: token
     });
   } catch (error) {
     res.status(400);

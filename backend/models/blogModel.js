@@ -41,4 +41,9 @@ blogSchema.pre('save', function(next) {
     next();
 });
 
+// Add indexes
+blogSchema.index({ slug: 1 });
+blogSchema.index({ author: 1 });
+blogSchema.index({ category: 1 });
+
 export default mongoose.model("Blog", blogSchema);
