@@ -35,6 +35,8 @@ import Cart from "./components/Cart.jsx";
 import FAQ from "./pages/FAQ.jsx";
 import { CartProvider } from "./components/CartContext";
 import Contact from "./components/Contact"
+import BlogList from "./pages/Blog/BlogList.jsx";
+// import BlogDetail from "./pages/Blog/BlogDetail.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -51,6 +53,8 @@ const router = createBrowserRouter(
       <Route path="/faq" element={<FAQ />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/termsAndConditions" element={<TermsAndConditions />} />
+      <Route path="/blogs" element={<BlogList />} />
+      {/* <Route path="/blog/:slug" element={<BlogDetail />} /> */}
 
       <Route path="" element={<PrivateRoute />}>
         <Route path="profile" element={<Profile />} />
