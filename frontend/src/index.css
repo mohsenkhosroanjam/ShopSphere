@@ -12,3 +12,8 @@ textarea {
   background-color: #ababab33;
     color: #fff;
   }
+
+  /* For Webkit browsers (Chrome, Safari, Edge) */
+  *::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Webkit browsers */
+  }

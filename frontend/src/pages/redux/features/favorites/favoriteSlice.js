@@ -1,23 +1,54 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const getFavoritesFromStorage = () => {
+    try {
+        const storedFavorites = localStorage.getItem("favorites");
+        return storedFavorites ? JSON.parse(storedFavorites) : [];
+    } catch (error) {
+        console.error("Error reading favorites from localStorage:", error);
+        return [];
+    }
+};
+
+const initialState = {
+    favorites: getFavoritesFromStorage(),
+};
+
 const favoriteSlice = createSlice({
     name: "favorites",
-    initialState: [],
+    initialState,
     reducers: {
         addToFavorites: (state, action) => {
-            if (!state.some((product) => product._id === action.payload._id)) {
-                state.push(action.payload);
+            const newProduct = action.payload;
+            const exists = state.favorites.some(item => item.id === newProduct.id);
+
+            if (!exists) {
+                const updatedFavorites = [...state.favorites, newProduct];
+                state.favorites = updatedFavorites;
+
+                try {
+                    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+                } catch (error) {
+                    console.error("Error saving to localStorage:", error);
+                }
             }
-    },
-    removeFromFavorites: (state, action) => {
-        return state.filter((product) => product._id !== action.payload._id);
-    },
-    setFavorites: (state, action) => {
-        return action.payload;
-    },
+        },
+        removeFromFavorites: (state, action) => {
+            const productToRemove = action.payload;
+            const updatedFavorites = state.favorites.filter(
+                item => item.id !== productToRemove.id
+            );
+
+            state.favorites = updatedFavorites;
+
+            try {
+                localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+            } catch (error) {
+                console.error("Error saving to localStorage:", error);
+            }
+        },
     },
 });
 
-export const { addToFavorites, removeFromFavorites, setFavorites } = favoriteSlice.actions;
-export const selectFavorites = (state) => state.favorites;
+export const { addToFavorites, removeFromFavorites } = favoriteSlice.actions;
 export default favoriteSlice.reducer;
