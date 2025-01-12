@@ -13,7 +13,7 @@ export default function Paypal({value}) {
               intent: "CAPTURE",
               purchase_units: [
                 {
-                  description: "Cool looking table",
+                  description: "",
                   amount: {
                     currency_code: "USD",
                     value: value,

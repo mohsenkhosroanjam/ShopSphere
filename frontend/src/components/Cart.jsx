@@ -70,7 +70,7 @@ function Cart() {
               <span className="text-xl font-bold">${calculateTotal()}</span>
             </div>
             {isPaymentstarted ? (<Paypal value={calculateTotal()}/>) :(
-            <Button className="w-full bg-pink-600" onClick={Handleonclickpay}> Proceed to Checkout</Button>)}
+            <Button className="w-full bg-pink-600" onClick={Handleonclickpay}>Proceed to Checkout</Button>)}
           </div>
         </>
       )}
