@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { useRegisterMutation, useGoogleSignInMutation } from "../redux/api/userApiSlice";
 import { LOGIN_BG } from "../../Utils/constants";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { auth } from "../../firebaseConfig";  
+import { auth } from "../../firebaseConfig";
 import GoogleLoginButton from "../../Utils/googleBtn";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
@@ -86,7 +86,7 @@ const Register = () => {
           alt="background"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="absolute inset-0 bg-black/60"></div>
       </div>
 
       <div className="relative min-h-screen flex items-center justify-center">
@@ -94,7 +94,13 @@ const Register = () => {
           className="w-full max-w-4xl px-4 py-8 sm:px-6 lg:px-8 flex justify-center animate-slide-in"
           ref={formRef}
         >
-          <div className="card border border-pink-500/60 shadow-lg shadow-black/80 bg-black bg-opacity-20 rounded-xl hover:border-pink-500/80 backdrop-blur-sm w-11/12 md:w-8/12">
+          <div
+            className="card border border-pink-500/40 rounded-xl bg-black bg-opacity-60 w-8/12"
+            style={{
+              backdropFilter: "blur(300px)", // Apply blur
+              WebkitBackdropFilter: "blur(300px)", // For Safari support
+            }}
+          >
             <div className="card-body p-8">
               <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold text-white">Create an account</h2>
