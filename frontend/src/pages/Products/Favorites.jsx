@@ -36,7 +36,7 @@ const Favorites = () => {
                     alt={product.name}
                     className="object-contain w-full h-full"
                   />
-                  <HeartIcon product={product} />
+                  <HeartIcon className="absolute top-2 right-2 cursor-pointer z-10" product={product} />
                 </div>
                 <button
                   onClick={() => {

@@ -1,6 +1,7 @@
 import Blog from '../models/blogModel.js';
 import User from '../models/userModel.js';
 import asyncHandler from '../middleware/asyncHandler.js';
+import mongoose from 'mongoose';
 
 const createBlog = asyncHandler(async (req, res) => {
     const { title, content, excerpt, category, author } = req.body;
@@ -33,8 +34,8 @@ const createBlog = asyncHandler(async (req, res) => {
         author: user._id
     };
 
-    // Only add category if it's not empty
-    if (category && category.trim() !== '') {
+    // Only add category if it's a valid ObjectId
+    if (category && mongoose.Types.ObjectId.isValid(category)) {
         blogData.category = category;
     }
 

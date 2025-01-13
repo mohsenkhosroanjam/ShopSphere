@@ -3,14 +3,21 @@ import { Minus, Plus, Trash2 } from 'lucide-react'
 import { Button } from "../components/Button"
 import { Input } from "../components/Input"
 import { useCart } from './CartContext';
+import { useSelector } from 'react-redux';
+import Paypal from './paypal';
 
 function Cart() {
   const { cartItems, updateQuantity, removeFromCart } = useCart();
-
+  const { userInfo } = useSelector((state) => state.auth);
+  const [isPaymentstarted, setisPaymentstarted] = useState(false);
+  console.log(userInfo)
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)
   }
 
+  function Handleonclickpay(){
+    setisPaymentstarted(true)
+  }
   return (
     <div className="max-w-4xl mx-auto p-4">
       <h1 className="text-3xl font-bold mb-8">Your Cart</h1>
@@ -62,7 +69,8 @@ function Cart() {
               <span className="text-lg font-semibold">Total:</span>
               <span className="text-xl font-bold">${calculateTotal()}</span>
             </div>
-            <Button className="w-full bg-pink-600" >Proceed to Checkout</Button>
+            {isPaymentstarted ? (<Paypal value={calculateTotal()}/>) :(
+            <Button className="w-full bg-pink-600" onClick={Handleonclickpay}>Proceed to Checkout</Button>)}
           </div>
         </>
       )}
