@@ -12,18 +12,18 @@ import NewsletterSection from "../components/NewsLetter";
 const Home = () => {
   const { keyword } = useParams();
   const { data, isLoading, isError } = useGetProductsQuery({ keyword });
-  const [Product , setProducts] = useState();
-  useEffect(() => {
-    if (data && data.products) {
-      setProducts(data.products);
-    }
-  }, [data]);
+  // const [Product , setProducts] = useState();
+  // useEffect(() => {
+  //   if (data && data.products) {
+  //     setProducts(data.products);
+  //   }
+  // }, [data]);
 
-  useEffect(() => {
-    if (isError) {
-      toast.error("Something went wrong! Please try again.");
-    }
-  }, [isError]);
+  // useEffect(() => {
+  //   if (isError) {
+  //     toast.error("Something went wrong! Please try again.");
+  //   }
+  // }, [isError]);
 
   return (
     <>
