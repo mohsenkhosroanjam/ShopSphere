@@ -45,7 +45,7 @@ const Home = () => {
                   <Link to="/shop">Start Shopping</Link>
                 </button>
                 <button className="bg-transparent text-pink-500 border border-pink-500 hover:bg-pink-500 hover:text-white px-6 py-3 rounded-md shadow-md transition">
-                  <Link to="/specialshop">Explore Deals</Link>
+                  <Link to="/offers">Explore Deals</Link>
                 </button>
               </div>
             </div>
