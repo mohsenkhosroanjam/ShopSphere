@@ -43,7 +43,14 @@ function Cart() {
                   <Input
                     type="number"
                     value={item.quantity}
-                    onChange={(e) => updateQuantity(item.id, parseInt(e.target.value))}
+                    onChange={(e) => {
+                      const value = parseInt(e.target.value)
+                      if (isNaN(value) || value <= 0){
+                        updateQuantity(item.id, 1) //Reset to 1 in invalid case
+                      } else{
+                        updateQuantity(item.id, value) //Update with a valid value
+                      }
+                    }}
                     className="w-16 text-center no-spin"
                     style={{
                       WebkitAppearance: "none",
