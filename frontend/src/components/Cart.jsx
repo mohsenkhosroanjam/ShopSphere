@@ -44,7 +44,11 @@ function Cart() {
                     type="number"
                     value={item.quantity}
                     onChange={(e) => updateQuantity(item.id, parseInt(e.target.value))}
-                    className="w-16 text-center"
+                    className="w-16 text-center no-spin"
+                    style={{
+                      WebkitAppearance: "none",
+                      MozAppearance: "textfield",
+                    }}
                   />
                   <Button
                     variant="outline"
