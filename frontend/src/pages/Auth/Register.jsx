@@ -39,6 +39,15 @@ const Register = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    if (
+      username === "" ||
+      email === "" ||
+      password === "" ||
+      confirmPassword == ""
+    ) {
+      toast.error("Please fill all fields");
+      return;
+    }
     if (password !== confirmPassword) {
       toast.error("Password does not match");
     } else {
