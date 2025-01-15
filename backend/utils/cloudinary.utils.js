@@ -4,9 +4,9 @@ const streamifier = require('streamifier');
 
 // Cloudinary configuration
 cloudinary.config({
-  cloud_name: 'djfhwhtyy',
-  api_key: '944476654513192',
-  api_secret: 'AbbLeYlaOpNfB1lHWeJACHmJGlg',
+  cloud_name: 'your cloudinary config',
+  api_key: 'your cloudinary config',
+  api_secret: 'your clodinary config',
   secure: true,
 });
 
