@@ -16,7 +16,8 @@ import {
 } from "../controllers/productController.js";
 import multer from "multer";
 
-
+//this stores the image in server memory which is required for vercel or production environment
+//now for adding and updating , have to use form/data instead of raw json data
 const upload = multer({storage:multer.memoryStorage()})
 
 router
