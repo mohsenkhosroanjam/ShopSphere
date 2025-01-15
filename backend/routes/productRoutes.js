@@ -14,11 +14,15 @@ import {
   fetchTopProducts,
   fetchNewProducts,
 } from "../controllers/productController.js";
+import multer from "multer";
+
+
+const upload = multer({storage:multer.memoryStorage()})
 
 router
   .route("/")
   .get(fetchProducts)
-  .post(authenticate, authorizeAdmin, formidable(), addProduct);
+  .post(authenticate, authorizeAdmin, formidable(), upload.single('image'), addProduct);
 
 router.route("/allproducts").get(fetchAllProducts);
 router
@@ -30,7 +34,7 @@ router.get("/new", fetchNewProducts);
 router
   .route("/:id")
   .get(fetchProductsById)
-  .put(authenticate, authorizeAdmin, formidable(), updateProductDetails)
+  .put(authenticate, authorizeAdmin, formidable(), upload.single('image'), updateProductDetails)
   .delete(authenticate, authorizeAdmin, removeProduct);
 
 export default router;
