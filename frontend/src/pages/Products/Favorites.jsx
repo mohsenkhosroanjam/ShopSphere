@@ -3,9 +3,21 @@ import { Link } from "react-router-dom";
 import { useCart } from '../../components/CartContext';
 import { toast } from "react-toastify";
 import HeartIcon from "./HeartIcon";
+import { useState } from "react";
 const Favorites = () => {
   const favorites = useSelector((state) => state.favorites?.favorites || []);
   const { addToCart } = useCart();
+  const [sortBy, setSortBy] = useState("");
+
+// Apply filtering based on the selected filter
+const filteredFavorites = [...favorites].sort((a, b) => {
+  if (sortBy === "cheapest") {
+    return a.price - b.price; // Sort by cheapest
+  } else if (sortBy === "expensive") {
+      return b.price - a.price; // Sort by most expensive
+    }
+    return 0; // no sorting
+  });
 
   return (
     <div className="min-h-screen bg-black p-6">
@@ -21,9 +33,30 @@ const Favorites = () => {
           </p>
         </div>
 
+        <div className="text-right">
+          <label
+            htmlFor="sortBy"
+            className="text-white font-semibold mr-4"
+          >
+            Sort By:
+          </label>
+          <select
+            id="sortBy"
+            className="px-4 py-2 rounded bg-gray-300 text-black font-semibold"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value="" disabled>
+              Select
+            </option>
+            <option value="cheapest">Price: The cheapest</option>
+            <option value="expensive">Price: The most expensive</option>
+          </select>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 mx-16 my-16">
-          {favorites.length > 0 ? (
-            favorites.map((product) => (
+          {filteredFavorites.length > 0 ? (
+            filteredFavorites.map((product) => (
               <div
                 key={product.id}
                 className="bg-pink-500 shadow-md rounded-lg p-4 transform hover:scale-105 hover:shadow-lg transition duration-300 relative"
