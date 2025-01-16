@@ -12,6 +12,7 @@
   "author": "Anwishta Ghosh",
   "license": "ISC",
   "dependencies": {
+    "backend": "file:",
     "bcryptjs": "^2.4.3",
     "concurrently": "^9.1.2",
     "cookie-parser": "^1.4.7",

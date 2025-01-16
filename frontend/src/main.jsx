@@ -35,13 +35,8 @@ import Cart from "./components/Cart.jsx";
 import FAQ from "./pages/FAQ.jsx";
 import { CartProvider } from "./components/CartContext";
 import Contact from "./components/Contact"
-<<<<<<< HEAD
 import BlogList from "./pages/Blog/BlogList.jsx";
-// import BlogDetail from "./pages/Blog/BlogDetail.jsx";
-=======
-import Offers from "./pages/Offer/index.jsx";
 import Offer from "./pages/Offer/index.jsx";
->>>>>>> ca62510315ba1db5c84958ac55aea899c00a2993
 
 const router = createBrowserRouter(
   createRoutesFromElements(
