@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 const FAQ = () => {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -9,66 +9,67 @@ const FAQ = () => {
 
   const faqs = [
     {
-      question: "What can I do on ShopSphere?",
-      answer:
-        "ShopSphere allows you to browse through a variety of products, view detailed information about them, and add your favorites to a shopping cart.",
+      question: "What features does ShopSphere offer for product browsing?",
+      answer: "ShopSphere provides an intuitive interface for browsing products with detailed information including prices, descriptions, and customer reviews. Our advanced search and filter system helps you find exactly what you're looking for by category, price range, or specific features."
     },
     {
-      question: " How do I manage my shopping cart?",
-      answer:
-        "The shopping cart allows you to add, remove, or update products in real-time. You can review your selections before proceeding to checkout for a hassle-free shopping experience",
+      question: "How secure is my personal information on ShopSphere?",
+      answer: "We prioritize your security with encrypted user authentication and secure data storage. Your payment information is protected through our integrated secure payment gateway, ensuring safe and hassle-free transactions every time you shop."
     },
     {
-      question: "Can I sell my own products on ShopSphere?",
-      answer:
-        "Yes, you can register as an admin on ShopSphere to manage and sell your own products. The admin panel allows you to manage inventory, add or edit product details, and track sales efficiently.",
+      question: "How can I track my orders and manage returns?",
+      answer: "Through your user dashboard, you can view your complete order history, track current orders in real-time, and initiate returns when needed. Our order management system provides detailed updates at every step of the delivery process."
     },
     {
-      question: "Is it easy to find products on ShopSphere?",
-      answer:
-        "Absolutely! You can use the search and filter functionalities to quickly find the products you need, whether you’re searching by category, price, or specific features.",
+      question: "What features are available for sellers on ShopSphere?",
+      answer: "Sellers have access to a comprehensive admin panel that enables full product management, inventory tracking, and sales analytics. You can easily add new products, update existing listings, manage stock levels, and track your business performance through detailed reports."
     },
+    {
+      question: "Can I use ShopSphere on my mobile device?",
+      answer: "Absolutely! ShopSphere is fully responsive and optimized for all screen sizes. Whether you're shopping on a desktop, tablet, or smartphone, you'll enjoy the same seamless experience with all features accessible across devices."
+    },
+    {
+      question: "How does the shopping cart system work?",
+      answer: "Our real-time shopping cart system allows you to add products, adjust quantities, and remove items instantly. The cart automatically saves your selections, calculates totals, and persists across sessions, making it easy to resume shopping at any time."
+    }
   ];
 
   return (
     <div className="bg-black min-h-screen flex flex-col items-center p-6">
-      <h1 className="text-4xl font-bold text-white mb-6">
-        Frequently Asked Questions
+      <h1 className="text-4xl font-bold text-white mb-20">
+        <span className="text-pink-500">F</span>requently
+        <span className="text-pink-500"> A</span>sked
+        <span className="text-pink-500"> Q</span>uestions
       </h1>
 
-      <div className="w-full max-w-3xl">
+      <div className="w-full max-w-4xl px-10">
         {faqs.map((faq, index) => (
           <div
             key={index}
-            className="mb-4 bg-gray-800 shadow rounded-lg overflow-hidden"
+            className={`mb-5 bg-gray-800 rounded-xl transition-transform duration-300 overflow-hidden ${
+              activeIndex === index ? "border-pink-500" : "border-gray-800"
+            } border hover:border-pink-500 hover:-translate-y-3 hover:shadow-lg`}
           >
-            <button
+            <div
+              className="flex justify-between items-center px-8 py-6 cursor-pointer"
               onClick={() => toggleFAQ(index)}
-              className="w-full flex justify-between items-center px-6 py-5 text-left text-white text-lg font-semibold hover:bg-gradient-to-r hover:from-pink-500 hover:to-pink-600 focus:outline-none"
             >
-              <span>{faq.question}</span>
-              <svg
-                className={`w-6 h-6 transform transition-transform duration-300 ${
-                  activeIndex === index ? "rotate-180" : "rotate-0"
-                }`}
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-            {activeIndex === index && (
-              <div className="px-6 py-5 text-gray-300 text-lg border-t border-gray-700">
+              <h2 className="text-white text-lg font-bold flex-1">{faq.question}</h2>
+              <span className="text-white text-2xl font-bold mx-4">
+                {activeIndex === index ? "-" : "+"}
+              </span>
+            </div>
+            <div
+              className={`transition-all duration-300 ease-in-out ${
+                activeIndex === index
+                  ? "max-h-screen opacity-100"
+                  : "max-h-0 opacity-0"
+              }`}
+            >
+              <p className="px-8 py-6 text-gray-300 text-lg border-t border-gray-700">
                 {faq.answer}
-              </div>
-            )}
+              </p>
+            </div>
           </div>
         ))}
       </div>

@@ -12,19 +12,22 @@ import NewsletterSection from "../components/NewsLetter";
 const Home = () => {
   const { keyword } = useParams();
   const { data, isLoading, isError } = useGetProductsQuery({ keyword });
+
   const [products, setProducts] = useState([]);
 
-  useEffect(() => {
-    if (data && data.products) {
-      setProducts(data.products);
-    }
-  }, [data]);
+  // const [Product , setProducts] = useState();
+  // useEffect(() => {
+  //   if (data && data.products) {
+  //     setProducts(data.products);
+  //   }
+  // }, [data]);
 
-  useEffect(() => {
-    if (isError) {
-      toast.error("Something went wrong! Please try again.");
-    }
-  }, [isError]);
+
+  // useEffect(() => {
+  //   if (isError) {
+  //     toast.error("Something went wrong! Please try again.");
+  //   }
+  // }, [isError]);
 
   return (
     <>
@@ -46,7 +49,7 @@ const Home = () => {
                   <Link to="/shop">Start Shopping</Link>
                 </button>
                 <button className="bg-transparent text-pink-500 border border-pink-500 hover:bg-pink-500 hover:text-white px-6 py-3 rounded-md shadow-md transition">
-                  <Link to="/specialshop">Explore Deals</Link>
+                  <Link to="/offers">Explore Deals</Link>
                 </button>
               </div>
             </div>

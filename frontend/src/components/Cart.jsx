@@ -1,25 +1,29 @@
+
+import React, { useState } from 'react'
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
 import { useFetchCartQuery } from "../../src/pages/redux/api/cartSlice";
 import { useSelector } from 'react-redux';
-
+import Paypal from './paypal';
 function Cart() {
   const { userInfo } = useSelector((state) => state.auth);
   const { data: cartProducts, isLoading, error } = useFetchCartQuery(userInfo._id);
   // Update cart quantity
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading cart</p>;
+  const [isPaymentstarted, setisPaymentstarted] = useState(false);
 
-  // Calculate total price
   const calculateTotal = () => {
     return cartProducts?.reduce(
       (total, item) => total + (item.productId.price || 0) * (item.quantity || 1),
       0
     ).toFixed(2);
   };
-  
 
+  function Handleonclickpay(){
+    setisPaymentstarted(true)
+  }
   return (
     <div className="max-w-4xl mx-auto p-4">
       <h1 className="text-3xl font-bold mb-8">Your Cart</h1>
@@ -44,9 +48,22 @@ function Cart() {
                   </Button>
                   <Input
                     type="number"
-                    value={item.quantity || 1}
-                    onChange={(e) => updateQuantity(item, parseInt(e.target.value))}
-                    className="w-16 text-center"
+
+                   
+                    value={item.quantity}
+                    onChange={(e) => {
+                      const value = parseInt(e.target.value)
+                      if (isNaN(value) || value <= 0){
+                        updateQuantity(item.id, 1) //Reset to 1 in invalid case
+                      } else{
+                        updateQuantity(item.id, value) //Update with a valid value
+                      }
+                    }}
+                    className="w-16 text-center no-spin"
+                    style={{
+                      WebkitAppearance: "none",
+                      MozAppearance: "textfield",
+                    }}
                   />
                   <Button
                     variant="outline"
@@ -71,7 +88,11 @@ function Cart() {
               <span className="text-lg font-semibold">Total:</span>
               <span className="text-xl font-bold">${calculateTotal()}</span>
             </div>
-            <Button className="w-full bg-pink-600">Proceed to Checkout</Button>
+
+
+            {isPaymentstarted ? (<Paypal value={calculateTotal()}/>) :(
+            <Button className="w-full bg-pink-600" onClick={Handleonclickpay}>Proceed to Checkout</Button>)}
+
           </div>
         </>
       )}
