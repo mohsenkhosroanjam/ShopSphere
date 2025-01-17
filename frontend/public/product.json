@@ -1,0 +1,100 @@
+[
+    {
+        "name": "Bluetooth Headphones",
+        "category": "Electronics",
+        "price": 1499,
+        "discount": 20,
+        "starRating": 4.5
+    },
+    {
+        "name": "Men's Casual Shoes",
+        "category": "Footwear",
+        "price": 999,
+        "discount": 15,
+        "starRating": 4.2
+    },
+    {
+        "name": "Women's Saree",
+        "category": "Fashion",
+        "price": 799,
+        "discount": 25,
+        "starRating": 4.3
+    },
+    {
+        "name": "Smart Fitness Band",
+        "category": "Sports",
+        "price": 1799,
+        "discount": 30,
+        "starRating": 4.4
+    },
+    {
+        "name": "Shampoo",
+        "category": "Beauty",
+        "price": 299,
+        "discount": 10,
+        "starRating": 4.1
+    },
+    {
+        "name": "Premium Laptop",
+        "category": "Electronics",
+        "price": 59999,
+        "discount": 18,
+        "starRating": 4.6
+    },
+    {
+        "name": "Running Shoes",
+        "category": "Sports",
+        "price": 2499,
+        "discount": 20,
+        "starRating": 4.4
+    },
+    {
+        "name": "Smartphone",
+        "category": "Electronics",
+        "price": 12999,
+        "discount": 25,
+        "starRating": 4.5
+    },
+    {
+        "name": "Women's Handbag",
+        "category": "Fashion",
+        "price": 1499,
+        "discount": 30,
+        "starRating": 4.3
+    },
+    {
+        "name": "Men's Sports Watch",
+        "category": "Sports",
+        "price": 2999,
+        "discount": 20,
+        "starRating": 4.4
+    },
+    {
+        "name": "Face Moisturizer",
+        "category": "Beauty",
+        "price": 499,
+        "discount": 15,
+        "starRating": 4.2
+    },
+    {
+        "name": "Women's Sneakers",
+        "category": "Footwear",
+        "price": 1799,
+        "discount": 18,
+        "starRating": 4.3
+    },
+    {
+        "name": "Gaming Keyboard",
+        "category": "Electronics",
+        "price": 2499,
+        "discount": 22,
+        "starRating": 4.6
+    },
+    {
+        "name": "Men's Jacket",
+        "category": "Fashion",
+        "price": 2599,
+        "discount": 28,
+        "starRating": 4.5
+    }
+]

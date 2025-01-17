@@ -12,3 +12,17 @@ textarea {
   background-color: #ababab33;
     color: #fff;
   }
+
+  /* For Webkit browsers (Chrome, Safari, Edge) */
+  *::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Webkit browsers */
+  }
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
