@@ -4,31 +4,18 @@ import { upload_on_cloudinary } from "../utils/cloudinary.utils.js";
 
 const addProduct = asyncHandler(async (req, res) => {
   try {
-    
     const { name, description, price, category, quantity, brand } = req.body;
-     //changed to req.body to req.fields
-    const filebuffer = req.file ? req.file.buffer : null
+    const filebuffer = req.file ? req.file.buffer : null;
+
     // Validation
-    switch (true) {
-      case !name:
-        return res.json({ error: "Name is required" });
-      case !brand:
-        return res.json({ error: "Brand is required" });
-      case !description:
-        return res.json({ error: "Description is required" });
-      case !price:
-        return res.json({ error: "Price is required" });
-      case !category:
-        return res.json({ error: "Category is required" });
-      case !quantity:
-        return res.json({ error: "Quantity is required" });
-      case !filebuffer:
-        return res.json({error: "Image file  is missing"})
+    if (!name || !brand || !description || !price || !category || !quantity || !filebuffer) {
+      return res.json({
+        error: "All fields (name, brand, description, price, category, quantity, and image) are required."
+      });
     }
 
-    //upload to clodinary
-    const uploadedUrl = await upload_on_cloudinary(filebuffer)
-
+    // Upload to Cloudinary
+    const uploadedUrl = await upload_on_cloudinary(filebuffer);
 
     const product = new Product({
       name,
@@ -37,10 +24,9 @@ const addProduct = asyncHandler(async (req, res) => {
       price,
       category,
       quantity,
-      image:uploadedUrl
+      image: uploadedUrl,
     });
 
-    //changed to req.body to req.fields
     await product.save();
     res.json(product);
   } catch (error) {
@@ -49,25 +35,17 @@ const addProduct = asyncHandler(async (req, res) => {
   }
 });
 
+
 const updateProductDetails = asyncHandler(async (req, res) => {
   try {
     const { name, description, price, category, quantity, brand } = req.fields;
     const fileBuffer = req.file ? req.file.buffer : null;
 
     // Validation
-    switch (true) {
-      case !name:
-        return res.status(400).json({ error: "Name is required" });
-      case !brand:
-        return res.status(400).json({ error: "Brand is required" });
-      case !description:
-        return res.status(400).json({ error: "Description is required" });
-      case !price:
-        return res.status(400).json({ error: "Price is required" });
-      case !category:
-        return res.status(400).json({ error: "Category is required" });
-      case !quantity:
-        return res.status(400).json({ error: "Quantity is required" });
+    if (!name || !brand || !description || !price || !category || !quantity) {
+      return res.status(400).json({
+        error: "All fields (name, brand, description, price, category, quantity) are required."
+      });
     }
 
     // Fields to update
@@ -96,6 +74,7 @@ const updateProductDetails = asyncHandler(async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+
 
 
 const removeProduct = asyncHandler(async (req, res) => {

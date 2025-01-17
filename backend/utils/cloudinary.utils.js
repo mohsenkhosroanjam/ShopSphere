@@ -10,7 +10,7 @@ cloudinary.config({
   secure: true,
 });
 
-const upload_on_cloudinary = async (fileBuffer, folderName = "demo") => {
+const upload_on_cloudinary = async (fileBuffer, folderName = "ProductImages") => {
   try {
     if (!fileBuffer) {
       console.log("No file buffer provided");
