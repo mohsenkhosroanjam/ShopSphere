@@ -67,7 +67,7 @@ const router = createBrowserRouter(
         <Route path="product/update/:_id" element={<ProductUpdate />} />
       </Route>
       <Route path="/offers" element={<Offer />} />
-      <Route path="/conributors" element={<Contributors />} />
+      <Route path="/contributors" element={<Contributors />} />
     </Route>
   )
 );
