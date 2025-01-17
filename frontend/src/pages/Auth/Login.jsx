@@ -33,6 +33,10 @@ const Login = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    if (!email.trim() || !password.trim()){
+      toast.error("Please fill all the fields")
+      return;
+    }
 
     try {
       const res = await login({ email, password }).unwrap();
