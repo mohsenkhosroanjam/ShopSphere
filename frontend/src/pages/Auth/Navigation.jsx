@@ -8,7 +8,7 @@ import {
   AiOutlineMenu,
   AiOutlineClose,
 } from "react-icons/ai";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaBlog } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import "./Navigation.css";
 import { useNavigate } from "react-router-dom";
@@ -101,6 +101,14 @@ const Navigation = () => {
               <FaHeart size={26} />
               <span className="text-lg">FAVORITE</span>
               <FavoriteCount />
+            </Link>
+            <Link 
+              to="/blogs" 
+              className="flex items-center space-x-4 p-2 hover:bg-gray-800 rounded-lg"
+              onClick={() => setShowMobileMenu(false)}
+            >
+              <FaBlog size={26} />
+              <span className="text-lg">BLOGS</span>
             </Link>
           </div>
 
@@ -214,6 +222,10 @@ const Navigation = () => {
             <span className="hidden nav-item-name text-lg">FAVORITE</span>
             <FavoriteCount />
           </Link>
+          <Link to="/blogs" className="flex items-center hover:translate-x-2 transition-transform p-2">
+            <FaBlog className="mr-4" size={26} />
+            <span className="hidden nav-item-name text-lg">BLOGS</span>
+          </Link>
         </div>
 
         <div
@@ -239,6 +251,10 @@ const Navigation = () => {
                 FAVORITE
                 <FavoriteCount />
               </span>
+            </Link>
+            <Link to="/blogs" className="flex items-center hover:translate-x-2 transition-transform p-2">
+              <FaBlog className="mr-4" size={26} />
+              <span className="nav-item-name text-lg ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">BLOGS</span>
             </Link>
           </div>
 
