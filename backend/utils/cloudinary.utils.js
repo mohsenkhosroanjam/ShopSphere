@@ -1,6 +1,9 @@
 import {v2 as cloudinary} from 'cloudinary'
 import streamifier from 'streamifier'
 
+// const streamifier = require('streamifier');
+
+
 // Cloudinary configuration
 cloudinary.config({
   cloud_name: 'your cloudinary config',
