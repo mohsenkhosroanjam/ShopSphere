@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useEffect, useState } from "react";
 import { IoStatsChartOutline } from "react-icons/io5";
 import { IoPeople } from "react-icons/io5";
 import { FaArrowsRotate } from "react-icons/fa6";
@@ -7,6 +7,45 @@ import { GoRepoForked } from "react-icons/go";
 import { FaPeopleLine } from "react-icons/fa6";
 
 function Contributors() {
+  const [contributors, setContributors] = useState([]);
+  useEffect(() => {
+    const fetchContributors = async () => {
+      const token = import.meta.env.VITE_GITHUB_API;
+
+      if (!token) {
+        console.error("Github token not configured");
+      }
+
+      const page = 1;
+      const perPage = 100;
+      const owner = "Anwishta";
+      const repo = "ShopSphere";
+
+      const url = `https://api.github.com/repos/${owner}/${repo}/contributors?page=${page}&per_page=${perPage}`;
+
+      try {
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/vnd.github+json",
+          },
+        });
+
+        if (response.ok) {
+          const contributors = await response.json();
+          console.log(contributors);
+        } else {
+          console.error("Failed to fetch contributors");
+        }
+      } catch (error) {
+        console.error("Error fetching contributors: ", error);
+      }
+    };
+
+    fetchContributors();
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#0d1321] overflow-hidden">
       <div className="outer-container mt-5 mx-auto flex flex-col justify-center items-center">
