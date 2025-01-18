@@ -33,4 +33,13 @@ const authorizeAdmin = asyncHandler(async (req, res, next) => {
   }
 });
 
+export const authorizeDistributor = (req, res, next) => {
+  if (req.user && req.user.isDistributor) {
+    next();
+  } else {
+    res.status(403);
+    throw new Error("Not authorized as distributor");
+  }
+};
+
 export { authenticate, authorizeAdmin };
