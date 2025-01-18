@@ -5,6 +5,7 @@ import { FaArrowsRotate } from "react-icons/fa6";
 import { FaStar } from "react-icons/fa";
 import { GoRepoForked } from "react-icons/go";
 import { FaPeopleLine } from "react-icons/fa6";
+import { PiUserCircleDashedFill } from "react-icons/pi";
 
 function Contributors() {
   const [allcontributors, setAllContributors] = useState([]);
@@ -133,12 +134,14 @@ function Contributors() {
                       className="w-36 h-36 rounded-full object-cover border-2 border-emerald-400 shadow-md hover:border-emerald-300 transition-colors duration-300"
                     />
                     <div className="flex flex-col gap-2">
-                      <div className="info flex flex-col gap-1 text-white">
-                        <span className="font-semibold text-2xl text-cyan-200">{contributor.login}</span>
-                        <span>Role: </span>
+                      <div className="info flex items-center gap-1 text-white">
+                        <PiUserCircleDashedFill className="text-3xl" />
+                        <span className="font-semibold text-2xl text-cyan-200">
+                          {contributor.login}
+                        </span>
                       </div>
                       <div className="stats flex justify-center items-center gap-4">
-                        <span>{contributor.contributions} Contributions</span>
+                        <span className="text-slate-300">{contributor.contributions} Contributions</span>
                         <button
                           onClick={() =>
                             window.open(contributor.html_url, "_blank")
