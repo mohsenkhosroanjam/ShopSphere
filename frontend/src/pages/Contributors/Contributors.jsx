@@ -141,7 +141,9 @@ function Contributors() {
                         </span>
                       </div>
                       <div className="stats flex justify-center items-center gap-4">
-                        <span className="text-slate-300">{contributor.contributions} Contributions</span>
+                        <span className="text-slate-300">
+                          {contributor.contributions} Contributions
+                        </span>
                         <button
                           onClick={() =>
                             window.open(contributor.html_url, "_blank")
