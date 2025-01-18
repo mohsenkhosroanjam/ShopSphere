@@ -11,13 +11,18 @@ import NewsletterSection from "../components/NewsLetter";
 
 const Home = () => {
   const { keyword } = useParams();
+  const [products, setProducts] = useState([]);
   const { data, isLoading, isError } = useGetProductsQuery({ keyword });
+
+  const [products, setProducts] = useState([]);
+
   // const [Product , setProducts] = useState();
   // useEffect(() => {
   //   if (data && data.products) {
   //     setProducts(data.products);
   //   }
   // }, [data]);
+
 
   // useEffect(() => {
   //   if (isError) {

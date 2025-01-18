@@ -10,7 +10,9 @@ import {
   getUserById,
   updateById,
   googleSignIn,
-  googleLogin
+  googleLogin,
+  createDistributor,
+  loginDistributor
 } from "../controllers/userController.js";
 import { authenticate, authorizeAdmin } from "../middleware/authMiddleware.js";
 const router = express.Router();
@@ -30,5 +32,8 @@ router
   .put(authenticate, updateCurrentUserProfile);
 
 router.route("/:id").delete(authenticate, authorizeAdmin, deleteUserById).get(authenticate, authorizeAdmin, getUserById).put(authenticate, authorizeAdmin, updateById);
+
+router.post("/distributor/signup", createDistributor);
+router.post("/distributor/login", loginDistributor);
 
 export default router;
