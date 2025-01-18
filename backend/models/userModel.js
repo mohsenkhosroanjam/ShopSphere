@@ -19,6 +19,16 @@ const userSchema = mongoose.Schema(
       required: true,
       default: false,
     },
+    isDistributor: {
+      type: Boolean,
+      default: false,
+    },
+    distributorDetails: {
+      businessName: { type: String, required: function() { return this.isDistributor; } },
+      contactNumber: { type: String, required: function() { return this.isDistributor; } },
+      city: { type: String, required: function() { return this.isDistributor; } },
+      state: { type: String, required: function() { return this.isDistributor; } },
+    },
     photoURL: {
       type: String, 
     },

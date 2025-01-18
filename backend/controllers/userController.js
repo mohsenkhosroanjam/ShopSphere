@@ -271,6 +271,90 @@ const googleLogin = asyncHandler(async (req, res) => {
   }
 });
 
+const createDistributor = asyncHandler(async (req, res) => {
+  const { 
+    username, 
+    email, 
+    password,
+    isDistributor,
+    businessName,
+    contactNumber,
+    city,
+    state,
+  } = req.body;
+
+  if (!username || !email || !password || !businessName || !contactNumber || !isDistributor || !city || !state) {
+    res.status(400);
+    throw new Error("Please fill all required fields");
+  }
+
+  const userExists = await User.findOne({ email });
+  if (userExists) {
+    res.status(400);
+    throw new Error("User already exists");
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  const newDistributor = new User({
+    username,
+    email,
+    password: hashedPassword,
+    isDistributor: true,
+    distributorDetails: {
+      businessName,
+      contactNumber,
+      city,
+      state,
+    }
+  });
+
+  try {
+    await newDistributor.save();
+    const token = generateToken(res, newDistributor._id);
+    res.status(201).json({
+      _id: newDistributor._id,
+      username: newDistributor.username,
+      email: newDistributor.email,
+      isDistributor: newDistributor.isDistributor,
+      distributorDetails: newDistributor.distributorDetails,
+      token: token
+    });
+  } catch (error) {
+    res.status(400);
+    throw new Error("Invalid distributor data");
+  }
+});
+
+const loginDistributor = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  const distributor = await User.findOne({ email, isDistributor: true });
+  
+  if (!distributor) {
+    res.status(401);
+    throw new Error("Not registered as a distributor");
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, distributor.password);
+  
+  if (isPasswordValid) {
+    const token = generateToken(res, distributor._id);
+    res.status(200).json({
+      _id: distributor._id,
+      username: distributor.username,
+      email: distributor.email,
+      isDistributor: distributor.isDistributor,
+      distributorDetails: distributor.distributorDetails,
+      token: token
+    });
+  } else {
+    res.status(401);
+    throw new Error("Invalid password");
+  }
+});
+
 export {
   createUser,
   loginUser,
@@ -282,5 +366,7 @@ export {
   getUserById,
   updateById,
   googleSignIn,
-  googleLogin
+  googleLogin,
+  createDistributor,
+  loginDistributor
 };
