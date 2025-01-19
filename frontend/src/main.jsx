@@ -39,6 +39,7 @@ import BlogList from "./pages/Blog/BlogList.jsx";
 import Offer from "./pages/Offer/index.jsx";
 import DistributorLogin from "./pages/Auth/DistributorLogin.jsx";
 import DistributorRegister from "./pages/Auth/DistributorRegister.jsx";
+import Contributors from "./pages/Contributors/Contributors.jsx";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
@@ -74,6 +75,7 @@ const router = createBrowserRouter(
         <Route path="product/update/:_id" element={<ProductUpdate />} />
       </Route>
       <Route path="/offers" element={<Offer />} />
+      <Route path="/contributors" element={<Contributors />} />
     </Route>
   )
 );

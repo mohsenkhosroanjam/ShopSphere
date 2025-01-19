@@ -39,10 +39,12 @@ const Home = () => {
           <section className="flex flex-col lg:flex-row items-center w-full mb-10 justify-between pl-10 py-[50px] bg-gradient-to-t from-[#000000] to-[#0F172A]">
             <div className="text-center lg:text-left max-w-2xl ml-6">
               <h1 className="text-6xl font-sans font-extrabold text-gray-200 mb-6 animate-fade-in-up">
-                Shop the Latest Styles,<span className="text-pink-500">Anytime</span>
+                Shop the Latest Styles,
+                <span className="text-pink-500">Anytime</span>
               </h1>
               <p className="text-gray-400 text-lg mb-8 animate-fade-in-up delay-2">
-                Discover the trendiest apparel, accessories, and more at prices you'll love. Your new look is just a click away!
+                Discover the trendiest apparel, accessories, and more at prices
+                you'll love. Your new look is just a click away!
               </p>
               <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 w-full overflow-hidden">
                 <button className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-md shadow-md transition">
@@ -50,6 +52,9 @@ const Home = () => {
                 </button>
                 <button className="bg-transparent text-pink-500 border border-pink-500 hover:bg-pink-500 hover:text-white px-6 py-3 rounded-md shadow-md transition">
                   <Link to="/offers">Explore Deals</Link>
+                </button>
+                <button className="bg-transparent text-pink-500 border border-pink-500 hover:bg-pink-500 hover:text-white px-6 py-3 rounded-md shadow-md transition">
+                  <Link to="/contributors">Meet our Contributors</Link>
                 </button>
               </div>
             </div>
