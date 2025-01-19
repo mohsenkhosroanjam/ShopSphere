@@ -39,6 +39,11 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    distributor: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     quantity: {
         type: Number,
         required: true

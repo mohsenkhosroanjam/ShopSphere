@@ -6,9 +6,9 @@ import streamifier from 'streamifier'
 
 // Cloudinary configuration
 cloudinary.config({
-  cloud_name: 'your cloudinary config',
-  api_key: 'your cloudinary config',
-  api_secret: 'your clodinary config',
+  cloud_name: "your cloudinary name",
+  api_key: "your api key",
+  api_secret: "your api secret",
   secure: true,
 });
 

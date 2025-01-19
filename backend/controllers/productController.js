@@ -1,40 +1,56 @@
 import asyncHandler from "../middleware/asyncHandler.js";
 import Product from "../models/productModel.js";
+import Category from "../models/categoryModel.js";
 import { upload_on_cloudinary } from "../utils/cloudinary.utils.js";
 
 const addProduct = asyncHandler(async (req, res) => {
   try {
     const { name, description, price, category, quantity, brand } = req.body;
-    const filebuffer = req.file ? req.file.buffer : null;
+    
+    const fileBuffer = req.file?.buffer;
 
-    // Validation
-    if (!name || !brand || !description || !price || !category || !quantity || !filebuffer) {
-      return res.json({
+    if(!name || !brand || !description || !price || !category || !quantity || !fileBuffer){
+      return res.status(400).json({
         error: "All fields (name, brand, description, price, category, quantity, and image) are required."
       });
     }
+    
+    let categoryDoc = await Category.findOne({ name: category });
+    if (!categoryDoc) {
+      // create a category
+      const newCategory = new Category({ name: category });
+      await newCategory.save();
+      categoryDoc = newCategory;
+    }
+
 
     // Upload to Cloudinary
-    const uploadedUrl = await upload_on_cloudinary(filebuffer);
+    const uploadedUrl = await upload_on_cloudinary(fileBuffer);
+    
+    if (!uploadedUrl) {
+      return res.status(400).json({
+        error: "Failed to upload image to Cloudinary"
+      });
+    }
 
     const product = new Product({
       name,
       brand,
       description,
       price,
-      category,
+      category: categoryDoc._id,
       quantity,
+      distributor: req.user._id,
       image: uploadedUrl,
     });
 
-    await product.save();
-    res.json(product);
+    const createdProduct = await product.save();
+    res.status(201).json(createdProduct);
   } catch (error) {
-    console.error(error);
-    res.status(400).json(error.message);
+    console.error("Error in addProduct:", error);
+    res.status(400).json({ error: error.message });
   }
 });
-
 
 const updateProductDetails = asyncHandler(async (req, res) => {
   try {
@@ -74,8 +90,6 @@ const updateProductDetails = asyncHandler(async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
-
-
 
 const removeProduct = asyncHandler(async (req, res) => {
   try {
@@ -223,6 +237,19 @@ const filterProducts = asyncHandler(async (req, res) => {
   }
 });
 
+const fetchDistributorProducts = asyncHandler(async (req, res) => {
+  try {
+    const products = await Product.find({ distributor: req.user._id })
+      .populate('category', 'name')
+      .sort({ createdAt: -1 });
+    
+    res.json(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server Error" });
+  }
+});
+
 export {
   addProduct,
   updateProductDetails,
@@ -234,4 +261,5 @@ export {
   fetchTopProducts,
   fetchNewProducts,
   filterProducts,
+  fetchDistributorProducts,
 };
