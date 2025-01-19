@@ -166,14 +166,23 @@ const Login = () => {
 
                 <GoogleLoginButton onClick={handleGoogleLogIn} />
 
-                <div className="mt-6 text-center">
+                <div className="mt-6 text-center space-y-2">
                   <p className="text-white">
                     New Customer?{" "}
                     <Link
                       to="/register"
-                      className="text-pink-500 hover:text-pink-400 transition-colors duration-200"
+                      className="text-pink-500 hover:text-pink-400 transition-colors duration-200 underline"
                     >
                       Create an account
+                    </Link>
+                  </p>
+                  <p className="text-white">
+                    Are you a distributor?{" "}
+                    <Link
+                      to="/distributor/login"
+                      className="text-pink-500 hover:text-pink-400 transition-colors duration-200 underline"
+                    >
+                      Distributor login
                     </Link>
                   </p>
                 </div>

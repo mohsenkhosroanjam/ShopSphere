@@ -204,7 +204,7 @@ const Register = () => {
                   </button>
                 </div>
                 <GoogleLoginButton onClick={handleGoogleSignIn} />
-                <div className="mt-6 text-center">
+                <div className="mt-6 text-center space-y-2">
                   <p className="text-white">
                     Already have an account?{" "}
                     <Link
@@ -212,6 +212,15 @@ const Register = () => {
                       className="text-pink-500 hover:text-pink-400 transition-colors duration-200 underline"
                     >
                       Sign in
+                    </Link>
+                  </p>
+                  <p className="text-white">
+                    Want to become a distributor?{" "}
+                    <Link
+                      to="/distributor/register"
+                      className="text-pink-500 hover:text-pink-400 transition-colors duration-200 underline"
+                    >
+                      Register as distributor
                     </Link>
                   </p>
                 </div>

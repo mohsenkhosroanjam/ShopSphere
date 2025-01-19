@@ -40,6 +40,13 @@ const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   const existingUser = await User.findOne({ email });
+
+  if(existingUser.isDistributor){
+    return res.status(401).json({
+      message: "Please Login As Distributor"
+    })
+  }
+
   if (existingUser) {
     const isPasswordValid = await bcrypt.compare(
       password,
