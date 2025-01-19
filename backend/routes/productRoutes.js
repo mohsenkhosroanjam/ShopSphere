@@ -23,7 +23,8 @@ const upload = multer({storage:multer.memoryStorage()})
 router
   .route("/")
   .get(fetchProducts)
-  .post(authenticate, authorizeAdmin, formidable(), upload.single('image'), addProduct);
+  .post(authenticate, authorizeAdmin, addProduct);
+
 
 router.route("/allproducts").get(fetchAllProducts);
 router

@@ -34,11 +34,12 @@ import SplShop from "./pages/SplShop/SplShop.jsx";
 import Cart from "./components/Cart.jsx";
 import FAQ from "./pages/FAQ.jsx";
 import { CartProvider } from "./components/CartContext";
-import Contact from "./components/Contact";
-import Offers from "./pages/Offer/index.jsx";
+import Contact from "./components/Contact"
+import BlogList from "./pages/Blog/BlogList.jsx";
 import Offer from "./pages/Offer/index.jsx";
+import DistributorLogin from "./pages/Auth/DistributorLogin.jsx";
+import DistributorRegister from "./pages/Auth/DistributorRegister.jsx";
 import Contributors from "./pages/Contributors/Contributors.jsx";
-
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
@@ -50,10 +51,17 @@ const router = createBrowserRouter(
       <Route path="/product/:id" element={<ProductDetails />} />
       <Route path="/Shop" element={<Shop />} />
       <Route path="/specialshop" element={<SplShop />} />
-      <Route path="/cart" element={<Cart />} />
+      <Route path="" element={<PrivateRoute />}>
+      <Route path="cart" element={<Cart />} />
+      
+      </Route>
       <Route path="/faq" element={<FAQ />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/termsAndConditions" element={<TermsAndConditions />} />
+      <Route path="/blogs" element={<BlogList />} />
+      <Route path="/distributor/login" element={<DistributorLogin />} />
+      <Route path="/distributor/register" element={<DistributorRegister />} />
+      {/* <Route path="/blog/:slug" element={<BlogDetail />} /> */}
 
       <Route path="" element={<PrivateRoute />}>
         <Route path="profile" element={<Profile />} />

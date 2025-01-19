@@ -79,7 +79,20 @@ export const userApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["User"], // Automatically invalidate the "User" cache
     }),
-    
+    distributorRegister: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/distributor/register`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+    distributorLogin: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/distributor/login`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -94,4 +107,6 @@ export const {
   useDeleteUserMutation,
   useGetUserDetailsQuery,
   useUpdateUserMutation,
+  useDistributorRegisterMutation,
+  useDistributorLoginMutation
 } = userApiSlice;
