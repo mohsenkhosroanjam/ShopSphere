@@ -1,7 +1,7 @@
 import express from "express";
 import formidable from "express-formidable";
 const router = express.Router();
-import { authenticate, authorizeAdmin } from "../middleware/authMiddleware.js";
+import { authenticate, authorizeAdmin, authorizeDistributorOrAdmin } from "../middleware/authMiddleware.js";
 import checkId from "../middleware/checkId.js";
 import {
   addProduct,
@@ -23,8 +23,14 @@ const upload = multer({storage:multer.memoryStorage()})
 router
   .route("/")
   .get(fetchProducts)
-  .post(authenticate, authorizeAdmin, addProduct);
 
+router.route("/add")
+  .post(
+    authenticate, 
+    authorizeDistributorOrAdmin, 
+    upload.single('image'),
+    addProduct
+  );
 
 router.route("/allproducts").get(fetchAllProducts);
 router
