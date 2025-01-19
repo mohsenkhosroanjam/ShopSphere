@@ -11,7 +11,6 @@ import NewsletterSection from "../components/NewsLetter";
 
 const Home = () => {
   const { keyword } = useParams();
-  const [products, setProducts] = useState([]);
   const { data, isLoading, isError } = useGetProductsQuery({ keyword });
 
   const [products, setProducts] = useState([]);
