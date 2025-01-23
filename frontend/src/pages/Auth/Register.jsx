@@ -14,6 +14,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -37,6 +38,11 @@ const Register = () => {
     }
   }, [navigate, redirect, userInfo]);
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const submitHandler = async (e) => {
     e.preventDefault();
     if (
@@ -48,9 +54,14 @@ const Register = () => {
       toast.error("Please fill all fields");
       return;
     }
+    if (!validateEmail(email)) {
+      setEmailError("Please enter a valid email address");
+      return;
+    }
     if (password !== confirmPassword) {
-      toast.error("Password does not match");
+      toast.error("Passwords do not match");
     } else {
+      setEmailError(""); 
       try {
         const res = await register({ username, email, password }).unwrap();
         dispatch(setCredientials({ ...res }));
@@ -118,7 +129,7 @@ const Register = () => {
                 </p>
               </div>
 
-              <form onSubmit={submitHandler} className="space-y-6">
+              <form onSubmit={submitHandler} className="space-y-6" noValidate>
                 <div className="form-control">
                   <label className="label text-sm font-medium">
                     <span className="label-text text-white">Name</span>
@@ -139,14 +150,24 @@ const Register = () => {
                     <span className="label-text text-white">Email</span>
                   </label>
                   <input
-                    type="email"
+                    type="text"
                     id="email"
-                    className="input w-full p-3 bg-transparent border border-white/30 rounded 
-                             transition-all duration-200 focus:border-pink-500 text-white placeholder-gray-400"
+                    className={`input w-full p-3 bg-transparent border rounded transition-all duration-200 text-white placeholder-gray-400 ${
+                      emailError ? "border-red-500 focus:border-red-500" : "border-white/30 focus:border-pink-500"
+                    }`}
                     placeholder="Enter email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (emailError) setEmailError("");
+                    }}
+                    onBlur={() => {
+                      if (!validateEmail(email)){
+                        setEmailError("Please enter a valid email address");
+                      }
+                    }}
                   />
+                  {emailError && <p className="text-red-500 text-sm mt-2">{emailError}</p>}
                 </div>
 
                 <div className="form-control relative">
