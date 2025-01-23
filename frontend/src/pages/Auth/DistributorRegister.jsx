@@ -19,6 +19,7 @@ const DistributorRegister = () => {
         city: "",
         state: "",
     });
+    const [emailError, setEmailError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const dispatch = useDispatch();
@@ -28,6 +29,14 @@ const DistributorRegister = () => {
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        if (e.target.name === "email" && emailError){
+            setEmailError("");
+        }
+    };
+
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
     };
 
     const submitHandler = async (e) => {
@@ -35,6 +44,11 @@ const DistributorRegister = () => {
 
         if (Object.values(formData).some(field => field === "")) {
             toast.error("Please fill all fields");
+            return;
+        }
+
+        if (!validateEmail(formData.email)) {
+            setEmailError("Please enter a valid email address");
             return;
         }
 
@@ -101,14 +115,21 @@ const DistributorRegister = () => {
                                         <span className="label-text text-white">Email</span>
                                     </label>
                                     <input
-                                        type="email"
+                                        type="text"
                                         name="email"
-                                        className="input w-full p-3 bg-transparent border border-white/30 rounded 
-                             transition-all duration-200 focus:border-pink-500 text-white placeholder-gray-400"
+                                        className={`input w-full p-3 bg-transparent border rounded transition-all duration-200 text-white placeholder-gray-400 ${
+                                            emailError ? "border-red-500 focus:border-red-500" : "border-white/30 focus:border-pink-500"
+                                        }`}
                                         placeholder="Enter email"
                                         value={formData.email}
                                         onChange={handleChange}
+                                        onBlur={() => { 
+                                            if (!validateEmail(formData.email)){
+                                                setEmailError("Please enter a valid email address")
+                                            }
+                                        }}
                                     />
+                                    {emailError && <p className="text-red-500 text-sm mt-2">{emailError}</p>}
                                 </div>
 
                                 <div className="form-control">
