@@ -6,6 +6,7 @@ body:
     attributes:
       value: |
         Thanks for taking the time to fill out this bug report!
+        Please provide as much detail as possible to help us quickly address the issue.
 
   - type: input
     id: page
@@ -76,7 +77,8 @@ body:
       description: Confirm if you’ve searched for existing issues before submitting
       options:
         - label: I have searched for existing issues
-          required: true
+      validations:
+        required: true
 
   - type: checkboxes
     id: code_of_conduct
@@ -85,7 +87,8 @@ body:
       description: Agree to abide by the project’s code of conduct
       options:
         - label: I agree to follow the code of conduct
-          required: true
+      validations:
+        required: true
 
   - type: checkboxes
     id: contributor_status
@@ -95,4 +98,6 @@ body:
       options:
         - label: I am a SWOC contributor
         - label: I am an IWOC contributor
+        - label: Neither
+      validations:
         required: true
