@@ -11,7 +11,7 @@ const HeartIcon = ({ product ,className}) => {
     const favorites = useSelector((state) => state.favorites.favorites);
     const userInfo = useSelector((state) => state.auth?.userInfo);
 
-    const isFavorite = favorites?.some((p) => p.id === product.id) || false;
+    const isFavorite = favorites?.some((p) => p._id === product._id) || false;
 
     const toggleFavorite = (e) => {
         e.stopPropagation();
