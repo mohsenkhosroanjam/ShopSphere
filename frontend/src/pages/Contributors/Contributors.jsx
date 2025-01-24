@@ -14,28 +14,15 @@ function Contributors() {
 
   useEffect(() => {
     const fetchContributors = async () => {
-      const token = import.meta.env.VITE_GITHUB_API;
-
-      if (!token) {
-        console.error("Github token not configured");
-      }
-
-      const page = 1;
-      const perPage = 100;
       const owner = "Anwishta";
       const repo = "ShopSphere";
+      const page = 1;
+      const perPage = 100;
 
       const url = `https://api.github.com/repos/${owner}/${repo}/contributors?page=${page}&per_page=${perPage}`;
 
       try {
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/vnd.github+json",
-          },
-        });
-
+        const response = await fetch(url);
         if (response.ok) {
           const contributors = await response.json();
           // Get total contributions
@@ -123,39 +110,41 @@ function Contributors() {
             <FaPeopleLine className="hidden text-white/40 text-6xl sm:block" />
           </h1>
 
-          <div className="cards grid grid-cols-1 sm:grid-cols-2 sm:ml-0 md:grid-cols-3 lg:grid-cols-4 gap-10 mt-5 lg:ml-14">
+          {/* Cards Grid */}
+          <div className="cards grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 mt-5 lg:ml-14 px-4 sm:px-8">
             {allcontributors.map((contributor) => {
               return (
-                <>
-                  <div className="card bg-white/5 flex flex-col justify-center items-center rounded-xl gap-10 w-80 h-72">
-                    <img
-                      src={contributor.avatar_url}
-                      alt="avatar"
-                      className="w-36 h-36 rounded-full object-cover border-2 border-emerald-400 shadow-md hover:border-emerald-300 transition-colors duration-300"
-                    />
-                    <div className="flex flex-col gap-2">
-                      <div className="info flex items-center gap-1 text-white">
-                        <PiUserCircleDashedFill className="text-3xl" />
-                        <span className="font-semibold text-2xl text-cyan-200">
-                          {contributor.login}
-                        </span>
-                      </div>
-                      <div className="stats flex justify-center items-center gap-4">
-                        <span className="text-slate-300">
-                          {contributor.contributions} Contributions
-                        </span>
-                        <button
-                          onClick={() =>
-                            window.open(contributor.html_url, "_blank")
-                          }
-                          className="bg-violet-700 py-1 px-1 rounded-sm"
-                        >
-                          View Profile
-                        </button>
-                      </div>
+                <div
+                  key={contributor.id}
+                  className="card bg-white/5 flex flex-col justify-center items-center rounded-xl gap-6 w-full max-w-xs mx-auto"
+                >
+                  <img
+                    src={contributor.avatar_url}
+                    alt="avatar"
+                    className="w-36 h-36 rounded-full object-cover border-2 border-emerald-400 shadow-md hover:border-emerald-300 transition-colors duration-300"
+                  />
+                  <div className="flex flex-col gap-2">
+                    <div className="info flex items-center gap-1 text-white">
+                      <PiUserCircleDashedFill className="text-3xl" />
+                      <span className="font-semibold text-2xl text-cyan-200">
+                        {contributor.login}
+                      </span>
+                    </div>
+                    <div className="stats flex justify-center items-center gap-4">
+                      <span className="text-slate-300">
+                        {contributor.contributions} Contributions
+                      </span>
+                      <button
+                        onClick={() =>
+                          window.open(contributor.html_url, "_blank")
+                        }
+                        className="bg-violet-700 py-1 px-3 rounded-sm"
+                      >
+                        View Profile
+                      </button>
                     </div>
                   </div>
-                </>
+                </div>
               );
             })}
           </div>
