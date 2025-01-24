@@ -20,7 +20,7 @@ const favoriteSlice = createSlice({
     reducers: {
         addToFavorites: (state, action) => {
             const newProduct = action.payload;
-            const exists = state.favorites.some(item => item.id === newProduct.id);
+            const exists = state.favorites.some(item => item._id === newProduct._id);              
 
             if (!exists) {
                 const updatedFavorites = [...state.favorites, newProduct];
@@ -35,9 +35,7 @@ const favoriteSlice = createSlice({
         },
         removeFromFavorites: (state, action) => {
             const productToRemove = action.payload;
-            const updatedFavorites = state.favorites.filter(
-                item => item.id !== productToRemove.id
-            );
+            const updatedFavorites = state.favorites.filter(item => (item._id !== productToRemove._id));
 
             state.favorites = updatedFavorites;
 
