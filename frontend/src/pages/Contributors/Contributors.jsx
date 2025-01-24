@@ -116,29 +116,29 @@ function Contributors() {
               return (
                 <div
                   key={contributor.id}
-                  className="card bg-white/5 flex flex-col justify-center items-center rounded-xl gap-6 w-full max-w-xs mx-auto"
+                  className="card bg-white/5 flex flex-col justify-center items-center rounded-xl gap-6 w-full max-w-xs mx-auto p-4"
                 >
                   <img
                     src={contributor.avatar_url}
                     alt="avatar"
                     className="w-36 h-36 rounded-full object-cover border-2 border-emerald-400 shadow-md hover:border-emerald-300 transition-colors duration-300"
                   />
-                  <div className="flex flex-col gap-2">
-                    <div className="info flex items-center gap-1 text-white">
+                  <div className="flex flex-col gap-2 w-full">
+                    <div className="info flex items-center gap-1 text-white overflow-hidden">
                       <PiUserCircleDashedFill className="text-3xl" />
-                      <span className="font-semibold text-2xl text-cyan-200">
+                      <span className="font-semibold text-2xl text-cyan-200 break-words">
                         {contributor.login}
                       </span>
                     </div>
-                    <div className="stats flex justify-center items-center gap-4">
-                      <span className="text-slate-300">
+                    <div className="stats flex justify-center items-center gap-4 w-full">
+                      <span className="text-slate-300 truncate">
                         {contributor.contributions} Contributions
                       </span>
                       <button
                         onClick={() =>
                           window.open(contributor.html_url, "_blank")
                         }
-                        className="bg-violet-700 py-1 px-3 rounded-sm"
+                        className="bg-violet-700 py-1 px-3 rounded-sm max-w-xs truncate"
                       >
                         View Profile
                       </button>
