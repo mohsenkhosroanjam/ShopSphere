@@ -8,10 +8,12 @@ import { toast } from "react-toastify";
 import Footer from "../components/Footer";
 import HomeImage from "../assets/HomeFinal.png";
 import NewsletterSection from "../components/NewsLetter";
+import { useTheme } from '../context/ThemeContext';
 
 const Home = () => {
   const { keyword } = useParams();
   const { data, isLoading, isError } = useGetProductsQuery({ keyword });
+  const { isDarkMode } = useTheme();
 
   const [products, setProducts] = useState([]);
 
@@ -35,25 +37,37 @@ const Home = () => {
       {isLoading ? (
         <Loader />
       ) : (
-        <div className="bg-black text-white min-h-screen flex flex-col ml-10">
-          <section className="flex flex-col lg:flex-row items-center w-full mb-10 justify-between  bg-gradient-to-t from-[#000000] to-[#0F172A]">
+        <div className={`${isDarkMode ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-800'} min-h-screen flex flex-col ml-10`}>
+          <section className={`flex flex-col lg:flex-row items-center w-full mb-10 justify-between ${isDarkMode ? 'bg-gradient-to-t from-gray-900 to-gray-800' : 'bg-gradient-to-t from-white to-gray-100'
+            }`}>
             <div className="text-center lg:text-left max-w-2xl m-16">
-              <h1 className="text-6xl font-sans font-extrabold text-gray-200 mb-6 animate-fade-in-up">
+              <h1 className={`text-6xl font-sans font-extrabold mb-6 animate-fade-in-up ${isDarkMode ? 'text-gray-100' : 'text-gray-800'
+                }`}>
                 Shop the Latest Styles,
-                <span className="text-pink-500">Anytime</span>
+                <span className={`${isDarkMode ? 'text-rose-400' : 'text-rose-500'}`}>Anytime</span>
               </h1>
-              <p className="text-gray-400 text-lg mb-8 animate-fade-in-up delay-2">
+              <p className={`text-lg mb-8 animate-fade-in-up delay-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                }`}>
                 Discover the trendiest apparel, accessories, and more at prices
                 you'll love. Your new look is just a click away!
               </p>
               <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 overflow-hidden">
-                <button className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-md shadow-md transition">
+                <button className={`${isDarkMode
+                    ? 'bg-rose-500 hover:bg-rose-600'
+                    : 'bg-rose-600 hover:bg-rose-700'
+                  } text-white px-6 py-3 rounded-md shadow-md transition duration-300`}>
                   <Link to="/shop">Start Shopping</Link>
                 </button>
-                <button className="bg-transparent text-pink-500 border border-pink-500 hover:bg-pink-500 hover:text-white px-6 py-3 rounded-md shadow-md transition">
+                <button className={`bg-transparent border transition duration-300 px-6 py-3 rounded-md shadow-md ${isDarkMode
+                    ? 'text-rose-400 border-rose-400 hover:bg-rose-400 hover:text-gray-900'
+                    : 'text-rose-600 border-rose-600 hover:bg-rose-600 hover:text-white'
+                  }`}>
                   <Link to="/offers">Explore Deals</Link>
                 </button>
-                <button className="bg-transparent text-pink-500 border border-pink-500 hover:bg-pink-500 hover:text-white px-6 py-3 rounded-md shadow-md transition">
+                <button className={`bg-transparent border transition duration-300 px-6 py-3 rounded-md shadow-md ${isDarkMode
+                    ? 'text-rose-400 border-rose-400 hover:bg-rose-400 hover:text-gray-900'
+                    : 'text-rose-600 border-rose-600 hover:bg-rose-600 hover:text-white'
+                  }`}>
                   <Link to="/contributors">Meet our Contributors</Link>
                 </button>
               </div>
@@ -63,7 +77,7 @@ const Home = () => {
               <img
                 src={HomeImage}
                 alt="Featured Product"
-                className="max-w-full rounded-lg shadow-lg"
+                className="max-w-full rounded-lg"
               />
             </div>
           </section>
