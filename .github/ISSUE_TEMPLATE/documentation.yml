@@ -45,3 +45,35 @@ body:
       label: Suggested Changes
       description: If you have specific suggestions for improvements, please provide them
       placeholder: "The documentation should include..."
+
+  - type: checkboxes
+    id: existing_issue
+    attributes:
+      label: Existing Issue Check
+      description: Confirm if you’ve searched for existing issues before submitting
+      options:
+        - label: I have searched for existing issues
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: code_of_conduct
+    attributes:
+      label: Code of Conduct
+      description: Agree to abide by the project’s code of conduct
+      options:
+        - label: I agree to follow the code of conduct
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contributor_status
+    attributes:
+      label: Contributor Status
+      description: Let us know if you are part of SWOC or IWOC
+      options:
+        - label: I am a SWOC contributor
+        - label: I am an IWOC contributor
+        - label: Neither
+    validations:
+      required: true

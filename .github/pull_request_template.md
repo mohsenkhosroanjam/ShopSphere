@@ -30,3 +30,9 @@ Fixes #(issue number / ID)
 - [ ] These are not breaking changes
 
 ## Screenshots (if appropriate):
+
+## Let us know if you are part of SWOC or IWOC
+
+- [ ] SWOC
+- [ ] IWOC
+- [ ] Neither
