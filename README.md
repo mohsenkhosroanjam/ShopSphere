@@ -1,6 +1,6 @@
 # ShopSphere
 
-### This project has been officially accepted for Social Winter of Code (SWOC) 🎉🎊
+### This project has been officially accepted for SWOC and IWOC 🎉🎊
 
 ShopSphere is a full-stack e-commerce website built using the MERN (MongoDB, Express.js, React.js, Node.js) stack. It provides users with a seamless shopping experience and includes features such as product listings, shopping cart functionality(to be implemented), secure payment integration (to be implemented), and an admin panel for managing the store (to be implemented).
 
