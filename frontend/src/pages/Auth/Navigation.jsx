@@ -17,6 +17,8 @@ import { useLogoutMutation } from "../redux/api/userApiSlice";
 import { logout } from "../redux/features/auth/authSlice";
 import FavoriteCount from "../Products/FavoriteCount";
 import { toast } from "react-toastify";
+import { useTheme } from '../../context/ThemeContext';
+import { BsSun, BsMoon } from 'react-icons/bs';
 
 const Navigation = () => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -26,6 +28,7 @@ const Navigation = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [logoutApiCall] = useLogoutMutation();
+  const { isDarkMode, toggleTheme } = useTheme();
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -200,144 +203,97 @@ const Navigation = () => {
       </div>
 
       {/* Desktop Navigation */}
-      <div
-        className="hidden lg:flex fixed inset-y-0 left-0 flex-col justify-between p-4 text-white bg-black w-[4%] hover:w-[15%] h-[100vh] transition-all duration-300 ease-in-out z-40"
-        id="navigation-container"
-      >
-        <div className="flex flex-col justify-center space-y-8">
+      <div className="hidden lg:flex fixed inset-y-0 left-0 flex-col justify-between p-4 text-white bg-black h-[100vh] transition-all duration-300 ease-in-out z-40" id="navigation-container">
+        <div className="flex flex-col space-y-8">
+          {/* Main navigation links */}
           <Link to="/" className="flex items-center hover:translate-x-2 transition-transform p-2">
-            <AiOutlineHome className="mr-4" size={26} />
-            <span className="hidden nav-item-name text-lg">HOME</span>
+            <AiOutlineHome className="nav-icon" />
+            <span className="nav-item-name ml-4">HOME</span>
           </Link>
           <Link to="/shop" className="flex items-center hover:translate-x-2 transition-transform p-2">
-            <AiOutlineShopping className="mr-4" size={26} />
-            <span className="hidden nav-item-name text-lg">SHOP</span>
+            <AiOutlineShopping className="nav-icon" />
+            <span className="nav-item-name ml-4">SHOP</span>
           </Link>
           <Link to="/cart" className="flex items-center hover:translate-x-2 transition-transform p-2">
-            <AiOutlineShoppingCart className="mr-4" size={26} />
-            <span className="hidden nav-item-name text-lg">CART</span>
+            <AiOutlineShoppingCart className="nav-icon" />
+            <span className="nav-item-name ml-4">CART</span>
           </Link>
           <Link to="/favorite" className="flex items-center hover:translate-x-2 transition-transform p-2">
-            <FaHeart className="mr-4" size={26} />
-            <span className="hidden nav-item-name text-lg">FAVORITE</span>
-            <FavoriteCount />
+            <FaHeart className="nav-icon" />
+            <span className="nav-item-name ml-4">FAVORITE <FavoriteCount /></span>
           </Link>
           <Link to="/blogs" className="flex items-center hover:translate-x-2 transition-transform p-2">
-            <FaBlog className="mr-4" size={26} />
-            <span className="hidden nav-item-name text-lg">BLOGS</span>
+            <FaBlog className="nav-icon" />
+            <span className="nav-item-name ml-4">BLOGS</span>
           </Link>
+          <button onClick={toggleTheme} className="flex items-center hover:translate-x-2 transition-transform p-2">
+            {isDarkMode ? (
+              <>
+                <BsSun className="nav-icon" />
+                <span className="nav-item-name ml-4">Light Mode</span>
+              </>
+            ) : (
+              <>
+                <BsMoon className="nav-icon" />
+                <span className="nav-item-name ml-4">Dark Mode</span>
+              </>
+            )}
+          </button>
         </div>
 
-        <div
-          className="hidden lg:flex fixed inset-y-0 left-0 flex-col justify-between p-4 text-white bg-black w-[4%] hover:w-[15%] h-[100vh] transition-all duration-300 ease-in-out z-40"
-          id="navigation-container"
-        >
-          <div className="flex flex-col justify-center space-y-8">
-            <Link to="/" className="flex items-center hover:translate-x-2 transition-transform p-2">
-              <AiOutlineHome size={26} />
-              <span className="nav-item-name text-lg ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">HOME</span>
-            </Link>
-            <Link to="/shop" className="flex items-center hover:translate-x-2 transition-transform p-2">
-              <AiOutlineShopping size={26} />
-              <span className="nav-item-name text-lg ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">SHOP</span>
-            </Link>
-            <Link to="/cart" className="flex items-center hover:translate-x-2 transition-transform p-2">
-              <AiOutlineShoppingCart size={26} />
-              <span className="nav-item-name text-lg ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">CART</span>
-            </Link>
-            <Link to="/favorite" className="flex items-center hover:translate-x-2 transition-transform p-2">
-              <FaHeart size={26} />
-              <span className="nav-item-name text-lg ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                FAVORITE
-                <FavoriteCount />
-              </span>
-            </Link>
-            <Link to="/blogs" className="flex items-center hover:translate-x-2 transition-transform p-2">
-              <FaBlog className="mr-4" size={26} />
-              <span className="nav-item-name text-lg ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">BLOGS</span>
-            </Link>
-          </div>
-
-          <div className="relative">
-            {userInfo ? (
-              <button
-                onClick={toggleDropdown}
-                className="flex items-center text-gray-8000 focus:outline-none p-2 w-full hover:bg-gray-800 rounded-lg"
+        <div className="auth-buttons">
+          {userInfo ? (
+            <div className="relative">
+              <button 
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="flex items-center hover:translate-x-2 transition-transform p-2 w-full"
               >
-                <span className="text-white text-lg">{userInfo.username}</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className={`h-4 w-4 ml-2 ${dropdownOpen ? "rotate-180" : ""} transition-transform`}
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="white"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d={dropdownOpen ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"}
-                  />
-                </svg>
+                <span className="nav-icon">👤</span>
+                <span className="nav-item-name ml-4">{userInfo.username}</span>
               </button>
-            ) : (
-              <div className="space-y-6">
-                <Link to="/login" className="flex items-center hover:translate-x-2 transition-transform p-2">
-                  <AiOutlineLogin size={26} />
-                  <span className="nav-item-name text-lg ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">LOGIN</span>
-                </Link>
-                <Link to="/register" className="flex items-center hover:translate-x-2 transition-transform p-2">
-                  <AiOutlineUserAdd size={26} />
-                  <span className="nav-item-name text-lg ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">REGISTER</span>
-                </Link>
-              </div>
-            )}
-
-            {dropdownOpen && userInfo && (
-              <ul className={`absolute right-0 mt-2 mr-14 space-y-1 bg-gray-800 text-gray-300 rounded-lg overflow-hidden
-              ${!userInfo.isAdmin ? "-top-20" : "-top-80"}`}>
-                {userInfo.isAdmin && (
-                  <>
-                    <li>
-                      <Link to="/admin/dashboard" className="block px-6 py-3 hover:bg-gray-700">
-                        Dashboard
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/admin/productlist" className="block px-6 py-3 hover:bg-gray-700">
-                        Products
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/admin/categorylist" className="block px-6 py-3 hover:bg-gray-700">
-                        Category
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/admin/orderlist" className="block px-6 py-3 hover:bg-gray-700">
-                        Orders
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/admin/userlist" className="block px-6 py-3 hover:bg-gray-700">
-                        Users
-                      </Link>
-                    </li>
-                  </>
-                )}
-                <li>
-                  <Link to="/profile" className="block px-6 py-3 hover:bg-gray-700">
+              
+              {dropdownOpen && (
+                <div className="absolute bottom-full left-0 mb-2 w-full bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                  {userInfo.isAdmin && (
+                    <Link 
+                      to="/admin/dashboard" 
+                      className="block px-4 py-2 hover:bg-gray-700 w-full text-left"
+                      onClick={() => setDropdownOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                  )}
+                  <Link 
+                    to="/profile" 
+                    className="block px-4 py-2 hover:bg-gray-700 w-full text-left"
+                    onClick={() => setDropdownOpen(false)}
+                  >
                     Profile
                   </Link>
-                </li>
-                <li>
-                  <button onClick={logoutHandler} className="w-full text-left px-6 py-3 hover:bg-gray-700">
+                  <button 
+                    onClick={() => {
+                      logoutHandler();
+                      setDropdownOpen(false);
+                    }} 
+                    className="block px-4 py-2 hover:bg-gray-700 w-full text-left"
+                  >
                     Logout
                   </button>
-                </li>
-              </ul>
-            )}
-          </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <Link to="/login" className="flex items-center hover:translate-x-2 transition-transform p-2">
+                <AiOutlineLogin className="nav-icon" />
+                <span className="nav-item-name">LOGIN</span>
+              </Link>
+              <Link to="/register" className="flex items-center hover:translate-x-2 transition-transform p-2">
+                <AiOutlineUserAdd className="nav-icon" />
+                <span className="nav-item-name">REGISTER</span>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </>
