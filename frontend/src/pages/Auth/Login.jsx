@@ -10,6 +10,7 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../../firebaseConfig";
 import GoogleLoginButton from "../../Utils/googleBtn";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useTheme } from '../../context/ThemeContext';
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -25,6 +26,7 @@ const Login = () => {
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
   const redirect = sp.get("redirect") || "/login";
+  const { isDarkMode } = useTheme();
 
   useEffect(() => {
     if (userInfo) {
@@ -39,7 +41,7 @@ const Login = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    if (!email.trim() || !password.trim()){
+    if (!email.trim() || !password.trim()) {
       toast.error("Please fill all the fields")
       return;
     }
@@ -94,13 +96,13 @@ const Login = () => {
         </div>
       )}
 
-      <div className="absolute inset-0">
+      <div className={`absolute inset-0 ${isDarkMode ? 'bg-gray-900/90' : 'bg-white/20'}`}>
         <img
           src={LOGIN_BG}
           alt="background"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black/60"></div>
+        <div className={`absolute inset-0 ${isDarkMode ? 'bg-black/75' : 'bg-black/45'}`}></div>
       </div>
 
       <div className="relative min-h-screen flex items-center justify-center">
@@ -108,30 +110,40 @@ const Login = () => {
           className="w-full max-w-4xl px-4 py-8 sm:px-6 lg:px-8 flex justify-center animate-slide-in"
           ref={formRef}
         >
-          <div
-            className="card border border-pink-500/40 rounded-xl bg-black bg-opacity-60 w-8/12"
+          <div className={`card border rounded-2xl ${isDarkMode
+            ? 'bg-gray-900/90 border-gray-700'
+            : 'bg-white/40 border-gray-200/40'
+            } w-11/12 md:w-8/12 backdrop-blur-xl`}
             style={{
-              backdropFilter: "blur(300px)", // Apply blur
-              WebkitBackdropFilter: "blur(30px)", // For Safari support
+              boxShadow: isDarkMode
+                ? '0 8px 32px rgba(0, 0, 0, 0.55)'
+                : '0 8px 32px rgba(255, 255, 255, 0.25)',
             }}
           >
-            <div className="card-body p-8">
+            <div className="card-body p-6 md:p-8">
               <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-white">Welcome back</h2>
-                <p className="mt-2 text-white/70">Sign in to your account</p>
+                <h2 className={`text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                  Welcome back
+                </h2>
+                <p className={`mt-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  Sign in to your account
+                </p>
               </div>
 
               <form onSubmit={submitHandler} className="space-y-6" noValidate>
                 <div className="form-control">
                   <label className="label text-sm font-medium">
-                    <span className="label-text text-white">Email Address</span>
+                    <span className={`label-text ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      Email Address
+                    </span>
                   </label>
                   <input
                     type="text"
                     id="email"
-                    className={`input w-full p-3 bg-transparent border rounded transition-all duration-200 text-white ${
-                      emailError ? 'border-red-500 focus:border-red-500' : 'border-white/20 focus:border-pink-500'
-                    }`}
+                    className={`input w-full p-3 rounded-lg transition-all duration-200 ${isDarkMode
+                      ? 'bg-gray-800/80 border-gray-700 text-gray-100 placeholder-gray-400'
+                      : 'bg-white/30 border-gray-300/40 text-gray-800 placeholder-gray-500'
+                    } ${emailError ? 'border-red-500' : ''} focus:ring-2 focus:ring-rose-500 backdrop-blur-md`}
                     placeholder="Enter email"
                     value={email}
                     onChange={(e) => {
@@ -139,32 +151,36 @@ const Login = () => {
                       if (emailError) setEmailError("");
                     }}
                     onBlur={() => {
-                      if (email && !validateEmail(email)){
+                      if (email && !validateEmail(email)) {
                         setEmailError("Invalid email address")
                       }
                     }}
                   />
                   {emailError && (
-                    <p className="text-red-500 text-sm mt-2">{emailError}</p>
+                    <p className="text-red-400 text-sm mt-2">{emailError}</p>
                   )}
                 </div>
 
                 <div className="form-control relative">
                   <label className="label text-sm font-medium">
-                    <span className="label-text text-white">Password</span>
+                    <span className={`label-text ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      Password
+                    </span>
                   </label>
                   <input
                     type={showPassword ? "text" : "password"}
                     id="password"
-                    className="input w-full p-3 bg-transparent border border-white/20 rounded 
-                             transition-all duration-200 focus:border-pink-500 text-white"
+                    className={`input w-full p-3 rounded-lg transition-all duration-200 ${isDarkMode
+                      ? 'bg-gray-800/80 border-gray-700 text-gray-100 placeholder-gray-400'
+                      : 'bg-white/30 border-gray-300/40 text-gray-800 placeholder-gray-500'
+                    } focus:ring-2 focus:ring-rose-500 backdrop-blur-md`}
                     placeholder="Enter password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
                   <span
                     onClick={() => setShowPassword((prev) => !prev)}
-                    className="cursor-pointer absolute right-5 top-10"
+                    className={`cursor-pointer absolute right-5 top-10 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}
                   >
                     {showPassword ? <FaEye /> : <FaEyeSlash />}
                   </span>
@@ -174,9 +190,9 @@ const Login = () => {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full bg-pink-500 text-white py-3 px-4 rounded font-semibold
-                             transition-all duration-200 hover:bg-pink-600 hover:shadow-lg
-                             disabled:opacity-50 disabled:cursor-not-allowed"
+                    className={`w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white py-3 px-4 rounded-lg 
+                    font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed 
+                    shadow-lg hover:shadow-xl hover:scale-[1.02]`}
                   >
                     {isLoading ? (
                       <div className="flex items-center justify-center space-x-2">
@@ -192,20 +208,20 @@ const Login = () => {
                 <GoogleLoginButton onClick={handleGoogleLogIn} />
 
                 <div className="mt-6 text-center space-y-2">
-                  <p className="text-white">
+                  <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                     New Customer?{" "}
                     <Link
                       to="/register"
-                      className="text-pink-500 hover:text-pink-400 transition-colors duration-200 underline"
+                      className="text-rose-500 hover:text-rose-400 transition-colors duration-200 font-medium"
                     >
                       Create an account
                     </Link>
                   </p>
-                  <p className="text-white">
+                  <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                     Are you a distributor?{" "}
                     <Link
                       to="/distributor/login"
-                      className="text-pink-500 hover:text-pink-400 transition-colors duration-200 underline"
+                      className="text-rose-500 hover:text-rose-400 transition-colors duration-200 font-medium"
                     >
                       Distributor login
                     </Link>
