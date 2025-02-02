@@ -40,6 +40,7 @@ import Offer from "./pages/Offer/index.jsx";
 import DistributorLogin from "./pages/Auth/DistributorLogin.jsx";
 import DistributorRegister from "./pages/Auth/DistributorRegister.jsx";
 import Contributors from "./pages/Contributors/Contributors.jsx";
+import Shipping from "./pages/Shipping.jsx";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
@@ -58,6 +59,7 @@ const router = createBrowserRouter(
       <Route path="/faq" element={<FAQ />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/termsAndConditions" element={<TermsAndConditions />} />
+      <Route path="/shipping" element={<Shipping />} />
       <Route path="/blogs" element={<BlogList />} />
       <Route path="/distributor/login" element={<DistributorLogin />} />
       <Route path="/distributor/register" element={<DistributorRegister />} />

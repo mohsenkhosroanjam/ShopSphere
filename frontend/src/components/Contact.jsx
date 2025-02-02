@@ -1,7 +1,21 @@
 import { CONTACT_BG } from "../Utils/constants";
+import { useState } from "react";
+import { toast } from "react-toastify";
+
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    message: "",
+  });
+
   const submitHandler = (e) => {
     e.preventDefault();
+
+    if (!formData.fullName || !formData.email || !formData.message) {
+      toast.error("Please fill all the fields");
+      return;
+    }
   };
   return (
     <div className="min-h-screen relative">
@@ -33,6 +47,10 @@ const Contact = () => {
                     className="input w-full p-3 bg-transparent border border-white/20 rounded 
                              transition-all duration-200 focus:border-pink-500 text-white"
                     placeholder="Enter your full name"
+                    value={formData.fullName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, fullName: e.target.value })
+                    }
                   />
                 </div>
                 <div className="form-control">
@@ -44,6 +62,10 @@ const Contact = () => {
                     className="input w-full p-3 bg-transparent border border-white/20 rounded 
                              transition-all duration-200 focus:border-pink-500 text-white"
                     placeholder="Enter your email address"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
                   />
                 </div>
                 <div className="form-control">
@@ -54,6 +76,10 @@ const Contact = () => {
                     className="input w-full p-3 bg-transparent border border-white/20 rounded 
                              transition-all duration-200 focus:border-pink-500 text-white h-32 resize-none"
                     placeholder="Type your message here..."
+                    value={formData.message}
+                    onChange={(e) =>
+                      setFormData({ ...formData, message: e.target.value })
+                    }
                   />
                 </div>
                 <div className="mt-8">
