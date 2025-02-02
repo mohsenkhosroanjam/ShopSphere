@@ -12,6 +12,7 @@ import { useTheme } from '../../context/ThemeContext';
 const DistributorLogin = () => {
     const { isDarkMode } = useTheme();
     const [email, setEmail] = useState("");
+    const [emailError, setEmailError] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const formRef = useRef();
@@ -21,6 +22,11 @@ const DistributorLogin = () => {
 
     const [login, { isLoading }] = useDistributorLoginMutation();
 
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
     const submitHandler = async (e) => {
         e.preventDefault();
 
@@ -28,6 +34,13 @@ const DistributorLogin = () => {
             toast.error("Please fill all fields");
             return;
         }
+
+        if (!validateEmail(email)) {
+            setEmailError("Invalid email address");
+            return;
+          }
+
+        setEmailError(""); // Clear error if email is valid
 
         try {
             const res = await login({ email, password }).unwrap();
@@ -83,16 +96,29 @@ const DistributorLogin = () => {
                                         </span>
                                     </label>
                                     <input
-                                        type="email"
+                                        type="text"
                                         id="email"
-                                        className={`input w-full p-3 rounded-lg transition-all duration-200 ${isDarkMode
-                                            ? 'bg-gray-800/80 border-gray-700 text-gray-100 placeholder-gray-400'
-                                            : 'bg-white/30 border-gray-300/40 text-gray-800 placeholder-gray-500'
-                                        } focus:ring-2 focus:ring-rose-500 backdrop-blur-md`}
+                                        className={`input w-full p-3 rounded-lg transition-all duration-200 
+                                            ${isDarkMode
+                                              ? 'bg-gray-800/80 border-gray-700 text-gray-100 placeholder-gray-400'
+                                              : 'bg-white/30 border-gray-300/40 text-gray-800 placeholder-gray-500'}
+                                            ${emailError ? 'border-red-500 focus:border-red-500' : 'focus:ring-2 focus:ring-rose-500'}
+                                            backdrop-blur-md`}
                                         placeholder="Enter email"
                                         value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
+                                        onChange={(e) => {
+                                            setEmail(e.target.value);
+                                            if (emailError) setEmailError("");
+                                          }}
+                                        onBlur={() => {
+                                            if (email && !validateEmail(email)){
+                                              setEmailError("Invalid email address")
+                                            }
+                                        }}
                                     />
+                                    {emailError && (
+                                    <p className="text-red-500 text-sm mt-2">{emailError}</p>
+                                    )}
                                 </div>
 
                                 <div className="form-control relative">
