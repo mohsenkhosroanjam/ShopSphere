@@ -10,6 +10,7 @@ import Loader from "../../components/Loader";
 
 const DistributorLogin = () => {
     const [email, setEmail] = useState("");
+    const [emailError, setEmailError] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const formRef = useRef();
@@ -19,6 +20,11 @@ const DistributorLogin = () => {
 
     const [login, { isLoading }] = useDistributorLoginMutation();
 
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
     const submitHandler = async (e) => {
         e.preventDefault();
 
@@ -26,6 +32,13 @@ const DistributorLogin = () => {
             toast.error("Please fill all fields");
             return;
         }
+
+        if (!validateEmail(email)) {
+            setEmailError("Invalid email address");
+            return;
+          }
+
+        setEmailError(""); // Clear error if email is valid
 
         try {
             const res = await login({ email, password }).unwrap();
@@ -72,20 +85,32 @@ const DistributorLogin = () => {
                                 <p className="mt-2 text-white/80">Sign in to your distributor account</p>
                             </div>
 
-                            <form onSubmit={submitHandler} className="space-y-6">
+                            <form onSubmit={submitHandler} className="space-y-6" noValidate>
                                 <div className="form-control">
                                     <label className="label text-sm font-medium">
                                         <span className="label-text text-white">Email Address</span>
                                     </label>
                                     <input
-                                        type="email"
+                                        type="text"
                                         id="email"
-                                        className="input w-full p-3 bg-transparent border border-white/30 rounded 
-                             transition-all duration-200 focus:border-pink-500 text-white placeholder-gray-400"
+                                        className={`input w-full p-3 bg-transparent border rounded transition-all duration-200 text-white ${
+                                            emailError ? 'border-red-500 focus:border-red-500' : 'border-white/20 focus:border-pink-500'
+                                          }`}
                                         placeholder="Enter email"
                                         value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
+                                        onChange={(e) => {
+                                            setEmail(e.target.value);
+                                            if (emailError) setEmailError("");
+                                          }}
+                                        onBlur={() => {
+                                            if (email && !validateEmail(email)){
+                                              setEmailError("Invalid email address")
+                                            }
+                                        }}
                                     />
+                                    {emailError && (
+                                    <p className="text-red-500 text-sm mt-2">{emailError}</p>
+                                    )}
                                 </div>
 
                                 <div className="form-control relative">
