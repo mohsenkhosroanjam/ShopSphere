@@ -41,6 +41,8 @@ import DistributorLogin from "./pages/Auth/DistributorLogin.jsx";
 import DistributorRegister from "./pages/Auth/DistributorRegister.jsx";
 import Contributors from "./pages/Contributors/Contributors.jsx";
 import Shipping from "./pages/Shipping.jsx";
+import { UnderConstruction } from "./components/UnderConstruction";
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
@@ -78,6 +80,8 @@ const router = createBrowserRouter(
       </Route>
       <Route path="/offers" element={<Offer />} />
       <Route path="/contributors" element={<Contributors />} />
+
+      <Route path="*" element={<UnderConstruction />} />
     </Route>
   )
 );
