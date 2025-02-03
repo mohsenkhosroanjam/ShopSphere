@@ -65,7 +65,7 @@ const router = createBrowserRouter(
       <Route path="/blogs" element={<BlogList />} />
       <Route path="/distributor/login" element={<DistributorLogin />} />
       <Route path="/distributor/register" element={<DistributorRegister />} />
-      {/* <Route path="/blog/:slug" element={<BlogDetail />} /> */}
+      <Route path="/blog/:slug" element={<UnderConstruction />} />
 
       <Route path="" element={<PrivateRoute />}>
         <Route path="profile" element={<Profile />} />
