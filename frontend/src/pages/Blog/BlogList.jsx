@@ -4,18 +4,12 @@ import { useGetBlogsQuery, useCreateBlogMutation } from "../redux/api/blogApiSli
 import Loader from "../../components/Loader";
 import { format } from "date-fns";
 import { useSelector } from "react-redux";
+import CreateBlogModal from './CreateBlogModal';
 
 const BlogList = () => {
     const [page, setPage] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { userInfo } = useSelector((state) => state.auth);
-    const [formData, setFormData] = useState({
-        title: '',
-        content: '',
-        excerpt: '',
-        author: userInfo._id
-    });
-
     const { data, isLoading, error } = useGetBlogsQuery({ page, limit: 6 });
     const [createBlog, { isLoading: isCreating }] = useCreateBlogMutation();
 
@@ -24,6 +18,7 @@ const BlogList = () => {
         try {
             const blogData = {
                 ...formData,
+                author: userInfo?._id,
                 ...(formData.category && formData.category.trim() !== '' && {
                     category: formData.category
                 })
@@ -36,7 +31,7 @@ const BlogList = () => {
                 title: '',
                 content: '',
                 excerpt: '',
-                author: userInfo._id
+                author: userInfo?._id
             });
         } catch (err) {
             console.error('Failed to create blog:', err);
@@ -47,75 +42,24 @@ const BlogList = () => {
     if (error) return <div>Error: {error.message}</div>;
 
     return (
-        <div className="bg-black min-h-screen text-white py-12">
+        <div className="from-gray-100 to-white dark:from-gray-900 dark:to-black py-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-4xl font-bold text-center">Latest Blog Posts</h1>
-                    <button
-                        onClick={() => setIsModalOpen(true)}
-                        className="px-4 py-2 bg-pink-500 rounded hover:bg-pink-600"
-                    >
-                        Create Blog
-                    </button>
+                    {userInfo && (
+                        <button
+                            onClick={() => setIsModalOpen(true)}
+                            className="px-4 py-2 bg-pink-500 rounded hover:bg-pink-600"
+                        >
+                            Create Blog
+                        </button>
+                    )}
                 </div>
 
-                {/* Modal */}
-                {isModalOpen && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                        <div className="bg-gray-900 p-8 rounded-lg w-full max-w-md">
-                            <h2 className="text-2xl font-bold mb-4">Create New Blog</h2>
-                            <form onSubmit={handleSubmit}>
-                                <div className="space-y-4">
-                                    <input
-                                        type="text"
-                                        placeholder="Title"
-                                        value={formData.title}
-                                        onChange={(e) => setFormData({...formData, title: e.target.value})}
-                                        className="w-full p-2 rounded bg-gray-800"
-                                        required
-                                    />
-                                    <textarea
-                                        placeholder="Content"
-                                        value={formData.content}
-                                        onChange={(e) => setFormData({...formData, content: e.target.value})}
-                                        className="w-full p-2 rounded bg-gray-800 h-32"
-                                        required
-                                    />
-                                    <input
-                                        type="text"
-                                        placeholder="Excerpt (optional)"
-                                        value={formData.excerpt}
-                                        onChange={(e) => setFormData({...formData, excerpt: e.target.value})}
-                                        className="w-full p-2 rounded bg-gray-800"
-                                    />
-                                    <input
-                                        type="text"
-                                        placeholder="Category"
-                                        value={formData.category}
-                                        onChange={(e) => setFormData({...formData, category: e.target.value})}
-                                        className="w-full p-2 rounded bg-gray-800"
-                                    />
-                                </div>
-                                <div className="flex justify-end gap-2 mt-4">
-                                    <button
-                                        type="button"
-                                        onClick={() => setIsModalOpen(false)}
-                                        className="px-4 py-2 bg-gray-700 rounded"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        className="px-4 py-2 bg-pink-500 rounded"
-                                        disabled={isCreating}
-                                    >
-                                        {isCreating ? 'Creating...' : 'Create'}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                )}
+                <CreateBlogModal 
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {data.blogs.map((blog) => (
@@ -145,7 +89,7 @@ const BlogList = () => {
                         <button
                             onClick={() => setPage(p => Math.max(1, p - 1))}
                             disabled={page === 1}
-                            className="px-4 py-2 bg-pink-500 rounded disabled:opacity-50"
+                            className="px-4 py-2 z-0 bg-pink-500 rounded disabled:opacity-50"
                         >
                             Previous
                         </button>

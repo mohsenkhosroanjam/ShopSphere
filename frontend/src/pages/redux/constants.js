@@ -7,4 +7,4 @@ export const CATEGORY_URL = `${BASE_URL}/api/category`;
 export const PRODUCT_URL = `${BASE_URL}/api/products`;
 export const UPLOAD_URL = `${BASE_URL}/api/upload`;
 export const CART_URL = `${BASE_URL}/api/cart`;
-
+export const BLOG_URL = `${BASE_URL}/api/blogs`;

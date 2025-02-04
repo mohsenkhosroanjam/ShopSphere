@@ -42,6 +42,7 @@ import DistributorRegister from "./pages/Auth/DistributorRegister.jsx";
 import Contributors from "./pages/Contributors/Contributors.jsx";
 import Shipping from "./pages/Shipping.jsx";
 import { UnderConstruction } from "./components/UnderConstruction";
+import BlogDetails from "./pages/Blog/BlogDetails.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -63,6 +64,7 @@ const router = createBrowserRouter(
       <Route path="/termsAndConditions" element={<TermsAndConditions />} />
       <Route path="/shipping" element={<Shipping />} />
       <Route path="/blogs" element={<BlogList />} />
+      <Route path="/blog/:id" element={<BlogDetails />} />
       <Route path="/distributor/login" element={<DistributorLogin />} />
       <Route path="/distributor/register" element={<DistributorRegister />} />
       <Route path="/blog/:slug" element={<UnderConstruction />} />

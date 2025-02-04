@@ -1,4 +1,4 @@
-import { BASE_URL } from "../constants";
+import { BLOG_URL } from "../constants";
 import { apiSlice } from "./apiSlice";
 
 
@@ -6,20 +6,18 @@ export const blogApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getBlogs: builder.query({
             query: ({ page = 1, limit = 10 }) => ({
-                url: `${BASE_URL}/api/blogs/get-blogs?page=${page}&limit=${limit}`,
+                url: `${BLOG_URL}/get-blogs?page=${page}&limit=${limit}`,
                 method: "GET",
             }),
             providesTags: ["Blog"],
         }),
-        getBlogById: builder.query({
-            query: (id) => ({
-                url: `${BASE_URL}/api/blogs/${id}`,
-                method: "GET",
-            }),
+        getBlog: builder.query({
+            query: (id) => `${BLOG_URL}/${id}`,
+            providesTags: (result, error, id) => [{ type: 'Blog', id }],
         }),
         createBlog: builder.mutation({
             query: (data) => ({
-                url: `${BASE_URL}/api/blogs/create`,
+                url: `${BLOG_URL}/create`,
                 method: "POST",
                 body: data,
                 headers: {
@@ -31,4 +29,4 @@ export const blogApiSlice = apiSlice.injectEndpoints({
     }),
 });
 
-export const { useGetBlogsQuery, useGetBlogByIdQuery, useCreateBlogMutation } = blogApiSlice; 
+export const { useGetBlogsQuery, useGetBlogQuery, useCreateBlogMutation } = blogApiSlice; 

@@ -4,7 +4,7 @@ import { authenticate } from '../middleware/authMiddleware.js';
     
 const router = express.Router();
 
-router.route('/create').post(createBlog);
+router.route('/create').post(authenticate, createBlog);
 router.route('/get-blogs').get(getBlogs);
 router.route('/:id').get(getBlogById);
 
