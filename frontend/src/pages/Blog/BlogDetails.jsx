@@ -36,7 +36,7 @@ const BlogDetails = () => {
                     <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-3 sm:gap-4 text-sm mb-6 sm:mb-8 text-gray-600 dark:text-gray-300">
                         <div className="flex items-center">
                             <FaUser className="mr-2 text-blue-500 dark:text-pink-500" />
-                            <span className="text-sm">{blog.author.username}</span>
+                            <span className="text-sm">{blog.author?.username}</span>
                         </div>
                         <div className="flex items-center">
                             <FaCalendar className="mr-2 text-blue-500 dark:text-pink-500" />
