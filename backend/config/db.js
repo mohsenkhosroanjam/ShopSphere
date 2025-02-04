@@ -4,7 +4,7 @@ import logger from '../utils/logger.js';
 
 let mainDbConnection;
 
-const urlDB = 'mongodb+srv://yashpandav076:z9kIn5yBO4E8CXFM@cluster07.vubtt.mongodb.net/Shopsphere'||process.env.MONGO_URI;
+const urlDB = 'mongodb://127.0.0.1:27017/Store'||process.env.MONGO_URI;
 
 export const connectDB = async () => {
   try {
