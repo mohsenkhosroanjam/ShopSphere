@@ -2,20 +2,23 @@ import React, { useEffect, useState } from "react";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
-import { useFetchCartQuery } from "../../src/pages/redux/api/cartSlice";
+import { useFetchCartQuery, useUpdateCartQuantityMutation } from "../../src/pages/redux/api/cartSlice";
 import { useSelector } from "react-redux";
 import Paypal from "./paypal";
+import { toast } from "react-toastify";
+import { useAddCartMutation } from "../pages/redux/api/cartSlice";
 
 function Cart() {
   const { userInfo } = useSelector((state) => state.auth);
-  const { data: cartProducts, isLoading, error } = useFetchCartQuery(userInfo._id);
+  const { data: cartProducts, isLoading, error } = useFetchCartQuery(userInfo?._id);
+  const [updateCartQuantity] = useUpdateCartQuantityMutation();
 
   const [loadError, setLoadError] = useState("");
   const [isPaymentStarted, setIsPaymentStarted] = useState(false);
 
   useEffect(() => {
     if (error) {
-      setLoadError(error.message);
+      setLoadError(error?.data?.message || error.error || "Failed to fetch cart");
     }
   }, [error]);
 
@@ -25,7 +28,7 @@ function Cart() {
         Loading...
       </p>
     );
-
+    
   const calculateTotal = () => {
     return (
       cartProducts?.reduce(
@@ -51,9 +54,33 @@ function Cart() {
     );
   };
 
-  const updateQuantity = (item, quantity) => {
-    // Implement logic for updating the quantity
-    console.log(`Update item ${item.id} quantity to ${quantity}`);
+  const updateQuantity = async (item, quantity) => {
+    try {
+      const result = await updateCartQuantity({
+        userId: userInfo._id,
+        productId: item.productId._id,
+        quantity: quantity
+      }).unwrap();
+      
+      if (result.message === 'Cart updated successfully') {
+        toast.success('Cart updated successfully');
+        return;
+      }
+      
+      if (!result.success && result.error) {
+        toast.error('Failed to update quantity:', result.error);
+      }
+    } catch (err) {
+      const errorMessage = err.data?.message || err.error || 'Failed to update quantity';
+      toast.error('Failed to update quantity:', errorMessage);
+    }
+  };
+
+  const handleQuantityChange = (item, newQuantity) => {
+    const quantity = parseInt(newQuantity);
+    if (!isNaN(quantity) && quantity > 0) {
+      updateQuantity(item, quantity);
+    }
   };
 
   return (
@@ -83,22 +110,16 @@ function Cart() {
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() => updateQuantity(item, item.quantity - 1)}
+                    onClick={() => handleQuantityChange(item, item.quantity - 1)}
                   >
                     <Minus className="h-4 w-4" />
                   </Button>
                   <Input
                     type="number"
                     value={item.quantity}
-                    onChange={(e) => {
-                      const value = parseInt(e.target.value);
-                      if (isNaN(value) || value <= 0) {
-                        updateQuantity(item.id, 1); // Reset to 1 if invalid
-                      } else {
-                        updateQuantity(item.id, value); // Update with valid value
-                      }
-                    }}
+                    onChange={(e) => handleQuantityChange(item, e.target.value)}
                     className="w-16 text-center no-spin"
+                    min="1"
                     style={{
                       WebkitAppearance: "none",
                       MozAppearance: "textfield",
@@ -107,7 +128,7 @@ function Cart() {
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() => updateQuantity(item, item.quantity + 1)}
+                    onClick={() => handleQuantityChange(item, item.quantity + 1)}
                   >
                     <Plus className="h-4 w-4" />
                   </Button>

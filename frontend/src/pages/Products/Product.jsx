@@ -1,9 +1,24 @@
 import { Link } from "react-router-dom"
 import HeartIcon from "./HeartIcon"
 import { useCart } from '../../components/CartContext';
+import { useAddCartMutation } from "../redux/api/cartSlice";
+import { useSelector } from 'react-redux';
 
 const Product = ({ product }) => {
-  const { addToCart } = useCart();
+  const [addToCart] = useAddCartMutation();
+  const { userInfo } = useSelector((state) => state.auth);
+
+  const handleAddToCart = async () => {
+    try {
+      await addToCart({
+        userId: userInfo._id,
+        productId: product._id,
+        quantity: 1
+      }).unwrap();
+    } catch (err) {
+      console.error('Failed to add to cart:', err);
+    }
+  };
 
   return (
     <div className="w-[30rem] ml-[2rem] p-3 relative">
@@ -20,7 +35,7 @@ const Product = ({ product }) => {
         </Link>
         <button
           className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-md mt-2 w-full transition-all duration-300 transform hover:scale-105"
-          onClick={() => addToCart(product)}
+          onClick={handleAddToCart}
         >
           Add to Cart
         </button>
