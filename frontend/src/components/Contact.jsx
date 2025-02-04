@@ -9,11 +9,39 @@ const Contact = () => {
     message: "",
   });
 
+  const [emailError, setEmailError] = useState("");
+
+  const validateEmail = (email) => {
+    return /\S+@\S+\.\S+/.test(email);
+  };
+
+  const handleBlur = () => {
+    if (formData.email && !validateEmail(formData.email)) {
+      setEmailError("Invalid email address");
+    }
+  };
+
+  const handleEmailChange = (e) => {
+    const email = e.target.value;
+    setFormData({ ...formData, email });
+
+    // Remove error when the user starts typing
+    if (emailError) {
+      setEmailError("");
+    }
+  };
+
+
   const submitHandler = (e) => {
     e.preventDefault();
 
     if (!formData.fullName || !formData.email || !formData.message) {
       toast.error("Please fill all the fields");
+      return;
+    }
+
+    if (!validateEmail(formData.email)) {
+      setEmailError("Invalid email address");
       return;
     }
   };
@@ -58,15 +86,18 @@ const Contact = () => {
                     <span className="label-text text-white">Email Address</span>
                   </label>
                   <input
-                    type="email"
-                    className="input w-full p-3 bg-transparent border border-white/20 rounded 
-                             transition-all duration-200 focus:border-pink-500 text-white"
+                    type="text"
+                    className={`input w-full p-3 bg-transparent border ${
+                      emailError ? "border-red-500" : "border-white/20"
+                    } rounded transition-all duration-200 focus:border-pink-500 text-white`}
                     placeholder="Enter your email address"
                     value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
+                    onChange={handleEmailChange}
+                    onBlur={handleBlur}
                   />
+                  {emailError && (
+                    <p className="text-red-500 text-sm mt-2">{emailError}</p>
+                  )}
                 </div>
                 <div className="form-control">
                   <label className="label text-sm font-medium">
