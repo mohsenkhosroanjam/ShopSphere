@@ -310,11 +310,10 @@ function Cart() {
               <div className="mt-6 sm:mt-8">
                   <Button 
                     onClick={handleOnClickPay}
-                    className={`w-full py-4 sm:py-3 bg-gradient-to-r transition-all duration-300
-                      transform hover:scale-[1.02] font-semibold text-base sm:text-lg
-                      ${isDarkMode 
-                        ? 'from-rose-500 to-purple-600 hover:shadow-[0_0_30px_rgba(244,63,94,0.3)]' 
-                        : 'from-rose-600 to-pink-500 hover:shadow-[0_0_30px_rgba(244,63,94,0.2)]'}`}
+                    className="w-full py-4 sm:py-3 bg-purple-500 hover:bg-purple-600 
+                        transition-all duration-300 transform hover:scale-[1.02] 
+                        font-semibold text-base sm:text-lg text-white
+                        hover:shadow-[0_0_30px_rgba(147,51,234,0.2)]"
                   >
                     Proceed to Checkout
                   </Button>
