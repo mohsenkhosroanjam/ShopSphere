@@ -42,7 +42,7 @@ const filteredFavorites = [...favorites].sort((a, b) => {
           </label>
           <select
             id="sortBy"
-            className="px-4 py-2 rounded bg-gray-300 text-black font-semibold"
+            className="px-4 py-2 rounded bg-gray-300 text-black font-semibold cursor-pointer"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
           >
