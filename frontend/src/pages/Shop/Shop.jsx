@@ -331,73 +331,68 @@ export default function ShopPage() {
 
   return (
     <div className={`min-h-screen p-6 ${isDarkMode ? "bg-black text-white" : "bg-white text-black"}`}>
-  <div className="container mx-auto">
-    <div className="text-center mb-8">
-      <h1 className={`text-4xl font-bold tracking-wide mb-2 ${isDarkMode ? "text-white" : "text-black"}`}>
-        Shop
-      </h1>
-      <p className={`text-lg py-4 ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
-        Explore our entire collection here!
-      </p>
-    </div>
+      <div className="container mx-auto">
+        <div className="text-center mb-8">
+          <h1 className={`text-4xl font-bold tracking-wide mb-2 ${isDarkMode ? "text-white" : "text-black"}`}>
+            Shop
+          </h1>
+          <p className={`text-lg py-4 ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
+            Explore our entire collection here!
+          </p>
+        </div>
 
-    {userInfo?.isDistributor && (
-      <div className="flex justify-center mb-8">
-        <button
-          onClick={() => setShowAddModal(true)}
-          className={`px-6 py-3 rounded-lg font-semibold shadow-md transition duration-300 ease-in-out transform hover:scale-105
-            ${isDarkMode ? "bg-pink-600 hover:bg-pink-700 text-white shadow-pink-500/50" 
-                         : "bg-pink-500 hover:bg-pink-600 text-black shadow-lg"}`}
-        >
-          Add New Product
-        </button>
-      </div>
-    )}
-
-    <Link
-      to="/specialshop"
-      className={`absolute top-10 right-40 font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transition duration-300 ease-in-out transform hover:scale-105
-        ${isDarkMode ? "bg-gradient-to-r from-gray-800 to-pink-600 text-white" 
-                     : "bg-gradient-to-r from-white to-pink-500 text-black"}`}
-    >
-      Tap to explore exclusive products
-    </Link>
-
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 mx-16 my-16">
-      {products.length > 0 ? (
-        products.map((product) => (
-          <div
-            key={product._id}
-            className={`shadow-md rounded-lg p-4 transform hover:scale-105 hover:shadow-lg transition duration-300 relative 
-              ${isDarkMode ? "bg-gray-800 text-white" : "bg-pink-500 text-black"}`}
-          >
-            <h2 className="text-xl font-bold mb-2">{product.name}</h2>
-            <p className="text-lg font-semibold mb-4">${product.price}</p>
-            <div className={`w-full h-40 rounded-md flex items-center justify-center relative 
-              ${isDarkMode ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-500"}`}>
-              <img src={product.image} alt={product.name} className="object-contain w-full h-full" />
-              <HeartIcon product={product} />
-            </div>
+        {userInfo?.isDistributor && (
+          <div className="flex justify-center mb-8">
             <button
-              onClick={() => handleCart(product)}
-              className={`w-full mt-4 font-semibold py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105
-                ${isDarkMode ? "bg-gray-200 hover:bg-gray-300 text-black" 
-                             : "bg-white hover:bg-gray-100 text-pink-500"}`}
+              onClick={() => setShowAddModal(true)}
+              className={`px-6 py-3 rounded-lg font-semibold shadow-md transition duration-300 ease-in-out transform hover:scale-105
+            ${isDarkMode ? "bg-pink-600 hover:bg-pink-700 text-white shadow-pink-500/50"
+                  : "bg-pink-500 hover:bg-pink-600 text-black shadow-lg"}`}
             >
-              Add to Cart
+              Add New Product
             </button>
           </div>
-        ))
-      ) : (
-        <div className={`col-span-full text-center text-lg ${isDarkMode ? "text-gray-500" : "text-gray-400"}`}>
-          {productsLoading ? "Loading..." : "No products found."}
-        </div>
-      )}
-    </div>
+        )}
 
-    {showAddModal && <ProductModal />}
-  </div>
-</div>
+        <Link
+          to="/specialshop"
+          className={`absolute top-10 right-40 font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transition duration-300 ease-in-out transform hover:scale-105
+        ${isDarkMode ? "bg-gradient-to-r from-gray-800 to-pink-600 text-white"
+              : "bg-gradient-to-r from-white to-pink-500 text-black"}`}
+        >
+          Tap to explore exclusive products
+        </Link>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 mx-16 my-16">
+          {products.length > 0 ? (
+            products.map((product) => (
+              <div key={product._id} className={`shadow-md rounded-lg p-4 transform hover:scale-105 hover:shadow-lg transition duration-300 relative ${isDarkMode ? "bg-gray-800 text-white" : "bg-pink-500 text-black"}`}>
+                <Link to={`/product/${product._id}`}>
+                  <h2 className="text-xl font-bold mb-2">{product.name}</h2>
+                  <p className="text-lg font-semibold mb-4">${product.price}</p>
+                  <div className={`w-full h-40 rounded-md flex items-center justify-center relative ${isDarkMode ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-500"}`}>
+                    <img src={product.image} alt={product.name} className="object-contain w-full h-full" />
+                  </div>
+                </Link>
+                <HeartIcon product={product} />
+                <button
+                  onClick={() => handleCart(product)}
+                  className={`w-full mt-4 font-semibold py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105 ${isDarkMode ? "bg-gray-200 hover:bg-gray-300 text-black" : "bg-white hover:bg-gray-100 text-pink-500"}`}
+                >
+                  Add to Cart
+                </button>
+              </div>
+            ))
+          ) : (
+            <div className={`col-span-full text-center text-lg ${isDarkMode ? "text-gray-500" : "text-gray-400"}`}>
+              {productsLoading ? "Loading..." : "No products found."}
+            </div>
+          )}
+        </div>
+
+        {showAddModal && <ProductModal />}
+      </div>
+    </div>
 
   );
 }
