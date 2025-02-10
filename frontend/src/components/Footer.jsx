@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFacebookF, faTwitter, faInstagram, faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
+import { faFacebookF, faTwitter, faInstagram, faLinkedinIn,faXTwitter } from "@fortawesome/free-brands-svg-icons";
 import { Link } from "react-router-dom";
 import { useState } from 'react';
 import { toast } from 'react-toastify';
@@ -55,7 +55,7 @@ const Footer = () => {
                 <FontAwesomeIcon icon={faFacebookF} className={`${isDarkMode ? 'text-rose-400' : 'text-rose-500'} text-xl hover:text-rose-600 transition-all duration-300 hover:scale-110`} />
               </a>
               <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-                <FontAwesomeIcon icon={faTwitter} className={`${isDarkMode ? 'text-rose-400' : 'text-rose-500'} text-xl hover:text-rose-600 transition-all duration-300 hover:scale-110`} />
+                <FontAwesomeIcon icon={faXTwitter} className={`${isDarkMode ? 'text-rose-400' : 'text-rose-500'} text-xl hover:text-rose-600 transition-all duration-300 hover:scale-110`} />
               </a>
               <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                 <FontAwesomeIcon icon={faInstagram} className={`${isDarkMode ? 'text-rose-400' : 'text-rose-500'} text-xl hover:text-rose-600 transition-all duration-300 hover:scale-110`} />
