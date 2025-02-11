@@ -19,7 +19,8 @@ function Contributors() {
       const page = 1;
       const perPage = 100;
 
-      const url = https://api.github.com/repos/${owner}/${repo}/contributors?page=${page}&per_page=${perPage};
+     const url = `https://api.github.com/repos/${owner}/${repo}/contributors?page=${page}&per_page=${perPage}`;
+
 
       try {
         const response = await fetch(url);
