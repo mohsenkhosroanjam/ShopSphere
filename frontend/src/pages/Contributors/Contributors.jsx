@@ -37,7 +37,7 @@ function Contributors() {
         }
 
         const repoResponse = await fetch(
-          https://api.github.com/repos/${owner}/${repo}
+          `https://api.github.com/repos/${owner}/${repo}`
         );
         const repoData = await repoResponse.json();
         setRepoData(repoData);
