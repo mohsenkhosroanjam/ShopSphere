@@ -10,15 +10,29 @@ const Footer = () => {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+
+const validateEmail = (email) => {
+  if (!email) {
+    toast.error("please enter a valid email address");
+    return false;
+  }
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+if (!emailRegex.test(email)) {
+  toast.error('Please enter a valid email address');
+  return false;
+  }
+  return true;
+};
+
   const handleSubscribe = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      toast.error('Please enter a valid email address');
+    // Validate the email before submitting the form
+    if (!validateEmail(email)) {
       setIsSubmitting(false);
-      return;
+      return ;
     }
 
     try {
@@ -121,14 +135,13 @@ const Footer = () => {
             <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Subscribe for exclusive deals and updates!</p>
             <form onSubmit={handleSubscribe} className="space-y-3">
               <input
-                type="email"
+                type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
                 className={`w-full px-4 py-2 rounded-lg border border-transparent focus:border-rose-500 outline-none transition-all duration-300 ${
                   isDarkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-900'
                 }`}
-                required
               />
               <button
                 type="submit"
