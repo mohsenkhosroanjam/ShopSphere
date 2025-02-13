@@ -1,48 +1,41 @@
-import { StrictMode } from "react";
+import { StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
-import "./index.css";
-import {
-  Route,
-  RouterProvider,
-  Navigate,
-  createRoutesFromElements,
-} from "react-router";
+import { Route, RouterProvider, createRoutesFromElements } from "react-router";
 import { createBrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./pages/redux/store.js";
-import Home from "./pages/Home.jsx";
-import TermsAndConditions from "./pages/Footer/TermsAndConditions.jsx";
-//private route
 import PrivateRoute from "./components/PrivateRoute.jsx";
-
-// Auth
-import Login from "./pages/Auth/Login.jsx";
-import Register from "./pages/Auth/Register.jsx";
-import Profile from "./pages/User/Profile.jsx";
-
 import AdminRoute from "./pages/Admin/AdminRoute.jsx";
-import UserList from "./pages/Admin/UserList.jsx";
-import CategoryList from "./pages/Admin/CategoryList.jsx";
-import ProductList from "./pages/Admin/ProductList.jsx";
-import ProductUpdate from "./pages/Admin/ProductUpdate.jsx";
-import AllProducts from "./pages/Admin/AllProducts.jsx";
-import Favorites from "./pages/Products/Favorites.jsx";
-import ProductDetails from "./pages/Products/ProductDetails.jsx";
-import Shop from "./pages/Shop/Shop.jsx";
-import SplShop from "./pages/SplShop/SplShop.jsx";
-import Cart from "./components/Cart.jsx";
-import FAQ from "./pages/FAQ.jsx";
 import { CartProvider } from "./components/CartContext";
-import Contact from "./components/Contact"
-import BlogList from "./pages/Blog/BlogList.jsx";
-import Offer from "./pages/Offer/index.jsx";
-import DistributorLogin from "./pages/Auth/DistributorLogin.jsx";
-import DistributorRegister from "./pages/Auth/DistributorRegister.jsx";
-import Contributors from "./pages/Contributors/Contributors.jsx";
-import Shipping from "./pages/Shipping.jsx";
-import { UnderConstruction } from "./components/UnderConstruction";
-import BlogDetails from "./pages/Blog/BlogDetails.jsx";
+import Loader from "./components/Loader.jsx";
+
+// Lazy load components
+const Home = React.lazy(() => import("./pages/Home.jsx"));
+const TermsAndConditions = React.lazy(() => import("./pages/Footer/TermsAndConditions.jsx"));
+const Login = React.lazy(() => import("./pages/Auth/Login.jsx"));
+const Register = React.lazy(() => import("./pages/Auth/Register.jsx"));
+const Profile = React.lazy(() => import("./pages/User/Profile.jsx"));
+const UserList = React.lazy(() => import("./pages/Admin/UserList.jsx"));
+const CategoryList = React.lazy(() => import("./pages/Admin/CategoryList.jsx"));
+const ProductList = React.lazy(() => import("./pages/Admin/ProductList.jsx"));
+const ProductUpdate = React.lazy(() => import("./pages/Admin/ProductUpdate.jsx"));
+const AllProducts = React.lazy(() => import("./pages/Admin/AllProducts.jsx"));
+const Favorites = React.lazy(() => import("./pages/Products/Favorites.jsx"));
+const ProductDetails = React.lazy(() => import("./pages/Products/ProductDetails.jsx"));
+const Shop = React.lazy(() => import("./pages/Shop/Shop.jsx"));
+const SplShop = React.lazy(() => import("./pages/SplShop/SplShop.jsx"));
+const Cart = React.lazy(() => import("./components/Cart.jsx"));
+const FAQ = React.lazy(() => import("./pages/FAQ.jsx"));
+const Contact = React.lazy(() => import("./components/Contact"));
+const BlogList = React.lazy(() => import("./pages/Blog/BlogList.jsx"));
+const Offer = React.lazy(() => import("./pages/Offer/index.jsx"));
+const DistributorLogin = React.lazy(() => import("./pages/Auth/DistributorLogin.jsx"));
+const DistributorRegister = React.lazy(() => import("./pages/Auth/DistributorRegister.jsx"));
+const Contributors = React.lazy(() => import("./pages/Contributors/Contributors.jsx"));
+const Shipping = React.lazy(() => import("./pages/Shipping.jsx"));
+const UnderConstruction = React.lazy(() => import("./components/UnderConstruction"));
+const BlogDetails = React.lazy(() => import("./pages/Blog/BlogDetails.jsx"));
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -56,8 +49,7 @@ const router = createBrowserRouter(
       <Route path="/Shop" element={<Shop />} />
       <Route path="/specialshop" element={<SplShop />} />
       <Route path="" element={<PrivateRoute />}>
-      <Route path="cart" element={<Cart />} />
-      
+        <Route path="cart" element={<Cart />} />
       </Route>
       <Route path="/faq" element={<FAQ />} />
       <Route path="/contact" element={<Contact />} />
@@ -91,7 +83,9 @@ const router = createBrowserRouter(
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <CartProvider>
-      <RouterProvider router={router} />
+      <Suspense fallback={<Loader />}>
+        <RouterProvider router={router} />
+      </Suspense>
     </CartProvider>
   </Provider>
 );
