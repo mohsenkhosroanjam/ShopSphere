@@ -8,8 +8,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AnimatedCursor from 'react-animated-cursor'
 import Canvas from './Utils/Cursor.jsx'
 import { ThemeProvider } from './context/ThemeContext'
-import { Suspense } from 'react'
-import Loader from './components/Loader.jsx'
 
 // Create the QueryClient instance
 const queryClient = new QueryClient();
@@ -23,9 +21,7 @@ function App() {
           <ToastContainer />
           <Navigation />
           <main className="py-3">
-            <Suspense fallback={<Loader />}>
-              <Outlet />
-            </Suspense>
+            <Outlet />
           </main>
         </ThemeProvider>
       </Provider>
