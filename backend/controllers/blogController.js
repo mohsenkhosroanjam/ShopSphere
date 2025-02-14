@@ -87,11 +87,47 @@ const getBlogById = asyncHandler(async (req, res) => {
         .populate('category', 'name');
 
     if (blog) {
-        res.json(blog);
+        const isLiked = req.user ? blog.likes.includes(req.user._id) : false;
+        res.json({
+            ...blog.toObject(),
+            isLiked
+        });
     } else {
         res.status(404);
         throw new Error('Blog not found');
     }
 });
 
-export { createBlog, getBlogs, getBlogById };
+const toggleBlogLike = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user._id;
+
+    const blog = await Blog.findById(id);
+    if (!blog) {
+        res.status(404);
+        throw new Error('Blog not found');
+    }
+
+    // Check if user has already liked the blog
+    const isLiked = blog.likes.includes(userId);
+
+    if (isLiked) {
+        // Unlike the blog
+        blog.likes = blog.likes.filter(like => like.toString() !== userId.toString());
+        blog.likeCount = blog.likeCount - 1;
+    } else {
+        // Like the blog
+        blog.likes.push(userId);
+        blog.likeCount = blog.likeCount + 1;
+    }
+
+    const updatedBlog = await blog.save();
+
+    res.json({
+        message: isLiked ? 'Blog unliked' : 'Blog liked',
+        likes: updatedBlog.likeCount,
+        isLiked: !isLiked
+    });
+});
+
+export { createBlog, getBlogs, getBlogById, toggleBlogLike };
