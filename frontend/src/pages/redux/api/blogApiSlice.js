@@ -26,7 +26,33 @@ export const blogApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ["Blog"],
         }),
+        toggleBlogLike: builder.mutation({
+            query: (id) => ({
+                url: `${BLOG_URL}/${id}/like`,
+                method: 'POST',
+            }),
+            // Optimistically update the cache
+            async onQueryStarted(id, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    // Update the blog details cache
+                    dispatch(
+                        blogApiSlice.util.updateQueryData('getBlog', id, (draft) => {
+                            draft.isLiked = data.isLiked;
+                            draft.likeCount = data.likes;
+                        })
+                    );
+                } catch {
+                    // If the mutation fails, the cache will be rolled back automatically
+                }
+            },
+        }),
     }),
 });
 
-export const { useGetBlogsQuery, useGetBlogQuery, useCreateBlogMutation } = blogApiSlice; 
+export const { 
+    useGetBlogsQuery, 
+    useGetBlogQuery, 
+    useCreateBlogMutation,
+    useToggleBlogLikeMutation 
+} = blogApiSlice; 
