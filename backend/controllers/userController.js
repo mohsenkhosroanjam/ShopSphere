@@ -2,6 +2,8 @@ import User from "../models/userModel.js";
 import asyncHandler from "../middleware/asyncHandler.js";
 import bcrypt from "bcryptjs";
 import generateToken from "../utils/createToken.js";
+import sendEmail from "../utils/sendEmail.js";
+import crypto from 'crypto';
 
 const createUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
@@ -362,6 +364,75 @@ const loginDistributor = asyncHandler(async (req, res) => {
   }
 });
 
+const requestAccountDeletion = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+  
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  // Generate deletion token
+  const deleteToken = crypto.randomBytes(32).toString('hex');
+  user.deleteToken = deleteToken;
+  user.deleteTokenExpires = Date.now() + 3600000; // 1 hour
+  await user.save();
+
+  // Create verification link
+  const verificationLink = `${process.env.FRONTEND_URL}/verify-deletion/${deleteToken}`;
+  
+  // Send verification email
+  await sendEmail(
+    user.email,
+    "Account Deletion Request",
+    `Are you sure you want to delete your account? This action cannot be undone.\n\n` +
+    `Click the following link to confirm deletion: ${verificationLink}\n\n` +
+    `If you did not request this, please ignore this email.\n` +
+    `The link will expire in 1 hour.`
+  );
+
+  res.status(200).json({ message: "Deletion verification email sent" });
+});
+
+const confirmAccountDeletion = asyncHandler(async (req, res) => {
+  const { token } = req.params;
+  
+  const user = await User.findOne({
+    deleteToken: token,
+    deleteTokenExpires: { $gt: Date.now() }
+  });
+
+  if (!user) {
+    res.status(400);
+    throw new Error("Invalid or expired deletion token");
+  }
+
+  // Delete user's blogs
+  await Blog.deleteMany({ author: user._id });
+
+  // Delete user's products
+  await Product.deleteMany({ distributor: user._id });
+
+  // Delete user's cart
+  await Cart.deleteMany({ userId: user._id });
+
+  // Remove user's likes from blogs
+  await Blog.updateMany(
+    { likes: user._id },
+    { $pull: { likes: user._id } }
+  );
+
+  // Delete the user account
+  await User.deleteOne({ _id: user._id });
+
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+
+  res.status(200).json({ message: "Account successfully deleted" });
+});
+
 export {
   createUser,
   loginUser,
@@ -375,5 +446,7 @@ export {
   googleSignIn,
   googleLogin,
   createDistributor,
-  loginDistributor
+  loginDistributor,
+  requestAccountDeletion,
+  confirmAccountDeletion,
 };
