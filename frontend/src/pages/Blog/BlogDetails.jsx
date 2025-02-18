@@ -1,12 +1,13 @@
-import { useGetBlogQuery } from "../redux/api/blogApiSlice";
+import { useGetBlogQuery, useToggleBlogLikeMutation } from "../redux/api/blogApiSlice";
 import { useSelector } from "react-redux";
 import Loader from "../../components/Loader";
 import { format } from "date-fns";
 import { useParams, Link } from "react-router-dom";
-import { FaUser, FaCalendar, FaFolder, FaRegArrowAltCircleLeft } from "react-icons/fa";
+import { FaUser, FaCalendar, FaFolder, FaRegArrowAltCircleLeft, FaHeart, FaRegHeart } from "react-icons/fa";
 import { useTheme } from "../../context/ThemeContext";
 import { useState } from "react";
 import CreateBlogModal from "./CreateBlogModal";
+import { toast } from "react-toastify";
 
 const BlogDetails = () => {
     const { id } = useParams();
@@ -14,9 +15,23 @@ const BlogDetails = () => {
     const { userInfo } = useSelector((state) => state.auth);
     const { isDarkMode } = useTheme();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [toggleLike] = useToggleBlogLikeMutation();
     
     if (isLoading) return <Loader />;
     if (error) return <div>Error: {error.message}</div>;
+
+    const handleLikeClick = async () => {
+        if (!userInfo) {
+            toast.error("Please login to like this blog");
+            return;
+        }
+
+        try {
+            await toggleLike(id).unwrap();
+        } catch (err) {
+            toast.error(err?.data?.message || "Failed to update like");
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-100 to-white dark:from-gray-900 dark:to-black">
@@ -57,6 +72,61 @@ const BlogDetails = () => {
                                 </span>
                             </div>
                         )}
+                        <button
+                            onClick={handleLikeClick}
+                            className={`group flex items-center gap-2 px-5 py-2.5 rounded-full transition-all duration-300 
+                                ${userInfo 
+                                    ? 'hover:scale-105 hover:shadow-lg dark:hover:shadow-pink-500/20' 
+                                    : 'cursor-not-allowed opacity-75'
+                                } 
+                                ${blog.isLiked
+                                    ? 'bg-gradient-to-r from-pink-100 to-rose-100 dark:from-pink-900/50 dark:to-rose-900/50 shadow-md shadow-pink-200 dark:shadow-pink-800/20'
+                                    : 'bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 hover:shadow-blue-200/50 dark:hover:shadow-pink-500/20'
+                                }
+                                transform-gpu backface-hidden`}
+                        >
+                            <div className="relative">
+                                {blog.isLiked ? (
+                                    <FaHeart 
+                                        className={`text-lg transform transition-all duration-300 
+                                            text-pink-500 dark:text-pink-400
+                                            group-hover:scale-110 group-hover:rotate-12`}
+                                    />
+                                ) : (
+                                    <FaRegHeart 
+                                        className={`text-lg transform transition-all duration-300 
+                                            text-blue-500 dark:text-pink-400
+                                            group-hover:scale-110 group-hover:-rotate-12`}
+                                    />
+                                )}
+                                {userInfo && (
+                                    <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full 
+                                        bg-gradient-to-r from-pink-400 to-rose-400 
+                                        animate-ping opacity-75"
+                                    />
+                                )}
+                            </div>
+                            <span className={`text-sm font-medium tracking-wide transition-colors duration-300
+                                ${blog.isLiked
+                                    ? 'text-pink-700 dark:text-pink-300 group-hover:text-pink-800 dark:group-hover:text-pink-200'
+                                    : 'text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-pink-300'
+                                }`}
+                            >
+                                {blog.likeCount || 0} 
+                                <span className="ml-1 font-normal">
+                                    {blog.likeCount === 1 ? 'Like' : 'Likes'}
+                                </span>
+                            </span>
+                            
+                            {/* Decorative elements */}
+                            <div className={`absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 
+                                transition-opacity duration-300 pointer-events-none
+                                ${blog.isLiked
+                                    ? 'bg-gradient-to-r from-pink-200/20 to-rose-200/20 dark:from-pink-800/20 dark:to-rose-800/20'
+                                    : 'bg-gradient-to-r from-blue-200/20 to-indigo-200/20 dark:from-gray-700/20 dark:to-gray-600/20'
+                                }`}
+                            />
+                        </button>
                     </div>
 
                     {blog.excerpt && (
