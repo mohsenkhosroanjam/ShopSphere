@@ -12,7 +12,9 @@ import {
   googleSignIn,
   googleLogin,
   createDistributor,
-  loginDistributor
+  loginDistributor,
+  requestAccountDeletion,
+  confirmAccountDeletion
 } from "../controllers/userController.js";
 import { authenticate, authorizeAdmin } from "../middleware/authMiddleware.js";
 const router = express.Router();
@@ -35,5 +37,8 @@ router.route("/:id").delete(authenticate, authorizeAdmin, deleteUserById).get(au
 
 router.post("/distributor/signup", createDistributor);
 router.post("/distributor/login", loginDistributor);
+
+router.post('/request-deletion', authenticate, requestAccountDeletion);
+router.post('/confirm-deletion/:token', confirmAccountDeletion);
 
 export default router;
