@@ -4,6 +4,9 @@ import bcrypt from "bcryptjs";
 import generateToken from "../utils/createToken.js";
 import sendEmail from "../utils/sendEmail.js";
 import crypto from 'crypto';
+import Blog from "../models/blogModel.js";
+import Product from "../models/productModel.js";
+import Cart from "../models/cartModel.js";  
 
 const createUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
@@ -43,7 +46,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const existingUser = await User.findOne({ email });
 
-  if(existingUser.isDistributor){
+  if (existingUser.isDistributor) {
     return res.status(401).json({
       message: "Please Login As Distributor"
     })
@@ -188,7 +191,7 @@ const googleSignIn = asyncHandler(async (req, res) => {
   }
 
   let existingUser = await User.findOne({ googleId });
-  
+
   if (!existingUser) {
     existingUser = await User.findOne({ email });
   }
@@ -252,7 +255,7 @@ const googleLogin = asyncHandler(async (req, res) => {
       email,
       googleId,
       photoURL,
-      password: "google-password" 
+      password: "google-password"
     });
 
     try {
@@ -281,9 +284,9 @@ const googleLogin = asyncHandler(async (req, res) => {
 });
 
 const createDistributor = asyncHandler(async (req, res) => {
-  const { 
-    username, 
-    email, 
+  const {
+    username,
+    email,
     password,
     isDistributor,
     businessName,
@@ -340,14 +343,14 @@ const loginDistributor = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   const distributor = await User.findOne({ email, isDistributor: true });
-  
+
   if (!distributor) {
     res.status(401);
     throw new Error("Not registered as a distributor");
   }
 
   const isPasswordValid = await bcrypt.compare(password, distributor.password);
-  
+
   if (isPasswordValid) {
     const token = generateToken(res, distributor._id);
     res.status(200).json({
@@ -366,7 +369,7 @@ const loginDistributor = asyncHandler(async (req, res) => {
 
 const requestAccountDeletion = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
-  
+
   if (!user) {
     res.status(404);
     throw new Error("User not found");
@@ -380,7 +383,7 @@ const requestAccountDeletion = asyncHandler(async (req, res) => {
 
   // Create verification link
   const verificationLink = `${process.env.FRONTEND_URL}/verify-deletion/${deleteToken}`;
-  
+
   // Send verification email
   await sendEmail(
     user.email,
@@ -395,42 +398,47 @@ const requestAccountDeletion = asyncHandler(async (req, res) => {
 });
 
 const confirmAccountDeletion = asyncHandler(async (req, res) => {
-  const { token } = req.params;
-  
-  const user = await User.findOne({
-    deleteToken: token,
-    deleteTokenExpires: { $gt: Date.now() }
-  });
+  try {
+    const { token } = req.params;
+    console.log(token);
+    const user = await User.findOne({
+      deleteToken: token,
+      deleteTokenExpires: { $gt: Date.now() }
+    });
+    console.log(user);
+    if (!user) {
+      res.status(400);
+      throw new Error("Invalid or expired deletion token");
+    }
 
-  if (!user) {
+    // Delete user's blogs
+    await Blog.deleteMany({ author: user._id });
+
+    // Delete user's products
+    await Product.deleteMany({ distributor: user._id });
+
+    // Delete user's cart
+    await Cart.deleteMany({ userId: user._id });
+
+    // Remove user's likes from blogs
+    await Blog.updateMany(
+      { likes: user._id },
+      { $pull: { likes: user._id } }
+    );
+
+    // Delete the user account
+    await User.deleteOne({ _id: user._id });
+
+    res.cookie("jwt", "", {
+      httpOnly: true,
+      expires: new Date(0),
+    });
+    console.log("Account successfully deleted");
+    res.status(200).json({ message: "Account successfully deleted" });
+  } catch (err) {
     res.status(400);
-    throw new Error("Invalid or expired deletion token");
+    throw new Error("Error deleting account");
   }
-
-  // Delete user's blogs
-  await Blog.deleteMany({ author: user._id });
-
-  // Delete user's products
-  await Product.deleteMany({ distributor: user._id });
-
-  // Delete user's cart
-  await Cart.deleteMany({ userId: user._id });
-
-  // Remove user's likes from blogs
-  await Blog.updateMany(
-    { likes: user._id },
-    { $pull: { likes: user._id } }
-  );
-
-  // Delete the user account
-  await User.deleteOne({ _id: user._id });
-
-  res.cookie("jwt", "", {
-    httpOnly: true,
-    expires: new Date(0),
-  });
-
-  res.status(200).json({ message: "Account successfully deleted" });
 });
 
 export {

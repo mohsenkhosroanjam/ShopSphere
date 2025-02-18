@@ -1,21 +1,20 @@
-const Modal = ({ isOpen, onClose, children }) => {
+import React from 'react';
+
+ const Modal = ({ isOpen, onClose, children }) => {
+  if (!isOpen) return null;
+
   return (
-    <>
-      {isOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="fixed inset-0 bg-black opacity-50"></div>
-          <div className="absolute top-[40%] right-[50%] bg-gray-800 p-4 rounded-lg z-10 text-right">
-            <button
-              className="text-black font-semibold hover:text-gray-700 focus:outline-none mr-2"
-              onClick={onClose}
-            >
-              X
-            </button>
-            {children}
-          </div>
+    <div className="fixed inset-0 z-50 overflow-y-auto">
+      <div className="flex items-center justify-center min-h-screen px-4">
+        <div
+          className="fixed inset-0 bg-black opacity-50"
+          onClick={onClose}
+        ></div>
+        <div className="relative z-50">
+          {children}
         </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 };
 

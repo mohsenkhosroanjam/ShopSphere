@@ -93,6 +93,18 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    requestAccountDeletion: builder.mutation({
+      query: () => ({
+        url: `${USERS_URL}/request-deletion`,
+        method: 'POST',
+      }),
+    }),
+    confirmAccountDeletion: builder.mutation({
+      query: (token) => ({
+        url: `${USERS_URL}/confirm-deletion/${token}`,
+        method: 'POST',
+      }),
+    }),
   }),
 });
 
@@ -107,6 +119,8 @@ export const {
   useDeleteUserMutation,
   useGetUserDetailsQuery,
   useUpdateUserMutation,
-  useDistributorRegisterMutation,
-  useDistributorLoginMutation
+  useDistributorRegisterMutation, 
+  useDistributorLoginMutation,
+  useRequestAccountDeletionMutation,
+  useConfirmAccountDeletionMutation,
 } = userApiSlice;
