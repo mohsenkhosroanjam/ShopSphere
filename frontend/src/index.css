@@ -3,28 +3,28 @@
 @import "tailwindcss/utilities";
 
 body {
-    background: #0f0f10;
-    color: #fff;
+    @apply bg-white dark:bg-[#0f0f10] text-gray-900 dark:text-white;
 }
-  
+
 input,
 textarea {
-  background-color: #ababab33;
-    color: #fff;
-  }
+    @apply bg-gray-100 dark:bg-[#ababab33] text-gray-900 dark:text-white;
+}
 
-  /* For Webkit browsers (Chrome, Safari, Edge) */
-  *::-webkit-scrollbar {
-    display: none; /* Hide scrollbar for Webkit browsers */
-  }
+/* For Webkit browsers (Chrome, Safari, Edge) */
+*::-webkit-scrollbar {
+    display: none;
+    /* Hide scrollbar for Webkit browsers */
+}
 
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
+
 input[type="number"] {
-  -moz-appearance: textfield;
+    -moz-appearance: textfield;
 }
 
 /* Custom animations */
@@ -32,9 +32,11 @@ input[type="number"] {
     0% {
         transform: translateY(0px);
     }
+
     50% {
         transform: translateY(-1px);
     }
+
     100% {
         transform: translateY(0px);
     }
@@ -45,6 +47,7 @@ input[type="number"] {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -55,9 +58,11 @@ input[type="number"] {
     0% {
         background-position: 0% 50%;
     }
+
     50% {
         background-position: 100% 50%;
     }
+
     100% {
         background-position: 0% 50%;
     }
@@ -80,6 +85,7 @@ input[type="number"] {
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
@@ -89,6 +95,7 @@ input[type="number"] {
     from {
         transform: rotate(360deg);
     }
+
     to {
         transform: rotate(0deg);
     }
