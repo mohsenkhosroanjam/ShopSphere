@@ -53,6 +53,7 @@ import cartRoutes from "./routes/cartRoutes.js";
 connectDB();
 
 import blogRoutes from "./routes/blogRoutes.js";
+import commentRoutes from "./routes/commentRoutes.js";
 
 const port = process.env.PORT || 5000;
 
@@ -77,6 +78,7 @@ app.use("/api/cart", cartRoutes);
 
 
 app.use("/api/blogs", blogRoutes);
+app.use("/api/comments", commentRoutes);
 
 const __dirname = path.resolve();
 app.use("/uploads", express.static(path.join(__dirname + "/uploads")));
