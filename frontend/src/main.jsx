@@ -43,6 +43,7 @@ import Contributors from "./pages/Contributors/Contributors.jsx";
 import Shipping from "./pages/Shipping.jsx";
 import { UnderConstruction } from "./components/UnderConstruction";
 import BlogDetails from "./pages/Blog/BlogDetails.jsx";
+import VerifyDeletion from "./pages/Auth/VerifyDeletion.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -82,6 +83,8 @@ const router = createBrowserRouter(
       </Route>
       <Route path="/offers" element={<Offer />} />
       <Route path="/contributors" element={<Contributors />} />
+
+      <Route path="/verify-deletion/:token" element={<VerifyDeletion />} />
 
       <Route path="*" element={<UnderConstruction />} />
     </Route>
