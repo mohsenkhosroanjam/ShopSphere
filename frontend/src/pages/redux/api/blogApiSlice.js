@@ -1,4 +1,4 @@
-import { BLOG_URL } from "../constants";
+import { BLOG_URL, COMMENT_URL } from "../constants";
 import { apiSlice } from "./apiSlice";
 
 
@@ -47,6 +47,33 @@ export const blogApiSlice = apiSlice.injectEndpoints({
                 }
             },
         }),
+        getComments: builder.query({
+            query: (blogId) => `${COMMENT_URL}/blog/${blogId}`,
+            providesTags: ['Comments'],
+        }),
+        createComment: builder.mutation({
+            query: ({ blogId, content }) => ({
+                url: `${COMMENT_URL}/blog/${blogId}`,
+                method: 'POST',
+                body: { content },
+            }),
+            invalidatesTags: ['Comments'],
+        }),
+        updateComment: builder.mutation({
+            query: ({ commentId, content }) => ({
+                url: `${COMMENT_URL}/${commentId}`,
+                method: 'PUT',
+                body: { content },
+            }),
+            invalidatesTags: ['Comments'],
+        }),
+        deleteComment: builder.mutation({
+            query: (commentId) => ({
+                url: `${COMMENT_URL}/${commentId}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Comments'],
+        }),
     }),
 });
 
@@ -54,5 +81,9 @@ export const {
     useGetBlogsQuery, 
     useGetBlogQuery, 
     useCreateBlogMutation,
-    useToggleBlogLikeMutation 
+    useToggleBlogLikeMutation,
+    useGetCommentsQuery,
+    useCreateCommentMutation,
+    useUpdateCommentMutation,
+    useDeleteCommentMutation
 } = blogApiSlice; 
