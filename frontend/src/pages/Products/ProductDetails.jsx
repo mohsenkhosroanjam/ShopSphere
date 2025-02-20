@@ -45,14 +45,16 @@ const ProductDetails = () => {
         <div className="mt-8 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
           {/* Image gallery */}
           <div className="flex flex-col">
-            <div className="relative">
-              <div className="aspect-w-4 aspect-h-3 rounded-lg overflow-hidden bg-gray-100">
+            <div className="relative group">
+              <div className="aspect-[1/1] rounded-2xl overflow-hidden shadow-xl">
                 <img
-                  src={product?.additionalImages?.[selectedImage] || product?.image}
+                  src={[product?.image, ...(product?.additionalImages || [])][selectedImage]}
                   alt={product?.name}
-                  className="w-full h-full object-center object-cover hover:scale-105 transition-transform duration-300"
+                  className="w-full h-full object-contain object-center 
+                            transition-transform duration-500 ease-in-out
+                            group-hover:scale-105 cursor-zoom-in"
                 />
-                <div className="absolute top-4 right-4">
+                <div className="absolute top-4 right-4 backdrop-blur-sm rounded-full p-1.5">
                   <HeartIcon product={product} />
                 </div>
               </div>
@@ -60,20 +62,37 @@ const ProductDetails = () => {
 
             {/* Image selector */}
             {product?.additionalImages?.length > 0 && (
-              <div className="mt-4 grid grid-cols-4 gap-2">
+              <div className="mt-6 grid grid-cols-5 gap-4">
                 {[product.image, ...product.additionalImages].map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setSelectedImage(idx)}
-                    className={`relative aspect-w-1 aspect-h-1 rounded-md overflow-hidden ${
-                      selectedImage === idx ? 'ring-2 ring-pink-500' : 'ring-1 ring-gray-300'
-                    }`}
+                    className={`relative aspect-square rounded-lg overflow-hidden 
+                              border-2 transition-all duration-200 ease-in-out
+                              hover:ring-2 hover:ring-pink-500 hover:ring-offset-2
+                              dark:hover:ring-offset-gray-900
+                              ${selectedImage === idx ? 'ring-2 ring-pink-500' : ''}`}
+                    style={{
+                      borderColor: selectedImage === idx ?
+                        '#ec4899' : (isDarkMode ? '#374151' : '#e5e7eb')
+                    }}
                   >
                     <img
                       src={img}
                       alt={`View ${idx + 1}`}
-                      className="w-full h-full object-center object-cover hover:opacity-75"
+                      className="w-full h-full object-cover"
                     />
+                    {selectedImage === idx && (
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                        <svg
+                          className="w-6 h-6 text-pink-500"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                        </svg>
+                      </div>
+                    )}
                   </button>
                 ))}
               </div>
@@ -141,8 +160,8 @@ const ProductDetails = () => {
                     ${product?.quantity === 0
                       ? "bg-gray-400 cursor-not-allowed"
                       : isDarkMode
-                      ? "bg-pink-600 hover:bg-pink-700 focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 focus:ring-offset-gray-900"
-                      : "bg-pink-500 hover:bg-pink-600 focus:ring-2 focus:ring-pink-500 focus:ring-offset-2"
+                        ? "bg-pink-600 hover:bg-pink-700 focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+                        : "bg-pink-500 hover:bg-pink-600 focus:ring-2 focus:ring-pink-500 focus:ring-offset-2"
                     } transition-colors duration-200`}
                 >
                   {product?.quantity === 0 ? "Out of Stock" : "Add to Cart"}
@@ -164,9 +183,8 @@ const ProductDetails = () => {
               {product?.reviews?.map((review) => (
                 <div
                   key={review._id}
-                  className={`p-6 rounded-lg transform hover:scale-[1.02] transition-all duration-200 ${
-                    isDarkMode ? "bg-gray-800" : "bg-white shadow-lg"
-                  }`}
+                  className={`p-6 rounded-lg transform hover:scale-[1.02] transition-all duration-200 ${isDarkMode ? "bg-gray-800" : "bg-white shadow-lg"
+                    }`}
                 >
                   <div className="flex items-center justify-between mb-4">
                     <div>
@@ -179,9 +197,8 @@ const ProductDetails = () => {
                       {[...Array(5)].map((_, index) => (
                         <svg
                           key={index}
-                          className={`w-5 h-5 ${
-                            index < review.rating ? "text-yellow-400" : "text-gray-300"
-                          }`}
+                          className={`w-5 h-5 ${index < review.rating ? "text-yellow-400" : "text-gray-300"
+                            }`}
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >

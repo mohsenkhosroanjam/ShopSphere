@@ -98,48 +98,73 @@ export default function ShopPage() {
     }
   };
 
-  const handleAddProduct = async (formData) => {
-    const finalFormData = new FormData();
-    Object.keys(formData).forEach(key => {
-      if (key === 'image') {
-        if (formData[key][0]) {
-          finalFormData.append(key, formData[key][0]);
-        }
-      } else {
-        finalFormData.append(key, formData[key]);
-      }
-    });
-
-    try {
-      console.log(finalFormData)
-      const response = await addProduct(finalFormData);
-      console.log(response)
-      if (response?.data) {
-        toast.success('Product added successfully!');
-        setShowAddModal(false);
-        reset();
-        // Refresh products list
-        if (data?.refetch) {
-          data.refetch();
-        }
-      } else {
-        toast.error('Failed to add product');
-      }
-    } catch (error) {
-      toast.error('Error adding product');
-    }
-  };
-
   const ProductModal = () => {
-    const [selectedFileName, setSelectedFileName] = useState('');
-
-    // Add this function to handle file selection
-    const handleFileChange = (event) => {
+    const [mainImage, setMainImage] = useState(null);
+    const [additionalImages, setAdditionalImages] = useState([]);
+    const [mainImageName, setMainImageName] = useState('');
+    const [additionalImageNames, setAdditionalImageNames] = useState([]);
+    const [isUploading, setIsUploading] = useState(false);
+    
+    const handleMainImageChange = (event) => {
       const file = event.target.files[0];
       if (file) {
-        setSelectedFileName(file.name);
-      } else {
-        setSelectedFileName('');
+        setMainImage(file);
+        setMainImageName(file.name);
+      }
+    };
+
+    const handleAdditionalImagesChange = (event) => {
+      const files = Array.from(event.target.files);
+      if (files.length + additionalImages.length > 4) {
+        toast.error('Maximum 4 additional images allowed');
+        return;
+      }
+      setAdditionalImages(prev => [...prev, ...files]);
+      setAdditionalImageNames(prev => [...prev, ...files.map(file => file.name)]);
+    };
+
+    const removeAdditionalImage = (index) => {
+      setAdditionalImages(prev => prev.filter((_, i) => i !== index));
+      setAdditionalImageNames(prev => prev.filter((_, i) => i !== index));
+    };
+
+    const handleAddProduct = async (formData) => {
+      try {
+        setIsUploading(true);
+        const finalFormData = new FormData();
+        
+        // Append text fields
+        Object.keys(formData).forEach(key => {
+          if (key !== 'image' && key !== 'additionalImages') {
+            finalFormData.append(key, formData[key]);
+          }
+        });
+
+        // Append main image
+        if (mainImage) {
+          finalFormData.append('image', mainImage);
+        }
+
+        // Append additional images
+        additionalImages.forEach(image => {
+          finalFormData.append('additionalImages', image);
+        });
+
+        const result = await addProduct(finalFormData).unwrap();
+        if (result) {
+          toast.success('Product added successfully!');
+          setShowAddModal(false);
+          reset();
+          setMainImage(null);
+          setMainImageName('');
+          setAdditionalImages([]);
+          setAdditionalImageNames([]);
+        }
+      } catch (error) {
+        console.error('Error adding product:', error);
+        toast.error(error?.data?.message || 'Failed to add product');
+      } finally {
+        setIsUploading(false);
       }
     };
 
@@ -248,19 +273,18 @@ export default function ShopPage() {
 
               <div className="form-control">
                 <label className="label text-sm font-medium">
-                  <span className="label-text text-white">Product Image</span>
+                  <span className="label-text text-white">Main Product Image</span>
                 </label>
                 <div className="relative">
                   <input
-                    {...register('image', { required: 'Product image is required' })}
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    id="fileInput"
-                    onChange={handleFileChange}
+                    id="mainImageInput"
+                    onChange={handleMainImageChange}
                   />
                   <label
-                    htmlFor="fileInput"
+                    htmlFor="mainImageInput"
                     className="w-full flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-pink-500 to-pink-600 
                              text-white rounded cursor-pointer hover:from-pink-600 hover:to-pink-700
                              transition-all duration-300 ease-in-out transform hover:scale-[1.02]
@@ -269,14 +293,63 @@ export default function ShopPage() {
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                     </svg>
-                    {selectedFileName ? 'Change File' : 'Choose File'}
+                    {mainImageName ? 'Change Main Image' : 'Choose Main Image'}
                   </label>
-                  {selectedFileName && (
+                  {mainImageName && (
                     <div className="mt-2 text-sm text-white/80 break-all">
-                      <span className="font-medium">Selected file:</span> {selectedFileName}
+                      <span className="font-medium">Selected main image:</span> {mainImageName}
                     </div>
                   )}
                 </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="form-control">
+                <label className="label text-sm font-medium">
+                  <span className="label-text text-white">Additional Images (Max 4)</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    id="additionalImagesInput"
+                    onChange={handleAdditionalImagesChange}
+                    disabled={additionalImages.length >= 4}
+                  />
+                  <label
+                    htmlFor="additionalImagesInput"
+                    className={`w-full flex items-center justify-center px-4 py-2.5 
+                             text-white rounded cursor-pointer transition-all duration-300 
+                             shadow-md ${additionalImages.length >= 4 
+                               ? 'bg-gray-500 cursor-not-allowed' 
+                               : 'bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 hover:shadow-pink-500/25 transform hover:scale-[1.02]'
+                             }`}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                    </svg>
+                    Add Additional Images ({additionalImages.length}/4)
+                  </label>
+                </div>
+
+                {additionalImageNames.length > 0 && (
+                  <div className="mt-4 space-y-2">
+                    {additionalImageNames.map((name, index) => (
+                      <div key={index} className="flex items-center justify-between bg-gray-800 p-2 rounded">
+                        <span className="text-sm text-white/80 truncate">{name}</span>
+                        <button
+                          onClick={() => removeAdditionalImage(index)}
+                          className="text-red-500 hover:text-red-600 p-1"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -295,11 +368,13 @@ export default function ShopPage() {
               </button>
               <button
                 type="submit"
-                className="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-pink-500 to-pink-600 
+                disabled={isUploading}
+                className={`w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-pink-500 to-pink-600 
                          text-white rounded font-semibold transition-all duration-300 ease-in-out 
-                         hover:from-pink-600 hover:to-pink-700 hover:shadow-lg transform hover:scale-[1.02]"
+                         hover:from-pink-600 hover:to-pink-700 hover:shadow-lg transform hover:scale-[1.02]
+                         ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                Add Product
+                {isUploading ? 'Adding Product...' : 'Add Product'}
               </button>
             </div>
           </form>
