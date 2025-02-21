@@ -1,10 +1,13 @@
 import React, {useEffect} from "react";
+import { useTheme } from "../../context/ThemeContext";
 
 export const TermsAndConditions = () => {
+    const {isDarkMode} = useTheme();
+
     useEffect(() => {
         window.scrollTo(0, 0)
     }, []);
-    
+
     const termsData = {
         title: "Terms and Conditions",
         lastUpdated: "January 2025",
@@ -38,10 +41,10 @@ export const TermsAndConditions = () => {
     };
 
     return (
-        <div className="min-h-screen bg-black text-pink-200 p-6">
-            <div className="max-w-5xl mx-auto bg-black border border-pink-500 shadow-lg rounded-lg overflow-hidden">
+        <div className={`min-h-screen ${isDarkMode ? 'bg-black text-pink-200' : 'bg-white text-black'} p-6`}>
+            <div key={isDarkMode} className={`max-w-5xl mx-auto border border-pink-500 shadow-lg rounded-lg overflow-hidden`}>
                 {/* Header */}
-                <header className="bg-pink-500 text-black py-6 px-8 hover:bg-pink-600">
+                <header className={`py-6 px-8 transition-colors duration-300 ${isDarkMode ? "bg-pink-500 text-black" : "bg-pink-400 text-white"}`}>
                     <h1 className="text-4xl font-bold">{termsData.title}</h1>
                     <p className="text-sm mt-2">Last updated: {termsData.lastUpdated}</p>
                 </header>
@@ -50,22 +53,22 @@ export const TermsAndConditions = () => {
                 <main className="p-8 space-y-8">
                     {termsData.sections.map((section, index) => (
                         <section key={index}>
-                            <h2 className="text-2xl font-semibold text-pink-400 mb-4">
-                                {section.heading}
-                            </h2>
-                            <p className="text-pink-200 leading-relaxed">{section.content}</p>
-                        </section>
+                        <h2 className={`text-2xl font-semibold mb-4 transition-colors duration-300 ${isDarkMode ? "text-pink-400" : "text-pink-600"}`}>
+                            {section.heading}
+                        </h2>
+                        <p className="leading-relaxed">{section.content}</p>
+                    </section>
                     ))}
                 </main>
 
                 {/* Footer */}
-                <footer className="bg-pink-800 py-4 px-8 text-sm text-white font-bold">
+                <footer className={`py-4 px-8 text-sm font-bold transition-colors duration-300 ${isDarkMode ? "bg-pink-800 text-white" : "bg-pink-300 text-black"}`}>
                     <p>
                         By using ShopSphere, you agree to these terms and conditions. For
                         questions or concerns, please contact us at{" "}
                         <a
                             href="mailto:support@shopsphere.com"
-                            className="text-pink-300 hover:underline"
+                            className={`hover:underline transition-colors duration-300 ${isDarkMode ? "text-pink-300" : "text-pink-700"}`}
                         >
                             support@shopsphere.com
                         </a>
