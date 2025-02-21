@@ -3,13 +3,9 @@ const {ObjectId} = mongoose.Schema;
 
 //changed few required
 const reviewSchema = mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    },
     rating: {
         type: Number,
-        required: true
+        required: false
     },
     comment: {
         type: String,
