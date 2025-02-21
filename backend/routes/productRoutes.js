@@ -14,6 +14,7 @@ import {
   fetchTopProducts,
   fetchNewProducts,
   getProductReviews,
+  fetchSimilarProducts,
 } from "../controllers/productController.js";
 import multer from "multer";
 
@@ -61,5 +62,8 @@ router
     updateProductDetails
   )
   .delete(authenticate, authorizeAdmin, removeProduct);
+
+router.route("/:id/similar").get(fetchSimilarProducts);
+
 
 export default router;

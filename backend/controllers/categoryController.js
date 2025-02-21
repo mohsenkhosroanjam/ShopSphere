@@ -4,18 +4,19 @@ import asyncHandler from "../middleware/asyncHandler.js";
 const createCategory = asyncHandler(async (req, res) => {
   try {
     const { name } = req.body;
+    const normalizedName = name.trim().toLowerCase();
 
-    if (!name) {
-      return res.json({ error: "Name is required" });
+    if (!normalizedName) {
+      return res.status(400).json({ error: "Name is required" });
     }
 
-    const existingCategory = await Category.findOne({ name });
+    const existingCategory = await Category.findOne({ name: normalizedName });
 
     if (existingCategory) {
-      return res.json({ error: "Already exists" });
+      return res.status(400).json({ error: "Category already exists" });
     }
 
-    const category = await new Category({ name }).save();
+    const category = await new Category({ name: normalizedName }).save();
     res.json(category);
   } catch (error) {
     console.log(error);

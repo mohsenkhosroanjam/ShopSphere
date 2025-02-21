@@ -138,8 +138,9 @@ const fetchProducts = asyncHandler(async (req, res) => {
 
 const fetchProductsById = asyncHandler(async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
-   
+    const product = await Product.findById(req.params.id)
+      .populate('category', 'name');
+    
     if (product) {
       return res.json(product);
     } else {
@@ -251,6 +252,29 @@ const fetchDistributorProducts = asyncHandler(async (req, res) => {
   }
 });
 
+const fetchSimilarProducts = asyncHandler(async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id).populate('category');
+    
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    const similarProducts = await Product.find({
+      category: product.category._id,
+      _id: { $ne: product._id }
+    })
+    .limit(4)
+    .select('name price image rating numReviews category')
+    .populate('category', 'name');
+
+    res.json(similarProducts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server Error" });
+  }
+});
+
 export {
   addProduct,
   updateProductDetails,
@@ -264,4 +288,5 @@ export {
   fetchNewProducts,
   filterProducts,
   fetchDistributorProducts,
+  fetchSimilarProducts,
 };
