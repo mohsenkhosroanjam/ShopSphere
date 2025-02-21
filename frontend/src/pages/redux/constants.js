@@ -1,5 +1,3 @@
-
-
 export const BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'; // Fallback for local development
 
 export const USERS_URL = `${BASE_URL}/api/users`;
@@ -8,3 +6,4 @@ export const PRODUCT_URL = `${BASE_URL}/api/products`;
 export const UPLOAD_URL = `${BASE_URL}/api/upload`;
 export const CART_URL = `${BASE_URL}/api/cart`;
 export const BLOG_URL = `${BASE_URL}/api/blogs`;
+export const COMMENT_URL = `${BASE_URL}/api/comments`;

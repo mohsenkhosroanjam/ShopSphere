@@ -1,13 +1,14 @@
-import { useGetBlogQuery, useToggleBlogLikeMutation } from "../redux/api/blogApiSlice";
+import { useGetBlogQuery, useToggleBlogLikeMutation, useGetCommentsQuery, useCreateCommentMutation, useUpdateCommentMutation, useDeleteCommentMutation } from "../redux/api/blogApiSlice";
 import { useSelector } from "react-redux";
 import Loader from "../../components/Loader";
 import { format } from "date-fns";
 import { useParams, Link } from "react-router-dom";
-import { FaUser, FaCalendar, FaFolder, FaRegArrowAltCircleLeft, FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaUser, FaCalendar, FaFolder, FaRegArrowAltCircleLeft, FaHeart, FaRegHeart, FaComment, FaRegComment, FaUserCircle, FaInfoCircle, FaSignInAlt, FaSave, FaEdit, FaTrash, FaComments } from "react-icons/fa";
 import { useTheme } from "../../context/ThemeContext";
 import { useState } from "react";
 import CreateBlogModal from "./CreateBlogModal";
 import { toast } from "react-toastify";
+import moment from "moment";
 
 const BlogDetails = () => {
     const { id } = useParams();
@@ -16,6 +17,13 @@ const BlogDetails = () => {
     const { isDarkMode } = useTheme();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [toggleLike] = useToggleBlogLikeMutation();
+    const { data: comments, isLoading: commentsLoading } = useGetCommentsQuery(id);
+    const [createComment] = useCreateCommentMutation();
+    const [commentText, setCommentText] = useState('');
+    const [updateComment] = useUpdateCommentMutation();
+    const [deleteComment] = useDeleteCommentMutation();
+    const [editingCommentId, setEditingCommentId] = useState(null);
+    const [editText, setEditText] = useState('');
     
     if (isLoading) return <Loader />;
     if (error) return <div>Error: {error.message}</div>;
@@ -33,8 +41,54 @@ const BlogDetails = () => {
         }
     };
 
+    const handleCommentSubmit = async (e) => {
+        e.preventDefault();
+        if (!commentText.trim()) return;
+        if (!userInfo) {
+            toast.error('Please login to comment');
+            return;
+        }
+        
+        try {
+            await createComment({ blogId: id, content: commentText }).unwrap();
+            setCommentText('');
+            toast.success('Comment posted!');
+        } catch (err) {
+            toast.error(err?.data?.message || 'Failed to post comment');
+        }
+    };
+
+    const handleEditClick = (comment) => {
+        setEditingCommentId(comment._id);
+        setEditText(comment.content);
+    };
+
+    const handleEditSubmit = async (commentId) => {
+        if (!editText.trim()) return;
+        
+        try {
+            await updateComment({ commentId, content: editText }).unwrap();
+            setEditingCommentId(null);
+            setEditText('');
+            toast.success('Comment updated successfully');
+        } catch (err) {
+            toast.error(err?.data?.message || 'Failed to update comment');
+        }
+    };
+
+    const handleDeleteClick = async (commentId) => {
+        if (window.confirm('Are you sure you want to delete this comment?')) {
+            try {
+                await deleteComment(commentId).unwrap();
+                toast.success('Comment deleted successfully');
+            } catch (err) {
+                toast.error(err?.data?.message || 'Failed to delete comment');
+            }
+        }
+    };
+
     return (
-        <div className="min-h-screen bg-gradient-to-b from-gray-100 to-white dark:from-gray-900 dark:to-black">
+        <div className="min-h-screen bg-gradient-to-b  from-gray-100 to-white dark:from-gray-900 dark:to-black">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
                 <Link
                     to="/blogs"
@@ -176,6 +230,203 @@ const BlogDetails = () => {
                             </Link>
                         </div>
                     )}
+                </div>
+
+                <div className="mt-16 max-w-3xl mx-auto">
+                    <h2 className="text-2xl font-bold mb-8 flex items-center gap-2 text-gray-700 dark:text-gray-200">
+                        <FaComment className="text-blue-500 dark:text-pink-400" />
+                        Discussion ({comments?.total || 0})
+                    </h2>
+
+                    {/* Comment Form */}
+                    {userInfo ? (
+                        <form onSubmit={handleCommentSubmit} className="mb-12 group">
+                            <div className="flex gap-4 items-start relative">
+                                <div className="flex-shrink-0">
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center">
+                                        <FaUserCircle className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+                                    </div>
+                                </div>
+                                <div className="flex-1 space-y-3">
+                                    <div className="relative">
+                                        <textarea
+                                            value={commentText}
+                                            onChange={(e) => setCommentText(e.target.value)}
+                                            placeholder="Join the discussion..."
+                                            className="w-full p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:border-blue-500 dark:focus:border-pink-400 resize-none transition-all duration-300 text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 pr-20"
+                                            rows="3"
+                                            maxLength="1000"
+                                        />
+                                        <div className="absolute bottom-3 right-3 flex items-center gap-3">
+                                            <span className={`text-sm ${commentText.length >= 1000 ? 'text-red-500' : 'text-gray-400'}`}>
+                                                {1000 - commentText.length}
+                                            </span>
+                                            <button
+                                                type="submit"
+                                                disabled={!commentText.trim()}
+                                                className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-all ${
+                                                    commentText.trim() 
+                                                        ? 'bg-blue-500 hover:bg-blue-600 dark:bg-pink-500 dark:hover:bg-pink-600 text-white'
+                                                        : 'bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed'
+                                                }`}
+                                            >
+                                                <FaComment className="shrink-0" />
+                                                <span className="hidden sm:inline">Post Comment</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    ) : (
+                        <div className="text-center py-8 mb-12 rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 border border-gray-200 dark:border-gray-700">
+                            <div className="mb-4 flex justify-center">
+                                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center">
+                                    <FaUserCircle className="w-8 h-8 text-gray-500 dark:text-gray-400" />
+                                </div>
+                            </div>
+                            <h3 className="text-lg font-medium mb-2 text-gray-700 dark:text-gray-300">
+                                Want to join the conversation?
+                            </h3>
+                            <p className="text-gray-600 dark:text-gray-400 mb-4 max-w-md mx-auto">
+                                Log in to share your thoughts and engage with the community.
+                            </p>
+                            <Link
+                                to="/login"
+                                className="inline-flex items-center px-6 py-2 bg-blue-500 dark:bg-pink-500 text-white rounded-lg hover:bg-blue-600 dark:hover:bg-pink-600 transition-colors font-medium gap-2"
+                            >
+                                <FaSignInAlt />
+                                Sign In to Comment
+                            </Link>
+                        </div>
+                    )}
+
+                    {/* Comments List */}
+                    <div className="space-y-6">
+                        {commentsLoading ? (
+                            <div className="space-y-4">
+                                {[1, 2, 3].map((i) => (
+                                    <div key={i} className="flex gap-4 animate-pulse">
+                                        <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700" />
+                                        <div className="flex-1 space-y-3">
+                                            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4" />
+                                            <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
+                                            <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/4" />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : comments?.comments?.length > 0 ? (
+                            comments.comments.map(comment => (
+                                <div 
+                                    key={comment._id} 
+                                    className="group relative p-4 rounded-xl transition-all duration-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 border border-transparent hover:border-blue-100 dark:hover:border-pink-900"
+                                >
+                                    <div className="flex gap-4">
+                                        <div className="flex-shrink-0">
+                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center">
+                                                <FaUserCircle className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+                                            </div>
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="flex items-baseline gap-3 mb-2">
+                                                <span className="font-medium text-gray-900 dark:text-gray-100">
+                                                    {comment.author.username}
+                                                </span>
+                                                <span className="text-sm text-gray-500 dark:text-gray-400">
+                                                    {moment(comment.createdAt).fromNow()}
+                                                </span>
+                                                {comment.updatedAt !== comment.createdAt && (
+                                                    <span className="text-xs text-gray-400 dark:text-gray-500 italic">
+                                                        (edited)
+                                                    </span>
+                                                )}
+                                            </div>
+                                            
+                                            {editingCommentId === comment._id ? (
+                                                <div className="space-y-4">
+                                                    <textarea
+                                                        value={editText}
+                                                        onChange={(e) => setEditText(e.target.value)}
+                                                        className="w-full p-4 rounded-lg border-2 border-gray-200 dark:border-gray-700 
+                                                            bg-white dark:bg-gray-800 
+                                                            text-gray-800 dark:text-gray-200
+                                                            focus:outline-none focus:border-blue-500 dark:focus:border-pink-400 
+                                                            resize-none transition-all duration-300
+                                                            font-normal text-base leading-relaxed"
+                                                        rows="4"
+                                                        autoFocus
+                                                    />
+                                                    <div className="flex justify-end gap-3">
+                                                        <button
+                                                            onClick={() => setEditingCommentId(null)}
+                                                            className="px-4 py-2.5 rounded-lg text-gray-600 dark:text-gray-300 
+                                                                hover:text-gray-800 dark:hover:text-gray-100 
+                                                                hover:bg-gray-100 dark:hover:bg-gray-700
+                                                                font-medium transition-colors duration-200"
+                                                        >
+                                                            Cancel
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleEditSubmit(comment._id)}
+                                                            className={`px-5 py-2.5 rounded-lg flex items-center gap-2.5 
+                                                                font-medium transition-all duration-200 ${
+                                                                editText.trim()
+                                                                    ? 'bg-blue-500 hover:bg-blue-600 dark:bg-pink-500 dark:hover:bg-pink-600 text-white shadow-sm hover:shadow-md'
+                                                                    : 'bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed'
+                                                                }`}
+                                                            disabled={!editText.trim()}
+                                                        >
+                                                            <FaSave className="text-sm" />
+                                                            <span>Save Changes</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="prose dark:prose-invert max-w-none">
+                                                    {comment.content.split('\n').map((paragraph, i) => (
+                                                        <p key={i} className="mb-3 last:mb-0 text-gray-700 dark:text-gray-300 text-base leading-relaxed">
+                                                            {paragraph}
+                                                        </p>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Comment Actions */}
+                                    {userInfo?._id === comment.author._id && !editingCommentId && (
+                                        <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button
+                                                onClick={() => handleEditClick(comment)}
+                                                className="p-2 text-gray-400 hover:text-blue-500 dark:hover:text-pink-400 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                                title="Edit comment"
+                                            >
+                                                <FaEdit className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteClick(comment._id)}
+                                                className="p-2 text-gray-400 hover:text-red-500 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                                title="Delete comment"
+                                            >
+                                                <FaTrash className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            ))
+                        ) : (
+                            <div className="text-center py-12 rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 border border-dashed border-gray-300 dark:border-gray-600">
+                                <FaComments className="mx-auto text-gray-400 dark:text-gray-500 mb-3 text-3xl" />
+                                <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300">
+                                    No comments yet
+                                </h3>
+                                <p className="text-gray-500 dark:text-gray-400 mt-1">
+                                    Be the first to share your thoughts!
+                                </p>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
