@@ -89,6 +89,13 @@ export const productApiSlice = apiSlice.injectEndpoints({
         body: { checked, radio },
       }),
     }),
+    getSimilarProducts: builder.query({
+      query: (id) => ({
+        url: `${PRODUCT_URL}/${id}/similar`,
+        method: 'GET',
+      }),
+      keepUnusedDataFor: 5,
+    }),
   }),
 });
 
@@ -105,4 +112,5 @@ export const {
   useGetNewProductsQuery,
   useUploadProductImageMutation,
   useGetFilteredProductsQuery,
+  useGetSimilarProductsQuery,
 } = productApiSlice;
