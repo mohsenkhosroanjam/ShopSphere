@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useTheme } from '../../context/ThemeContext';
-import { useGetProductByIdQuery } from '../redux/api/productApiSlice';
+import { useGetProductByIdQuery, useGetSimilarProductsQuery } from '../redux/api/productApiSlice';
 import { useAddCartMutation } from '../redux/api/cartSlice';
 import { toast } from 'react-toastify';
 import HeartIcon from './HeartIcon';
@@ -16,6 +16,7 @@ const ProductDetails = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
+  const { data: similarProducts, isLoading: loadingSimilar } = useGetSimilarProductsQuery(id);
 
   const handleAddToCart = async () => {
     if (!userInfo) {
@@ -34,6 +35,50 @@ const ProductDetails = () => {
       toast.error(err?.data?.message || 'Failed to add to cart');
     }
   };
+
+  const SimilarProducts = () => (
+    <section className="mt-16 lg:mt-24">
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="text-2xl font-bold">Similar Products</h2>
+        <Link 
+          to={`/products?category=${product?.category?.name}`}
+          className="text-pink-500 hover:text-pink-600 font-medium"
+        >
+          View More →
+        </Link>
+      </div>
+      {loadingSimilar ? (
+        <div className="flex justify-center">
+          <Loader />
+        </div>
+      ) : similarProducts?.length === 0 ? (
+        <p className={`text-center py-8 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
+          No similar products found.
+        </p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 mx-16 my-16">
+          {similarProducts?.map((product) => (
+            <div key={product._id} className={`shadow-md rounded-lg p-4 transform hover:scale-105 hover:shadow-lg transition duration-300 relative ${isDarkMode ? "bg-gray-800 text-white" : "bg-pink-500 text-black"}`}>
+              <Link to={`/product/${product._id}`}>
+                <h2 className="text-xl font-bold mb-2">{product.name}</h2>
+                <p className="text-lg font-semibold mb-4">${product.price}</p>
+                <div className={`w-full h-40 rounded-md flex items-center justify-center relative ${isDarkMode ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-500"}`}>
+                  <img src={product.image} alt={product.name} className="object-contain w-full h-full" />
+                </div>
+              </Link>
+              <HeartIcon product={product} />
+              <button
+                onClick={() => handleAddToCart()}
+                className={`w-full mt-4 font-semibold py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105 ${isDarkMode ? "bg-gray-200 hover:bg-gray-300 text-black" : "bg-white hover:bg-gray-100 text-pink-500"}`}
+              >
+                Add to Cart
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
 
   if (isLoading) return <Loader />;
   if (error) return <div>Error: {error.message}</div>;
@@ -170,6 +215,8 @@ const ProductDetails = () => {
             </div>
           </div>
         </div>
+
+        <SimilarProducts />
 
         {/* Reviews Section */}
         <section className="mt-16 lg:mt-24">
