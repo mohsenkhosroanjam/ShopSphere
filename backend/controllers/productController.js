@@ -7,33 +7,40 @@ const addProduct = asyncHandler(async (req, res) => {
   try {
     const { name, description, price, category, quantity, brand } = req.body;
     
-    const fileBuffer = req.file?.buffer;
+    // Get the main image and additional images from the request
+    console.log(req.files)
+    const mainImage = req.files?.['image']?.[0]?.buffer;
+    const additionalImages = req.files?.['additionalImages'] || [];
 
-    if(!name || !brand || !description || !price || !category || !quantity || !fileBuffer){
+    if(!name || !brand || !description || !price || !category || !quantity || !mainImage){
       return res.status(400).json({
-        error: "All fields (name, brand, description, price, category, quantity, and image) are required."
+        error: "All fields (name, brand, description, price, category, quantity, and main image) are required."
       });
     }
     
+    // Handle category
     let categoryDoc = await Category.findOne({ name: category });
     if (!categoryDoc) {
-      // create a category
-      const newCategory = new Category({ name: category });
-      await newCategory.save();
-      categoryDoc = newCategory;
+      categoryDoc = await Category.create({ name: category });
     }
 
-
-    // Upload to Cloudinary
-    const uploadedUrl = await upload_on_cloudinary(fileBuffer);
-    
-    if (!uploadedUrl) {
+    // Upload main image to Cloudinary
+    const mainImageUrl = await upload_on_cloudinary(mainImage);
+    if (!mainImageUrl) {
       return res.status(400).json({
-        error: "Failed to upload image to Cloudinary"
+        error: "Failed to upload main image to Cloudinary"
       });
     }
 
-    const product = new Product({
+    // Upload additional images to Cloudinary
+    const additionalImageUrls = await Promise.all(
+      additionalImages.map(file => upload_on_cloudinary(file.buffer))
+    );
+
+    // Filter out any null values from failed uploads
+    const validAdditionalImageUrls = additionalImageUrls.filter(url => url !== null);
+
+    const product = await Product.create({
       name,
       brand,
       description,
@@ -41,11 +48,11 @@ const addProduct = asyncHandler(async (req, res) => {
       category: categoryDoc._id,
       quantity,
       distributor: req.user._id,
-      image: uploadedUrl,
+      image: mainImageUrl,
+      additionalImages: validAdditionalImageUrls, // Store additional image URLs
     });
 
-    const createdProduct = await product.save();
-    res.status(201).json(createdProduct);
+    res.status(201).json(product);
   } catch (error) {
     console.error("Error in addProduct:", error);
     res.status(400).json({ error: error.message });

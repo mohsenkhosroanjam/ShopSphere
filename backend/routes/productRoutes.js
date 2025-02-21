@@ -18,7 +18,17 @@ import multer from "multer";
 
 //this stores the image in server memory which is required for vercel or production environment
 //now for adding and updating , have to use form/data instead of raw json data
-const upload = multer({storage:multer.memoryStorage()})
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // Increased to 10MB limit per file
+  }
+});
+
+const multipleUpload = upload.fields([
+  { name: 'image', maxCount: 1 },
+  { name: 'additionalImages', maxCount: 4 } // Allow up to 4 additional images
+]);
 
 router
   .route("/")
@@ -27,8 +37,8 @@ router
 router.route("/add")
   .post(
     authenticate, 
-    authorizeDistributorOrAdmin, 
-    upload.single('image'),
+    authorizeDistributorOrAdmin,
+    multipleUpload,
     addProduct
   );
 
@@ -42,7 +52,12 @@ router.get("/new", fetchNewProducts);
 router
   .route("/:id")
   .get(fetchProductsById)
-  .put(authenticate, authorizeAdmin, formidable(), upload.single('image'), updateProductDetails)
+  .put(
+    authenticate, 
+    authorizeAdmin, 
+    multipleUpload,
+    updateProductDetails
+  )
   .delete(authenticate, authorizeAdmin, removeProduct);
 
 export default router;
