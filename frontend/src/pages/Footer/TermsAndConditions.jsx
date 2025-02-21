@@ -1,6 +1,10 @@
-import React from "react";
+import React, {useEffect} from "react";
 
 export const TermsAndConditions = () => {
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, []);
+    
     const termsData = {
         title: "Terms and Conditions",
         lastUpdated: "January 2025",
