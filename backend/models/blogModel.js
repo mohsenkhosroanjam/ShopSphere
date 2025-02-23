@@ -45,6 +45,10 @@ const blogSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Comment"
     }],
+    image: {
+        type: String,
+        required: false,
+    },
 });
 
 // Create a slug before saving
