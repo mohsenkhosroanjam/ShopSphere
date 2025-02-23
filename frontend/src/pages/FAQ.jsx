@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useTheme } from "../context/ThemeContext";
 
 const FAQ = () => {
+  const {isDarkMode} = useTheme();
   const [activeIndex, setActiveIndex] = useState(null);
 
   const toggleFAQ = (index) => {
@@ -35,27 +37,29 @@ const FAQ = () => {
   ];
 
   return (
-    <div className="bg-black min-h-screen flex flex-col items-center p-6">
-      <h1 className="text-4xl font-bold text-white mb-20">
-        <span className="text-pink-500">F</span>requently
-        <span className="text-pink-500"> A</span>sked
-        <span className="text-pink-500"> Q</span>uestions
+    <div className={`${isDarkMode ? "bg-black text-white" : "bg-white text-black"} min-h-screen flex flex-col items-center p-6`}>
+      <h1 className={`text-4xl font-bold mb-20`}>
+        <span className={`${isDarkMode ? "text-pink-500" : "text-pink-500"}`}>F</span>requently
+        <span className={`${isDarkMode ? "text-pink-500" : "text-pink-500"}`}> A</span>sked
+        <span className={`${isDarkMode ? "text-pink-500" : "text-pink-500"}`}> Q</span>uestions
       </h1>
 
       <div className="w-full max-w-4xl px-10">
         {faqs.map((faq, index) => (
           <div
-            key={index}
-            className={`mb-5 bg-gray-800 rounded-xl transition-transform duration-300 overflow-hidden ${
-              activeIndex === index ? "border-pink-500" : "border-gray-800"
-            } border hover:border-pink-500 hover:-translate-y-3 hover:shadow-lg`}
-          >
+          key={index}
+          className={`mb-5 rounded-xl overflow-hidden border transition-transform duration-300 ${
+            isDarkMode
+              ? "bg-gray-800 border-gray-800 hover:border-gray-600"
+              : "bg-gray-100 border-white hover:border-gray-500"
+          } ${activeIndex === index ? "!border-pink-500" : ""} border hover:border-pink-500 hover:-translate-y-3 hover:shadow-lg`}
+        >
             <div
               className="flex justify-between items-center px-8 py-6 cursor-pointer"
               onClick={() => toggleFAQ(index)}
             >
-              <h2 className="text-white text-lg font-bold flex-1">{faq.question}</h2>
-              <span className="text-white text-2xl font-bold mx-4">
+              <h2 className={`${isDarkMode ? "text-white" : "text-black"} text-lg font-bold flex-1`}>{faq.question}</h2>
+              <span className={`${isDarkMode ? "text-white" : "text-black"} text-2xl font-bold mx-4`}>
                 {activeIndex === index ? "-" : "+"}
               </span>
             </div>
@@ -66,8 +70,8 @@ const FAQ = () => {
                   : "max-h-0 opacity-0"
               }`}
             >
-              <p className="px-8 py-6 text-gray-300 text-lg border-t border-gray-700">
-                {faq.answer}
+              <p className={`${isDarkMode ? "text-gray-300 border-gray-700" : "text-gray-900 border-gray-300"} px-8 py-6 text-lg border-t`}>
+              {faq.answer}
               </p>
             </div>
           </div>
