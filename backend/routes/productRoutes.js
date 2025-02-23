@@ -13,6 +13,7 @@ import {
   createProductReview,
   fetchTopProducts,
   fetchNewProducts,
+  getProductReviews,
   fetchSimilarProducts,
 } from "../controllers/productController.js";
 import multer from "multer";
@@ -46,7 +47,8 @@ router.route("/add")
 router.route("/allproducts").get(fetchAllProducts);
 router
   .route("/:id/reviews")
-  .post(authenticate, authorizeAdmin, checkId, createProductReview);
+  .post(authenticate, createProductReview)
+  .get(getProductReviews);
 
 router.get("/top",(req, res) => console.log("top products"));
 router.get("/new", fetchNewProducts);

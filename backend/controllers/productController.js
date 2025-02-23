@@ -168,45 +168,39 @@ const fetchAllProducts = asyncHandler(async (req, res) => {
 });
 
 const createProductReview = asyncHandler(async (req, res) => {
-  try {
-    const { rating, comment } = req.body;
-    const product = await Product.findById(req.params.id);
+  const { rating, comment } = req.body;
+  const product = await Product.findById(req.params.id);
 
-    if (product) {
-      const alreadyReviewed = product.reviews.find(
-        (r) => r.user.toString() === req.user._id.toString()
-      );
-
-      if (alreadyReviewed) {
-        res.status(400);
-        throw new Error("Product already reviewed");
-      }
-
-      const review = {
-        name: req.user.username,
-        rating: Number(rating),
-        comment,
-        user: req.user._id,
-      };
-
-      product.reviews.push(review);
-
-      product.numReviews = product.reviews.length;
-
-      product.rating =
-        product.reviews.reduce((acc, item) => item.rating + acc, 0) /
-        product.reviews.length;
-
-      await product.save();
-      res.status(201).json({ message: "Review added" });
-    } else {
-      res.status(404);
-      throw new Error("Product not found");
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(400).json(error.message);
+  if (!product) {
+    return res.status(404).json({ message: "Product not found" });
   }
+
+  if (!comment || comment.trim() === "") {
+    return res.status(400).json({ message: "Comment cannot be empty" });
+  }
+
+  const review = {
+    user: req.user._id,
+    rating: rating ? Number(rating) : undefined,
+    comment,
+  };
+
+  product.reviews.push(review);
+  product.numReviews = product.reviews.length;
+  product.rating = product.reviews.reduce((acc, item) => item.rating ? item.rating + acc : acc, 0) / product.numReviews;
+
+  await product.save();
+  res.status(201).json({ message: "Review added" });
+});
+
+const getProductReviews = asyncHandler(async (req, res) => {
+  const product = await Product.findById(req.params.id).populate('reviews.user', 'username');
+
+  if (!product) {
+    return res.status(404).json({ message: "Product not found" });
+  }
+
+  res.json(product.reviews);
 });
 
 const fetchTopProducts = asyncHandler(async (req, res) => {
@@ -289,6 +283,7 @@ export {
   fetchProductsById,
   fetchAllProducts,
   createProductReview,
+  getProductReviews,
   fetchTopProducts,
   fetchNewProducts,
   filterProducts,
