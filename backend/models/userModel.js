@@ -41,6 +41,8 @@ const userSchema = mongoose.Schema(
     }],
     deleteToken: String,
     deleteTokenExpires: Date,
+    resetPasswordToken: String,
+    resetPasswordExpire: Date,
   },
   {
     timestamps: true,
