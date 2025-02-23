@@ -2,11 +2,10 @@ import Blog from '../models/blogModel.js';
 import User from '../models/userModel.js';
 import asyncHandler from '../middleware/asyncHandler.js';
 import mongoose from 'mongoose';
-import { upload_on_cloudinary } from '../utils/cloudinary.utils.js';
 
 const createBlog = asyncHandler(async (req, res) => {
     const { title, content, excerpt, category, author } = req.body;
-    const image = req.file ? req.file.buffer : null;
+    console.log('Request body:', req.body);
     
     if (!title || !content || !author) {
         console.log('Validation failed:', { title, content, author });
@@ -27,19 +26,12 @@ const createBlog = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: 'Blog with this title already exists' });
     }
 
-    // Upload image to Cloudinary
-    let imageUrl = null;
-    if (image) {
-        imageUrl = await upload_on_cloudinary(image, 'BlogImages');
-    }
-
-    // Create a blog object
+    // Create a blog object without category first
     const blogData = {
         title,
         content,
         excerpt: excerpt || content.substring(0, 197) + '...',
-        author: user._id,
-        image: imageUrl
+        author: user._id
     };
 
     // Only add category if it's a valid ObjectId

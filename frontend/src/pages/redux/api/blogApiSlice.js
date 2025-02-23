@@ -16,10 +16,13 @@ export const blogApiSlice = apiSlice.injectEndpoints({
             providesTags: (result, error, id) => [{ type: 'Blog', id }],
         }),
         createBlog: builder.mutation({
-            query: (data) => ({ 
+            query: (data) => ({
                 url: `${BLOG_URL}/create`,
                 method: "POST",
-                body: data
+                body: data,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             }),
             invalidatesTags: ["Blog"],
         }),
@@ -74,9 +77,9 @@ export const blogApiSlice = apiSlice.injectEndpoints({
     }),
 });
 
-export const {
-    useGetBlogsQuery,
-    useGetBlogQuery,
+export const { 
+    useGetBlogsQuery, 
+    useGetBlogQuery, 
     useCreateBlogMutation,
     useToggleBlogLikeMutation,
     useGetCommentsQuery,
