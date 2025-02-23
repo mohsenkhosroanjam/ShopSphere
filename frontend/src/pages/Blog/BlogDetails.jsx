@@ -105,14 +105,6 @@ const BlogDetails = () => {
                         {blog.title}
                     </h1>
 
-                    {blog.image && (
-                        <img 
-                            src={blog.image} 
-                            alt={blog.title} 
-                            className="mb-6 rounded-lg shadow-md" 
-                        />
-                    )}
-
                     <div className="flex flex-wrap gap-4 mb-8">
                         <div className="flex items-center bg-blue-50 dark:bg-gray-700 px-4 py-2 rounded-full transition-all duration-300 hover:scale-105">
                             <FaUser className="mr-2 text-blue-500 dark:text-pink-400" />
