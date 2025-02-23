@@ -10,7 +10,8 @@ const BlogList = () => {
     const [page, setPage] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { userInfo } = useSelector((state) => state.auth);
-    const { data, isLoading, error } = useGetBlogsQuery({ page, limit: 6 });
+    const [sortOption, setSortOption] = useState('newest');
+    const { data, isLoading, error } = useGetBlogsQuery({ page, limit: 6, sort: sortOption });
     const [createBlog, { isLoading: isCreating }] = useCreateBlogMutation();
 
     const handleSubmit = async (e) => {
@@ -38,6 +39,11 @@ const BlogList = () => {
         }
     };
 
+    const handleSortChange = (e) => {
+        setSortOption(e.target.value);
+        setPage(1);
+    };
+
     if (isLoading) return <Loader />;
     if (error) return <div>Error: {error.message}</div>;
 
@@ -60,6 +66,20 @@ const BlogList = () => {
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
                 />
+
+                <div className="flex justify-end items-center mb-8 space-x-2">
+                    <label htmlFor="sortOptions" className="text-lg font-semibold text-gray-700 dark:text-gray-300">Sort by:</label>
+                    <select 
+                        id="sortOptions" 
+                        onChange={handleSortChange}
+                        value={sortOption} 
+                        className="px-4 py-2 border border-gray-300 rounded-lg shadow-md transition-transform transform focus:outline-none focus:ring-2 focus:ring-pink-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300"
+                    >
+                        <option value="newest">📅 Newest</option>
+                        <option value="oldest">🕒 Oldest</option>
+                        <option value="most-liked">❤️ Most Liked</option>
+                    </select>
+                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {data.blogs.map((blog) => (

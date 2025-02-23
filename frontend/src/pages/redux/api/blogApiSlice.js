@@ -5,8 +5,8 @@ import { apiSlice } from "./apiSlice";
 export const blogApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getBlogs: builder.query({
-            query: ({ page = 1, limit = 10 }) => ({
-                url: `${BLOG_URL}/get-blogs?page=${page}&limit=${limit}`,
+            query: ({ page = 1, limit = 10, sort = 'newest' }) => ({
+                url: `${BLOG_URL}/get-blogs?page=${page}&limit=${limit}&sort=${sort}`,
                 method: "GET",
             }),
             providesTags: ["Blog"],
