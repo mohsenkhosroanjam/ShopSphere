@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useTheme } from '../../context/ThemeContext';
-import { useGetProductByIdQuery, useGetSimilarProductsQuery } from '../redux/api/productApiSlice';
+import { useGetProductByIdQuery, useGetSimilarProductsQuery, useCreateProductReviewMutation } from '../redux/api/productApiSlice';
 import { useAddCartMutation } from '../redux/api/cartSlice';
 import { toast } from 'react-toastify';
 import HeartIcon from './HeartIcon';
@@ -17,6 +17,10 @@ const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const { data: similarProducts, isLoading: loadingSimilar } = useGetSimilarProductsQuery(id);
+  const [createReview, { isLoading: isReviewLoading, error: reviewError }] = useCreateProductReviewMutation();
+  
+  const [review, setReview] = useState('');
+  const [characterLimit, setCharacterLimit] = useState(500);
 
   const handleAddToCart = async () => {
     if (!userInfo) {
@@ -33,6 +37,29 @@ const ProductDetails = () => {
       toast.success('Product added to cart');
     } catch (err) {
       toast.error(err?.data?.message || 'Failed to add to cart');
+    }
+  };
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!userInfo) {
+      toast.error('Please login to submit a review');
+      return;
+    }
+
+    if (!review.trim()) {
+      toast.error('Review cannot be empty');
+      return; 
+    }
+
+    try {
+      await createReview({ id, review }).unwrap();
+      setReview('');
+      toast.success('Review submitted successfully!');
+    } catch (err) {
+      console.error('Failed to submit review:', err);
+      toast.error(err?.data?.message || 'Failed to submit review');
     }
   };
 
@@ -218,7 +245,7 @@ const ProductDetails = () => {
 
         <SimilarProducts />
 
-        {/* Reviews Section */}
+        {/* Improved Reviews Section */}
         <section className="mt-16 lg:mt-24">
           <h2 className="text-2xl font-bold mb-8">Customer Reviews</h2>
           {product?.reviews?.length === 0 ? (
@@ -230,8 +257,9 @@ const ProductDetails = () => {
               {product?.reviews?.map((review) => (
                 <div
                   key={review._id}
-                  className={`p-6 rounded-lg transform hover:scale-[1.02] transition-all duration-200 ${isDarkMode ? "bg-gray-800" : "bg-white shadow-lg"
-                    }`}
+                  className={`p-6 rounded-lg transform hover:scale-[1.02] transition-all duration-200 ${
+                    isDarkMode ? "bg-gray-800" : "bg-white shadow-lg"
+                  }`}
                 >
                   <div className="flex items-center justify-between mb-4">
                     <div>
@@ -239,19 +267,6 @@ const ProductDetails = () => {
                       <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
                         {new Date(review.createdAt).toLocaleDateString()}
                       </p>
-                    </div>
-                    <div className="flex items-center">
-                      {[...Array(5)].map((_, index) => (
-                        <svg
-                          key={index}
-                          className={`w-5 h-5 ${index < review.rating ? "text-yellow-400" : "text-gray-300"
-                            }`}
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                      ))}
                     </div>
                   </div>
                   <p className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
@@ -261,6 +276,56 @@ const ProductDetails = () => {
               ))}
             </div>
           )}
+        </section>
+
+        {/* Improved Review Form */}
+        <section className="mt-16 lg:mt-24">
+          <div className={`p-8 rounded-xl ${isDarkMode ? 'bg-gray-800' : 'bg-white shadow-lg'}`}>
+            <h2 className="text-2xl font-bold mb-8">Submit a Review</h2>
+            <form onSubmit={handleReviewSubmit} className="space-y-6">
+              <div>
+                <label className="block text-lg font-medium mb-2">Your Review</label>
+                <textarea
+                  value={review}
+                  onChange={(e) => {
+                    setReview(e.target.value);
+                    setCharacterLimit(500 - e.target.value.length);
+                  }}
+                  maxLength={500}
+                  placeholder="Share your experience with this product..."
+                  className={`w-full p-4 rounded-lg border ${
+                    isDarkMode
+                      ? 'bg-gray-700 border-gray-600 focus:ring-pink-500 focus:border-pink-500'
+                      : 'border-gray-300 focus:ring-pink-500 focus:border-pink-500'
+                  } transition-colors duration-200`}
+                  rows="5"
+                />
+                <div className="flex justify-between mt-2 text-sm">
+                  <span className={characterLimit < 50 ? 'text-red-500' : 'text-gray-500'}>
+                    {characterLimit} characters remaining
+                  </span>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isReviewLoading}
+                className={`w-full py-3 px-6 rounded-lg font-semibold transition-colors duration-200 ${
+                  isReviewLoading
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : `${isDarkMode ? 'bg-pink-600 hover:bg-pink-700' : 'bg-pink-500 hover:bg-pink-600 text-white'}`
+                }`}
+              >
+                {isReviewLoading ? 'Submitting...' : 'Submit Review'}
+              </button>
+
+              {reviewError && (
+                <div className="mt-4 p-3 rounded-lg bg-red-100 text-red-700 dark:bg-red-200 dark:text-red-800">
+                  Error: {reviewError.message}
+                </div>
+              )}
+            </form>
+          </div>
         </section>
       </div>
     </div>

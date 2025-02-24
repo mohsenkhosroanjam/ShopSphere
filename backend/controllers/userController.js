@@ -441,6 +441,94 @@ const confirmAccountDeletion = asyncHandler(async (req, res) => {
   }
 });
 
+const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  // Generate reset token
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  // Hash token and set to resetPasswordToken field
+  user.resetPasswordToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  // Set expire time - 10 minutes
+  user.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+
+  await user.save();
+
+  // Create reset URL
+  const resetUrl = `${process.env.FRONTEND_URL}/api/users/reset-password/${resetToken}`;
+
+  try {
+    await sendEmail(
+      user.email,
+      "Password Reset Request",
+      `You requested a password reset. Please click the following link to reset your password:\n\n${resetUrl}\n\n` +
+      `If you didn't request this, please ignore this email.\n` +
+      `This link will expire in 10 minutes.`
+    );
+
+    res.status(200).json({ message: "Password reset email sent" });
+  } catch (error) {
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save();
+
+    res.status(500);
+    throw new Error("Email could not be sent");
+  }
+});
+
+const resetPassword = asyncHandler(async (req, res) => {
+  const resetPasswordToken = crypto
+    .createHash('sha256')
+    .update(req.params.token)
+    .digest('hex');
+
+  const user = await User.findOne({
+    resetPasswordToken,
+    resetPasswordExpire: { $gt: Date.now() }
+  });
+
+  if (!user) {
+    res.status(400);
+    throw new Error("Invalid or expired reset token");
+  }
+
+  // Validate password
+  if (!req.body.password || req.body.password.length < 6) {
+    res.status(400);
+    throw new Error("Password must be at least 6 characters long");
+  }
+
+  // Set new password
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(req.body.password, salt);
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+
+  await user.save();
+
+  const token = generateToken(res, user._id);
+
+  res.status(200).json({
+    _id: user._id,
+    username: user.username,
+    email: user.email,
+    isAdmin: user.isAdmin,
+    token: token
+  });
+});
+
 export {
   createUser,
   loginUser,
@@ -457,4 +545,6 @@ export {
   loginDistributor,
   requestAccountDeletion,
   confirmAccountDeletion,
+  forgotPassword,
+  resetPassword,
 };
