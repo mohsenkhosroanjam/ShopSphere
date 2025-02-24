@@ -68,13 +68,28 @@ const getBlogs = asyncHandler(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
+    const sort = req.query.sort || 'newest';
+
+    let sortOptions;
+    switch (sort) {
+        case 'oldest':
+            sortOptions = { createdAt: 1 };
+            break;
+        case 'most-liked':
+            sortOptions = { likeCount: -1 };
+            break;
+        case 'newest':
+        default:
+            sortOptions = { createdAt: -1 };
+            break;
+    }
 
     try {
         const totalBlogs = await Blog.countDocuments();
         const blogs = await Blog.find({})
             .populate('author', 'name')
             .populate('category', 'name')
-            .sort({ createdAt: -1 })
+            .sort(sortOptions)
             .skip(skip)
             .limit(limit);
 
