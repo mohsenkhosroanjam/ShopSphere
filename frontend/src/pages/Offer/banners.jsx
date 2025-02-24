@@ -1,5 +1,5 @@
 import React from "react";
-import Carousel from "../../components/carousel"; // Ensure Carousel is compatible with React
+import Carousel from "../../components/carousel";
 
 export function Banners() {
     const banners = [
@@ -28,12 +28,12 @@ export function Banners() {
           "link": "https://www.flipkart.com/footwear-sale",
           "imageUrl": "/images/footwear-banner.jpg"
         }
-      ]
+      ];
       
     return (
         <Carousel>
-            {banners.map((item,index)=>(
-                <img src={item.imageUrl} alt="" className="md:w-[30rem] object-fill md:h-[30rem]" />
+            {banners.map((item, index) => (
+                <img key={index} src={item.imageUrl} alt={item.name} className="md:w-[30rem] object-fill md:h-[30rem]" />
             ))}
         </Carousel>
     );
