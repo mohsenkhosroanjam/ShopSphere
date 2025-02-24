@@ -5,7 +5,9 @@ const {ObjectId} = mongoose.Schema;
 const reviewSchema = mongoose.Schema({
     rating: {
         type: Number,
-        required: false
+        required: true,
+        min: 1,
+        max: 5
     },
     comment: {
         type: String,
@@ -19,7 +21,6 @@ const reviewSchema = mongoose.Schema({
 }, {
     timestamps: true
 })
-
 const productSchema = new mongoose.Schema({
     name: {
         type: String,

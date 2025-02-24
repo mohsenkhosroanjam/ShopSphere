@@ -7,6 +7,8 @@ import { useAddCartMutation } from '../redux/api/cartSlice';
 import { toast } from 'react-toastify';
 import HeartIcon from './HeartIcon';
 import Loader from '../../components/Loader';
+import StarRating from './StarRating';
+import { FaStar } from 'react-icons/fa';
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -18,7 +20,7 @@ const ProductDetails = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const { data: similarProducts, isLoading: loadingSimilar } = useGetSimilarProductsQuery(id);
   const [createReview, { isLoading: isReviewLoading, error: reviewError }] = useCreateProductReviewMutation();
-  
+  const [rating, setRating] = useState(0);
   const [review, setReview] = useState('');
   const [characterLimit, setCharacterLimit] = useState(500);
 
@@ -42,7 +44,7 @@ const ProductDetails = () => {
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!userInfo) {
       toast.error('Please login to submit a review');
       return;
@@ -50,12 +52,17 @@ const ProductDetails = () => {
 
     if (!review.trim()) {
       toast.error('Review cannot be empty');
-      return; 
+      return;
     }
 
     try {
-      await createReview({ id, review }).unwrap();
+      await createReview({
+        id: product._id,
+        review,
+        rating
+      }).unwrap();
       setReview('');
+      setRating(0);
       toast.success('Review submitted successfully!');
     } catch (err) {
       console.error('Failed to submit review:', err);
@@ -63,11 +70,27 @@ const ProductDetails = () => {
     }
   };
 
+  const displayRating = (rating) => {
+    return (
+      <div className="flex items-center">
+        {[...Array(5)].map((_, index) => (
+          <FaStar
+            key={index}
+            className="mr-1"
+            color={index < Math.round(rating) ? "#ffc107" : "#e4e5e9"}
+            size={18}
+          />
+        ))}
+        <span className="ml-2">({rating.toFixed(1)})</span>
+      </div>
+    );
+  };
+
   const SimilarProducts = () => (
     <section className="mt-16 lg:mt-24">
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-2xl font-bold">Similar Products</h2>
-        <Link 
+        <Link
           to={`/products?category=${product?.category?.name}`}
           className="text-pink-500 hover:text-pink-600 font-medium"
         >
@@ -181,6 +204,13 @@ const ProductDetails = () => {
                 ${product?.price}
                 <span className="ml-2 text-sm text-gray-500">USD</span>
               </p>
+              {/* Add average rating display */}
+              <div className="mt-2">
+                {displayRating(product?.rating || 0)}
+                <span className="ml-2 text-sm text-gray-500">
+                  ({product?.numReviews || 0} reviews)
+                </span>
+              </div>
             </div>
 
             {/* Stock Status */}
@@ -257,9 +287,8 @@ const ProductDetails = () => {
               {product?.reviews?.map((review) => (
                 <div
                   key={review._id}
-                  className={`p-6 rounded-lg transform hover:scale-[1.02] transition-all duration-200 ${
-                    isDarkMode ? "bg-gray-800" : "bg-white shadow-lg"
-                  }`}
+                  className={`p-6 rounded-lg transform hover:scale-[1.02] transition-all duration-200 ${isDarkMode ? "bg-gray-800" : "bg-white shadow-lg"
+                    }`}
                 >
                   <div className="flex items-center justify-between mb-4">
                     <div>
@@ -267,6 +296,17 @@ const ProductDetails = () => {
                       <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
                         {new Date(review.createdAt).toLocaleDateString()}
                       </p>
+                      {/* Display individual review rating */}
+                      <div className="mt-1">
+                        {[...Array(5)].map((_, index) => (
+                          <FaStar
+                            key={index}
+                            className="inline-block mr-1"
+                            color={index < review.rating ? "#ffc107" : "#e4e5e9"}
+                            size={16}
+                          />
+                        ))}
+                      </div>
                     </div>
                   </div>
                   <p className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
@@ -284,6 +324,10 @@ const ProductDetails = () => {
             <h2 className="text-2xl font-bold mb-8">Submit a Review</h2>
             <form onSubmit={handleReviewSubmit} className="space-y-6">
               <div>
+                <label className="block text-lg font-medium mb-2">Rating</label>
+                <StarRating rating={rating} setRating={setRating} />
+              </div>
+              <div>
                 <label className="block text-lg font-medium mb-2">Your Review</label>
                 <textarea
                   value={review}
@@ -293,11 +337,10 @@ const ProductDetails = () => {
                   }}
                   maxLength={500}
                   placeholder="Share your experience with this product..."
-                  className={`w-full p-4 rounded-lg border ${
-                    isDarkMode
-                      ? 'bg-gray-700 border-gray-600 focus:ring-pink-500 focus:border-pink-500'
-                      : 'border-gray-300 focus:ring-pink-500 focus:border-pink-500'
-                  } transition-colors duration-200`}
+                  className={`w-full p-4 rounded-lg border ${isDarkMode
+                    ? 'bg-gray-700 border-gray-600 focus:ring-pink-500 focus:border-pink-500'
+                    : 'border-gray-300 focus:ring-pink-500 focus:border-pink-500'
+                    } transition-colors duration-200`}
                   rows="5"
                 />
                 <div className="flex justify-between mt-2 text-sm">
@@ -310,11 +353,10 @@ const ProductDetails = () => {
               <button
                 type="submit"
                 disabled={isReviewLoading}
-                className={`w-full py-3 px-6 rounded-lg font-semibold transition-colors duration-200 ${
-                  isReviewLoading
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : `${isDarkMode ? 'bg-pink-600 hover:bg-pink-700' : 'bg-pink-500 hover:bg-pink-600 text-white'}`
-                }`}
+                className={`w-full py-3 px-6 rounded-lg font-semibold transition-colors duration-200 ${isReviewLoading
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : `${isDarkMode ? 'bg-pink-600 hover:bg-pink-700' : 'bg-pink-500 hover:bg-pink-600 text-white'}`
+                  }`}
               >
                 {isReviewLoading ? 'Submitting...' : 'Submit Review'}
               </button>
