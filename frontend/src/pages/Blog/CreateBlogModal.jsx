@@ -11,18 +11,23 @@ const CreateBlogModal = ({ isOpen, onClose }) => {
         excerpt: '',
         author: userInfo?._id
     });
+    const [image, setImage] = useState(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const blogData = {
-                ...formData,
-                author: userInfo?._id,
-                ...(formData.category && formData.category.trim() !== '' && {
-                    category: formData.category
-                })
-            };
-            
+            const blogData = new FormData();
+            blogData.append('title', formData.title);
+            blogData.append('content', formData.content);
+            blogData.append('excerpt', formData.excerpt);
+            blogData.append('author', userInfo?._id);
+            if (formData.category) {
+                blogData.append('category', formData.category);
+            }
+            if (image) {
+                blogData.append('image', image);
+            }
+
             await createBlog(blogData).unwrap();
             onClose();
             setFormData({
@@ -31,6 +36,7 @@ const CreateBlogModal = ({ isOpen, onClose }) => {
                 excerpt: '',
                 author: userInfo?._id
             });
+            setImage(null);
         } catch (err) {
             console.error('Failed to create blog:', err);
         }
@@ -71,6 +77,12 @@ const CreateBlogModal = ({ isOpen, onClose }) => {
                             placeholder="Category"
                             value={formData.category}
                             onChange={(e) => setFormData({...formData, category: e.target.value})}
+                            className="w-full p-2 rounded bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                        />
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => setImage(e.target.files[0])}
                             className="w-full p-2 rounded bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                         />
                     </div>

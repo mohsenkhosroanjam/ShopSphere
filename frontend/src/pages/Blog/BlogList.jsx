@@ -89,6 +89,9 @@ const BlogList = () => {
                             className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden hover:transform hover:scale-105 transition-all duration-200 shadow-md hover:shadow-xl dark:shadow-gray-900/30"
                         >
                             <div className="p-6">
+                                {blog.image && (
+                                    <img src={blog.image} alt={blog.title} className="mb-4 rounded" />
+                                )}
                                 <h2 className="text-xl font-semibold mb-2 text-pink-600 dark:text-pink-400 hover:text-pink-700 dark:hover:text-pink-300 transition-colors duration-200">
                                     {blog.title}
                                 </h2>
