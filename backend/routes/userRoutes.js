@@ -14,7 +14,9 @@ import {
   createDistributor,
   loginDistributor,
   requestAccountDeletion,
-  confirmAccountDeletion
+  confirmAccountDeletion,
+  forgotPassword,
+  resetPassword
 } from "../controllers/userController.js";
 import { authenticate, authorizeAdmin } from "../middleware/authMiddleware.js";
 const router = express.Router();
@@ -40,5 +42,8 @@ router.post("/distributor/login", loginDistributor);
 
 router.post('/request-deletion', authenticate, requestAccountDeletion);
 router.post('/confirm-deletion/:token', confirmAccountDeletion);
+
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password/:token', resetPassword);
 
 export default router;
