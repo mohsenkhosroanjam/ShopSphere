@@ -6,18 +6,18 @@ import { upload_on_cloudinary } from "../utils/cloudinary.utils.js";
 const addProduct = asyncHandler(async (req, res) => {
   try {
     const { name, description, price, category, quantity, brand } = req.body;
-    
+
     // Get the main image and additional images from the request
     console.log(req.files)
     const mainImage = req.files?.['image']?.[0]?.buffer;
     const additionalImages = req.files?.['additionalImages'] || [];
 
-    if(!name || !brand || !description || !price || !category || !quantity || !mainImage){
+    if (!name || !brand || !description || !price || !category || !quantity || !mainImage) {
       return res.status(400).json({
         error: "All fields (name, brand, description, price, category, quantity, and main image) are required."
       });
     }
-    
+
     // Handle category
     let categoryDoc = await Category.findOne({ name: category });
     if (!categoryDoc) {
@@ -114,11 +114,11 @@ const fetchProducts = asyncHandler(async (req, res) => {
     console.log("ehohho")
     const keyword = req.query.keyword
       ? {
-          name: {
-            $regex: req.query.keyword,
-            $options: "i",
-          },
-        }
+        name: {
+          $regex: req.query.keyword,
+          $options: "i",
+        },
+      }
       : {};
 
     const count = await Product.countDocuments({ ...keyword });
@@ -140,7 +140,7 @@ const fetchProductsById = asyncHandler(async (req, res) => {
   try {
     const product = await Product.findById(req.params.id)
       .populate('category', 'name');
-    
+
     if (product) {
       return res.json(product);
     } else {
@@ -169,6 +169,7 @@ const fetchAllProducts = asyncHandler(async (req, res) => {
 
 const createProductReview = asyncHandler(async (req, res) => {
   const { rating, comment } = req.body;
+  console.log(rating, comment);
   const product = await Product.findById(req.params.id);
 
   if (!product) {
@@ -179,20 +180,35 @@ const createProductReview = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Comment cannot be empty" });
   }
 
+  // Validate rating
+  if (!rating || rating < 1 || rating > 5) {
+    return res.status(400).json({ message: "Rating must be between 1 and 5" });
+  }
+
+  // Check if user already reviewed this product
+  const alreadyReviewed = product.reviews.find(
+    (r) => r.user.toString() === req.user._id.toString()
+  );
+
+  if (alreadyReviewed) {
+    return res.status(400).json({ message: "Product already reviewed" });
+  }
+
   const review = {
     user: req.user._id,
-    rating: rating ? Number(rating) : undefined,
+    rating: Number(rating),
     comment,
   };
 
   product.reviews.push(review);
   product.numReviews = product.reviews.length;
-  product.rating = product.reviews.reduce((acc, item) => item.rating ? item.rating + acc : acc, 0) / product.numReviews;
+
+  // Calculate average rating
+  product.rating = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length;
 
   await product.save();
   res.status(201).json({ message: "Review added" });
 });
-
 const getProductReviews = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id).populate('reviews.user', 'username');
 
@@ -244,7 +260,7 @@ const fetchDistributorProducts = asyncHandler(async (req, res) => {
     const products = await Product.find({ distributor: req.user._id })
       .populate('category', 'name')
       .sort({ createdAt: -1 });
-    
+
     res.json(products);
   } catch (error) {
     console.error(error);
@@ -255,7 +271,7 @@ const fetchDistributorProducts = asyncHandler(async (req, res) => {
 const fetchSimilarProducts = asyncHandler(async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).populate('category');
-    
+
     if (!product) {
       return res.status(404).json({ error: "Product not found" });
     }
@@ -264,9 +280,9 @@ const fetchSimilarProducts = asyncHandler(async (req, res) => {
       category: product.category._id,
       _id: { $ne: product._id }
     })
-    .limit(4)
-    .select('name price image rating numReviews category')
-    .populate('category', 'name');
+      .limit(4)
+      .select('name price image rating numReviews category')
+      .populate('category', 'name');
 
     res.json(similarProducts);
   } catch (error) {
