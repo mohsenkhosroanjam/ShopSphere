@@ -209,6 +209,15 @@ const Login = () => {
 
                 <div className="mt-6 text-center space-y-2">
                   <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                    Forgot your password?{" "}
+                    <Link
+                      to="/forgot-password"
+                      className="text-rose-500 hover:text-rose-400 transition-colors duration-200 font-medium"
+                    >
+                      Reset it here
+                    </Link>
+                  </p>
+                  <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                     New Customer?{" "}
                     <Link
                       to="/register"

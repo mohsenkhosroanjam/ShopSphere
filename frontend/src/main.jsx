@@ -44,6 +44,8 @@ import Shipping from "./pages/Shipping.jsx";
 import { UnderConstruction } from "./components/UnderConstruction";
 import BlogDetails from "./pages/Blog/BlogDetails.jsx";
 import VerifyDeletion from "./pages/Auth/VerifyDeletion.jsx";
+import ForgotPassword from "./pages/Auth/ForgotPassword.jsx";
+import ResetPassword from "./pages/Auth/ResetPassword.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -68,6 +70,8 @@ const router = createBrowserRouter(
       <Route path="/blog/:id" element={<BlogDetails />} />
       <Route path="/distributor/login" element={<DistributorLogin />} />
       <Route path="/distributor/register" element={<DistributorRegister />} />
+      <Route path="/forgot-password" element={<ForgotPassword/>} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route path="/blog/:slug" element={<UnderConstruction />} />
 
       <Route path="" element={<PrivateRoute />}>
