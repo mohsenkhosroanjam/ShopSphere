@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../../components/CartContext';
 import HeartIcon from "../Products/HeartIcon";
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
+
 
 const products = [
   {
@@ -56,7 +57,23 @@ const products = [
 
 export default function SplShop() {
   const { addToCart } = useCart();
+  const [theme, setTheme] = useState("light");
 
+  // Theme initialization
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") || "light";
+    setTheme(savedTheme);
+    document.body.setAttribute("data-theme", savedTheme);
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    document.body.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+  };
+
+  // Intersection Observer for animations
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -69,13 +86,15 @@ export default function SplShop() {
       { threshold: 0.1 }
     );
 
-    document.querySelectorAll(".product-box").forEach((box, index) => {
+    const productBoxes = document.querySelectorAll(".product-box");
+    productBoxes.forEach((box, index) => {
       if (index >= 3) observer.observe(box);
     });
 
     return () => observer.disconnect();
   }, []);
 
+  // Inject CSS for animations
   useEffect(() => {
     const style = document.createElement("style");
     style.innerHTML = `
@@ -90,20 +109,30 @@ export default function SplShop() {
         }
       }
 
+      .product-box {
+        opacity: 0; /* Start with hidden elements */
+      }
+
       .animate-slide-in {
         animation: slideIn 0.5s ease-out forwards;
       }
     `;
     document.head.appendChild(style);
+
     return () => document.head.removeChild(style);
   }, []);
 
   return (
-    <div className="min-h-screen bg-black p-6">
+    <div className="min-h-screen p-6" data-theme={theme}>
+
       <div className="container mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white tracking-wide mb-2">Special Products</h1>
-          <p className="text-lg text-gray-400 py-4">Explore our exclusive collection here!</p>
+          <h1 className="text-4xl font-bold text-white tracking-wide mb-2">
+            Special Products
+          </h1>
+          <p className="text-lg text-gray-400 py-4">
+            Explore our exclusive collection here!
+          </p>
         </div>
 
         <Link
@@ -119,7 +148,7 @@ export default function SplShop() {
               <div
                 key={product.id}
                 className={`product-box bg-pink-500 shadow-md rounded-lg p-4 transform hover:scale-105 hover:shadow-lg transition duration-300 relative ${
-                  index < 3 ? "animate-slide-in" : "opacity-0"
+                  index < 3 ? "animate-slide-in" : ""
                 }`}
               >
                 <h2 className="text-xl font-bold text-white mb-2">{product.name}</h2>
