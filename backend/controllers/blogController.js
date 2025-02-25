@@ -153,4 +153,65 @@ const toggleBlogLike = asyncHandler(async (req, res) => {
     });
 });
 
-export { createBlog, getBlogs, getBlogById, toggleBlogLike };
+const deleteBlog = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const userId  = req.user._id;
+    
+    // Validate blog id
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: 'Invalid blog ID format' });
+    }
+    
+    // Find the blog to delete
+    const blog = await Blog.findById(id);
+    if (!blog) {
+        return res.status(404).json({ message: 'Blog not found', blogId: id });
+    }
+    
+    // Check if user is authorized to delete
+    if (blog.author.toString() !== userId.toString()) {
+        return res.status(403).json({ 
+            message: 'Unauthorized to delete this blog', 
+            providedUserId: userId, 
+            actualAuthor: blog.author 
+        });
+    }
+    
+    try {
+        // Delete image from Cloudinary if exists
+        if (blog.image) {
+            const publicId = extractPublicIdFromUrl(blog.image);
+            if (publicId) {
+                await delete_from_cloudinary(publicId);
+            }
+        }
+        
+        // Remove blog reference from user's blogs array
+        await User.findByIdAndUpdate(
+            blog.author,
+            { $pull: { blogs: id } }
+        );
+        
+        // Delete any comments associated with the blog
+        if (blog.comments && blog.comments.length > 0) {
+            await Comment.deleteMany({ _id: { $in: blog.comments } });
+        }
+        
+        // Delete the blog
+        const deletedBlog = await Blog.findByIdAndDelete(id);
+        
+        console.log('Deleted blog:', deletedBlog);
+        res.status(200).json({ 
+            message: 'Blog deleted successfully',
+            blogId: id
+        });
+    } catch (error) {
+        console.error('Error deleting blog:', error);
+        res.status(500).json({
+            message: 'Failed to delete blog',
+            error: error.message
+        });
+    }
+});
+
+export { createBlog, getBlogs, getBlogById, toggleBlogLike, deleteBlog };
