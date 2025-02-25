@@ -155,7 +155,8 @@ const toggleBlogLike = asyncHandler(async (req, res) => {
 
 const editBlog = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { title, content, excerpt, category, author } = req.body;
+    const { title, content, excerpt, category } = req.body;
+    const author = req.user._id;
     const image = req.file ? req.file.buffer : null;
 
     // Validate blog id
@@ -170,7 +171,7 @@ const editBlog = asyncHandler(async (req, res) => {
     }
 
     // Check if user is authorized to edit (assuming only the author can edit)
-    if (blog.author.toString() !== author) {
+    if (blog.author.toString() !== author.toString()) {
         return res.status(403).json({
             message: 'Unauthorized to edit this blog',
             providedAuthor: author,
@@ -178,13 +179,13 @@ const editBlog = asyncHandler(async (req, res) => {
         });
     }
 
-    // Validate required fields
-    if (!title || !content) {
-        return res.status(400).json({
-            message: 'Title and content are required',
-            received: { title, content }
-        });
-    }
+    // // Validate required fields
+    // if (!title || !content) {
+    //     return res.status(400).json({
+    //         message: 'Title and content are required',
+    //         received: { title, content }
+    //     });
+    // }
 
     // Check if new title already exists (if title is being changed)
     if (title !== blog.title) {
@@ -212,7 +213,7 @@ const editBlog = asyncHandler(async (req, res) => {
     const updateData = {
         title,
         content,
-        excerpt: excerpt || content.substring(0, 197) + '...',
+        excerpt: excerpt || content?.substring(0, 197) + '...',
         image: imageUrl
     };
 
@@ -228,7 +229,6 @@ const editBlog = asyncHandler(async (req, res) => {
             { new: true, runValidators: true }
         );
 
-        console.log('Updated blog:', updatedBlog);
         res.status(200).json(updatedBlog);
     } catch (error) {
         console.error('Error updating blog:', error);
