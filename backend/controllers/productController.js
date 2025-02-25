@@ -111,15 +111,15 @@ const removeProduct = asyncHandler(async (req, res) => {
 const fetchProducts = asyncHandler(async (req, res) => {
   try {
     const pageSize = 6;
-    console.log("ehohho")
-    const keyword = req.query.keyword
+    const keyword = req.query.search  
       ? {
-        name: {
-          $regex: req.query.keyword,
-          $options: "i",
-        },
-      }
+          name: {
+            $regex: req.query.search,
+            $options: "i",
+          },
+        }
       : {};
+
 
     const count = await Product.countDocuments({ ...keyword });
     const products = await Product.find({ ...keyword }).limit(pageSize);

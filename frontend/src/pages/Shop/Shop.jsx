@@ -2,13 +2,15 @@ import { Link, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
 import HeartIcon from "../Products/HeartIcon";
-
+import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useState, useEffect } from 'react';
 import { useGetProductsQuery, useCreateProductMutation } from '../redux/api/productApiSlice';
 import { useAddCartMutation } from '../redux/api/cartSlice';
+import { useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useTheme } from '../../context/ThemeContext';
+import SearchBar from './SearchBar';
 
 
 
@@ -18,7 +20,6 @@ export default function ShopPage() {
 
   const { isDarkMode } = useTheme();
   const { keyword } = useParams();
-  const { data, isLoading: productsLoading, isError } = useGetProductsQuery({ keyword });
   const [products, setProducts] = useState([]);
 
   const [addCart, { isLoading: cartLoading }] = useAddCartMutation();
@@ -44,6 +45,13 @@ export default function ShopPage() {
     }
   });
 
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const searchQuery = searchParams.get('search');
+
+  const { data, isLoading: productsLoading, isError } = useGetProductsQuery({
+    keyword: searchQuery || ''
+  });
   useEffect(() => {
     if (data && data.products) {
       setProducts(data.products);
@@ -104,7 +112,7 @@ export default function ShopPage() {
     const [mainImageName, setMainImageName] = useState('');
     const [additionalImageNames, setAdditionalImageNames] = useState([]);
     const [isUploading, setIsUploading] = useState(false);
-    
+
     const handleMainImageChange = (event) => {
       const file = event.target.files[0];
       if (file) {
@@ -132,7 +140,7 @@ export default function ShopPage() {
       try {
         setIsUploading(true);
         const finalFormData = new FormData();
-        
+
         // Append text fields
         Object.keys(formData).forEach(key => {
           if (key !== 'image' && key !== 'additionalImages') {
@@ -323,10 +331,10 @@ export default function ShopPage() {
                     htmlFor="additionalImagesInput"
                     className={`w-full flex items-center justify-center px-4 py-2.5 
                              text-white rounded cursor-pointer transition-all duration-300 
-                             shadow-md ${additionalImages.length >= 4 
-                               ? 'bg-gray-500 cursor-not-allowed' 
-                               : 'bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 hover:shadow-pink-500/25 transform hover:scale-[1.02]'
-                             }`}
+                             shadow-md ${additionalImages.length >= 4
+                        ? 'bg-gray-500 cursor-not-allowed'
+                        : 'bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 hover:shadow-pink-500/25 transform hover:scale-[1.02]'
+                      }`}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
@@ -408,14 +416,14 @@ export default function ShopPage() {
     <div className={`min-h-screen p-6 ${isDarkMode ? "bg-black text-white" : "bg-white text-black"}`}>
       <div className="container mx-auto">
         <div className="text-center mb-8">
-          <h1 className={`text-4xl font-bold tracking-wide mb-2 ${isDarkMode ? "text-white" : "text-black"}`}>
-            Shop
+          <h1 className={`text-4xl font-bold ${isDarkMode ? "text-white" : "text-black"}`}>
+            {searchQuery ? `Search Results for "${searchQuery}"` : 'Shop'}
           </h1>
-          <p className={`text-lg py-4 ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
-            Explore our entire collection here!
+          <p className={`text-lg ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
+            {searchQuery ? `${products.length} products found` : 'Explore our entire collection here!'}
           </p>
+        <SearchBar />
         </div>
-
         {userInfo?.isDistributor && (
           <div className="flex justify-center mb-8">
             <button
