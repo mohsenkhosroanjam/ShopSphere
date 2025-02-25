@@ -2,15 +2,15 @@ import Blog from '../models/blogModel.js';
 import User from '../models/userModel.js';
 import asyncHandler from '../middleware/asyncHandler.js';
 import mongoose from 'mongoose';
-import { upload_on_cloudinary } from '../utils/cloudinary.utils.js';
+import { delete_from_cloudinary, extractPublicIdFromUrl, upload_on_cloudinary } from '../utils/cloudinary.utils.js';
 
 const createBlog = asyncHandler(async (req, res) => {
     const { title, content, excerpt, category, author } = req.body;
     const image = req.file ? req.file.buffer : null;
-    
+
     if (!title || !content || !author) {
         console.log('Validation failed:', { title, content, author });
-        return res.status(400).json({ 
+        return res.status(400).json({
             message: 'Title, content, and author are required',
             received: { title, content, author }
         });
@@ -153,4 +153,90 @@ const toggleBlogLike = asyncHandler(async (req, res) => {
     });
 });
 
-export { createBlog, getBlogs, getBlogById, toggleBlogLike };
+const editBlog = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { title, content, excerpt, category } = req.body;
+    const author = req.user._id;
+    const image = req.file ? req.file.buffer : null;
+
+    // Validate blog id
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: 'Invalid blog ID format' });
+    }
+
+    // Find the blog to edit
+    const blog = await Blog.findById(id);
+    if (!blog) {
+        return res.status(404).json({ message: 'Blog not found', blogId: id });
+    }
+
+    // Check if user is authorized to edit (assuming only the author can edit)
+    if (blog.author.toString() !== author.toString()) {
+        return res.status(403).json({
+            message: 'Unauthorized to edit this blog',
+            providedAuthor: author,
+            actualAuthor: blog.author
+        });
+    }
+
+    // // Validate required fields
+    // if (!title || !content) {
+    //     return res.status(400).json({
+    //         message: 'Title and content are required',
+    //         received: { title, content }
+    //     });
+    // }
+
+    // Check if new title already exists (if title is being changed)
+    if (title !== blog.title) {
+        const existingBlog = await Blog.findOne({ title, _id: { $ne: id } });
+        if (existingBlog) {
+            return res.status(400).json({ message: 'Blog with this title already exists' });
+        }
+    }
+
+    // Handle image update
+    let imageUrl = blog.image; // Keep existing image by default
+    if (image) {
+        // Delete old image from Cloudinary if it exists
+        if (blog.image) {
+            const publicId = extractPublicIdFromUrl(blog.image);
+            if (publicId) {
+                await delete_from_cloudinary(publicId);
+            }
+        }
+
+        // Upload new image
+        imageUrl = await upload_on_cloudinary(image, 'BlogImages');
+    }
+    // Prepare update data
+    const updateData = {
+        title,
+        content,
+        excerpt: excerpt || content?.substring(0, 197) + '...',
+        image: imageUrl
+    };
+
+    // Only update category if it's provided and valid
+    if (category && mongoose.Types.ObjectId.isValid(category)) {
+        updateData.category = category;
+    }
+
+    try {
+        const updatedBlog = await Blog.findByIdAndUpdate(
+            id,
+            updateData,
+            { new: true, runValidators: true }
+        );
+
+        res.status(200).json(updatedBlog);
+    } catch (error) {
+        console.error('Error updating blog:', error);
+        res.status(400).json({
+            message: 'Failed to update blog',
+            error: error.message
+        });
+    }
+});
+
+export { createBlog, getBlogs, getBlogById, toggleBlogLike, editBlog };
