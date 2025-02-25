@@ -45,6 +45,7 @@ import userRoutes from "./routes/userRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
+import saveRoutes from "./routes/saveRoutes.js";
 
 import cartRoutes from "./routes/cartRoutes.js";
 
@@ -73,6 +74,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use('/api/save-articles', saveRoutes);
 
 app.use("/api/cart", cartRoutes);
 
