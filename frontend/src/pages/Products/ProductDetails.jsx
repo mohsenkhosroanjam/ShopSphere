@@ -9,6 +9,7 @@ import HeartIcon from './HeartIcon';
 import Loader from '../../components/Loader';
 import StarRating from './StarRating';
 import { FaStar } from 'react-icons/fa';
+import Scrollbtn from "../../components/scrollbtn";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -134,6 +135,8 @@ const ProductDetails = () => {
   if (error) return <div>Error: {error.message}</div>;
 
   return (
+    <>
+    <Scrollbtn />
     <div className={`min-h-screen ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"}`}>
       <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* Product Section */}
@@ -371,6 +374,7 @@ const ProductDetails = () => {
         </section>
       </div>
     </div>
+    </>
   );
 };
 
