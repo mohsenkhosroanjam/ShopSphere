@@ -9,6 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Category } from "./category";
 import { useState } from "react";
 import { useTheme } from "../../context/ThemeContext";
+import Scrollbtn from "../../components/scrollbtn";
 
 const fetchData = async () => {
     const response = await fetch("/data.json");
@@ -49,6 +50,8 @@ export default function Offer() {
     console.log(allProducts)
 
     return (
+        <>
+        <Scrollbtn />
         <div className={`lg:ml-[75px] md:ml-10  px-3 ${isDarkMode ? "bg-black text-white" : "bg-white text-black"}`}>
             <Banners />
             <div className="flex mt-5 flex-col gap-2">
@@ -120,6 +123,6 @@ export default function Offer() {
                 </div>
             )}
         </div>
-
+        </>
     )
 }
