@@ -57,6 +57,8 @@ const router = createBrowserRouter(
       <Route path="/favorite" element={<Favorites />} />
       <Route path="/product/:id" element={<ProductDetails />} />
       <Route path="/Shop" element={<Shop />} />
+      <Route path="/Shop/search/:keyword" element={<Shop />} />
+      <Route path="/Shop/category/:categoryId" element={<Shop />} />
       <Route path="/specialshop" element={<SplShop />} />
       <Route path="" element={<PrivateRoute />}>
       <Route path="cart" element={<Cart />} />
