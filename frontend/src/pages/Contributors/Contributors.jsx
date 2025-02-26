@@ -6,6 +6,7 @@ import { FaStar } from "react-icons/fa";
 import { GoRepoForked } from "react-icons/go";
 import { FaPeopleLine } from "react-icons/fa6";
 import { PiUserCircleDashedFill } from "react-icons/pi";
+import Scrollbtn from "../../components/scrollbtn";
 
 function Contributors() {
   const [allcontributors, setAllContributors] = useState([]);
@@ -50,6 +51,8 @@ function Contributors() {
   }, []);
 
   return (
+    <>
+    <Scrollbtn />
     <div className="min-h-screen bg-[#0d1321] overflow-hidden">
       <div className="outer-container mt-5 mx-auto flex flex-col justify-center items-center">
         <h1 className="text-3xl flex gap-2 sm:text-4xl text-center font-bold text-violet-400">
@@ -117,6 +120,7 @@ function Contributors() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 
