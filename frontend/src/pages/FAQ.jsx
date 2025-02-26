@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTheme } from "../context/ThemeContext";
+import Scrollbtn from "../components/scrollbtn";
 
 const FAQ = () => {
   const {isDarkMode} = useTheme();
@@ -37,6 +38,8 @@ const FAQ = () => {
   ];
 
   return (
+    <>
+    <Scrollbtn />
     <div className={`${isDarkMode ? "bg-black text-white" : "bg-white text-black"} min-h-screen flex flex-col items-center p-6`}>
       <h1 className={`text-4xl font-bold mb-20`}>
         <span className={`${isDarkMode ? "text-pink-500" : "text-pink-500"}`}>F</span>requently
@@ -78,6 +81,7 @@ const FAQ = () => {
         ))}
       </div>
     </div>
+    </>
   );
 };
 
