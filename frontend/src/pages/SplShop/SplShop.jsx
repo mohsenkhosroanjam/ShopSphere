@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../../components/CartContext';
 import HeartIcon from "../Products/HeartIcon";
 import { useState, useEffect } from 'react';
+import Scrollbtn from "../components/scrollbtn";
 
 
 const products = [
@@ -116,6 +117,8 @@ export default function SplShop() {
   }, []);
 
   return (
+    <>
+    <Scrollbtn/>
     <div className="min-h-screen p-6" data-theme={theme}>
       <div className="container mx-auto">
         <div className="text-center mb-8">
@@ -169,5 +172,6 @@ export default function SplShop() {
         </div>
       </div>
     </div>
+    </>
   );
 }
