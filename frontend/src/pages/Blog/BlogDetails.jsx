@@ -9,6 +9,7 @@ import { useState } from "react";
 import CreateBlogModal from "./CreateBlogModal";
 import { toast } from "react-toastify";
 import moment from "moment";
+import Scrollbtn from "../../components/scrollbtn";
 
 const BlogDetails = () => {
     const { id } = useParams();
@@ -88,6 +89,8 @@ const BlogDetails = () => {
     };
 
     return (
+        <>
+         <Scrollbtn />
         <div className="min-h-screen bg-gradient-to-b  from-gray-100 to-white dark:from-gray-900 dark:to-black">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
                 <Link
@@ -443,6 +446,7 @@ const BlogDetails = () => {
                 onClose={() => setIsModalOpen(false)}
             />
         </div>
+        </>
     );
 };
 
