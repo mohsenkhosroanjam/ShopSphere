@@ -29,12 +29,12 @@ const ScrollToTopButton = () => {
       <div
         className="relative w-full h-full rounded-full flex items-center justify-center"
         style={{
-          background: `conic-gradient(blue 0deg, blue ${scrollProgress}deg, transparent ${scrollProgress}deg, transparent 360deg)`,
-        
-        }}
+            background: `conic-gradient(#e11d48 0deg, #e11d48 ${scrollProgress}deg, transparent ${scrollProgress}deg, transparent 360deg)`,
+          }}
+          
       >
         <div className="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-lg">
-          <FontAwesomeIcon icon={faArrowUp} className="text-blue-500 text-2xl" />
+          <FontAwesomeIcon icon={faArrowUp} className="text-rose-600 text-2xl" />
         </div>
       </div>
     </div>
