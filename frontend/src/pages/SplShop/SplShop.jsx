@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../../components/CartContext';
 import HeartIcon from "../Products/HeartIcon";
 import { useState, useEffect } from 'react';
-import Scrollbtn from "../components/scrollbtn";
+import Scrollbtn from "../../components/scrollbtn";
 
 
 const products = [
