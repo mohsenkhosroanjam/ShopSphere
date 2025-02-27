@@ -6,6 +6,7 @@ import {
   removeCategory,
   listCategory,
   readCategory,
+  getProductsByCategory
 } from "../controllers/categoryController.js";
 
 import { authenticate, authorizeAdmin } from "../middleware/authMiddleware.js";
@@ -18,5 +19,5 @@ router
 
 router.route("/categories").get(listCategory);
 router.route("/:id").get(readCategory);
-
+router.get('/:categoryId/products', getProductsByCategory);
 export default router;

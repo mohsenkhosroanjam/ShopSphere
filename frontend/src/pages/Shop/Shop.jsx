@@ -1,6 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-
 import HeartIcon from "../Products/HeartIcon";
 import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -11,16 +10,16 @@ import { useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useTheme } from '../../context/ThemeContext';
 import SearchBar from './SearchBar';
-
-
-
-
+import CategoryFilter from './CategoryFilter';
+import { useNavigate } from 'react-router-dom';
+import { CATEGORY_URL } from '../redux/constants';
 
 export default function ShopPage() {
-
   const { isDarkMode } = useTheme();
-  const { keyword } = useParams();
+  const { keyword, categoryId } = useParams();
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(categoryId || null);
 
   const [addCart, { isLoading: cartLoading }] = useAddCartMutation();
   const [addProduct, { isLoading: productLoading }] = useCreateProductMutation();
@@ -46,23 +45,42 @@ export default function ShopPage() {
   });
 
   const location = useLocation();
+  const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
   const searchQuery = searchParams.get('search');
 
-  const { data, isLoading: productsLoading, isError } = useGetProductsQuery({
-    keyword: searchQuery || ''
-  });
+  // Fetch products based on search query and/or category
   useEffect(() => {
-    if (data && data.products) {
-      setProducts(data.products);
-    }
-  }, [data]);
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        let url;
+        if (selectedCategory) {
+          url = `${CATEGORY_URL}/${selectedCategory}/products`;
 
-  useEffect(() => {
-    if (isError) {
-      toast.error('Something went wrong! Please try again.');
-    }
-  }, [isError]);
+        } else if (searchQuery) {
+          url = `/api/products?search=${encodeURIComponent(searchQuery)}`;
+        } else {
+          url = '/api/products';
+        }
+        
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error('Failed to fetch products');
+        }
+        
+        const data = await response.json();
+        setProducts(data.products || data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        toast.error('Failed to load products');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [searchQuery, selectedCategory]);
 
   // Add useEffect to handle body scroll
   useEffect(() => {
@@ -84,10 +102,8 @@ export default function ShopPage() {
       return;
     }
 
-
     cart.userId = userInfo._id;
     cart.productId = product._id;
-
 
     if (cartLoading) return; // Prevent duplicate requests
 
@@ -104,6 +120,11 @@ export default function ShopPage() {
     } catch (error) {
       toast.error(error?.data?.message || 'Failed to add product to cart!');
     }
+  };
+
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category);
+    navigate(`/shop/${category}`);
   };
 
   const ProductModal = () => {
@@ -420,62 +441,92 @@ export default function ShopPage() {
             {searchQuery ? `Search Results for "${searchQuery}"` : 'Shop'}
           </h1>
           <p className={`text-lg ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
-            {searchQuery ? `${products.length} products found` : 'Explore our entire collection here!'}
+            {searchQuery 
+              ? `${products.length} products found` 
+              : selectedCategory 
+                ? 'Products in selected category' 
+                : 'Explore our entire collection here!'
+            }
           </p>
-        <SearchBar />
+          <SearchBar />
         </div>
-        {userInfo?.isDistributor && (
-          <div className="flex justify-center mb-8">
-            <button
-              onClick={() => setShowAddModal(true)}
-              className={`px-6 py-3 rounded-lg font-semibold shadow-md transition duration-300 ease-in-out transform hover:scale-105
-            ${isDarkMode ? "bg-pink-600 hover:bg-pink-700 text-white shadow-pink-500/50"
-                  : "bg-pink-500 hover:bg-pink-600 text-black shadow-lg"}`}
-            >
-              Add New Product
-            </button>
+
+        <div className="flex flex-col lg:flex-row">
+          {/* Category filter sidebar */}
+          <div className="lg:w-1/4 p-4 mt-4">
+            <CategoryFilter 
+              onCategorySelect={handleCategorySelect} 
+              activeCategory={selectedCategory} 
+            />
           </div>
-        )}
 
-        <Link
-          to="/specialshop"
-          className={`absolute top-10 right-40 font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transition duration-300 ease-in-out transform hover:scale-105
-        ${isDarkMode ? "bg-gradient-to-r from-gray-800 to-pink-600 text-white"
-              : "bg-gradient-to-r from-white to-pink-500 text-black"}`}
-        >
-          Tap to explore exclusive products
-        </Link>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 mx-16 my-16">
-          {products.length > 0 ? (
-            products.map((product) => (
-              <div key={product._id} className={`shadow-md rounded-lg p-4 transform hover:scale-105 hover:shadow-lg transition duration-300 relative ${isDarkMode ? "bg-gray-800 text-white" : "bg-pink-500 text-black"}`}>
-                <Link to={`/product/${product._id}`}>
-                  <h2 className="text-xl font-bold mb-2">{product.name}</h2>
-                  <p className="text-lg font-semibold mb-4">${product.price}</p>
-                  <div className={`w-full h-40 rounded-md flex items-center justify-center relative ${isDarkMode ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-500"}`}>
-                    <img src={product.image} alt={product.name} className="object-contain w-full h-full" />
-                  </div>
-                </Link>
-                <HeartIcon product={product} />
+          {/* Products grid */}
+          <div className="lg:w-3/4">
+            {userInfo?.isDistributor && (
+              <div className="flex justify-center mb-8">
                 <button
-                  onClick={() => handleCart(product)}
-                  className={`w-full mt-4 font-semibold py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105 ${isDarkMode ? "bg-gray-200 hover:bg-gray-300 text-black" : "bg-white hover:bg-gray-100 text-pink-500"}`}
+                  onClick={() => setShowAddModal(true)}
+                  className={`px-6 py-3 rounded-lg font-semibold shadow-md transition duration-300 ease-in-out transform hover:scale-105
+                  ${isDarkMode ? "bg-pink-600 hover:bg-pink-700 text-white shadow-pink-500/50"
+                    : "bg-pink-500 hover:bg-pink-600 text-black shadow-lg"}`}
                 >
-                  Add to Cart
+                  Add New Product
                 </button>
               </div>
-            ))
-          ) : (
-            <div className={`col-span-full text-center text-lg ${isDarkMode ? "text-gray-500" : "text-gray-400"}`}>
-              {productsLoading ? "Loading..." : "No products found."}
+            )}
+
+            <Link
+              to="/specialshop"
+              className={`absolute top-10 right-40 font-semibold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transition duration-300 ease-in-out transform hover:scale-105
+              ${isDarkMode ? "bg-gradient-to-r from-gray-800 to-pink-600 text-white"
+                : "bg-gradient-to-r from-white to-pink-500 text-black"}`}
+            >
+              Tap to explore exclusive products
+            </Link>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 my-8">
+              {loading ? (
+                // Loading placeholders
+                Array(6).fill(0).map((_, index) => (
+                  <div key={index} className={`shadow-md rounded-lg p-4 ${isDarkMode ? "bg-gray-800" : "bg-pink-100"}`}>
+                    <div className="animate-pulse">
+                      <div className={`h-6 w-3/4 mb-2 rounded ${isDarkMode ? "bg-gray-700" : "bg-pink-200"}`}></div>
+                      <div className={`h-5 w-1/4 mb-4 rounded ${isDarkMode ? "bg-gray-700" : "bg-pink-200"}`}></div>
+                      <div className={`w-full h-40 rounded-md ${isDarkMode ? "bg-gray-700" : "bg-pink-200"}`}></div>
+                      <div className={`w-full h-10 mt-4 rounded-lg ${isDarkMode ? "bg-gray-700" : "bg-pink-200"}`}></div>
+                    </div>
+                  </div>
+                ))
+              ) : products.length > 0 ? (
+                products.map((product) => (
+                  <div key={product._id} className={`shadow-md rounded-lg p-4 transform hover:scale-105 hover:shadow-lg transition duration-300 relative ${isDarkMode ? "bg-gray-800 text-white" : "bg-pink-500 text-black"}`}>
+                    <Link to={`/product/${product._id}`}>
+                      <h2 className="text-xl font-bold mb-2">{product.name}</h2>
+                      <p className="text-lg font-semibold mb-4">${product.price}</p>
+                      <div className={`w-full h-40 rounded-md flex items-center justify-center relative ${isDarkMode ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-500"}`}>
+                        <img src={product.image} alt={product.name} className="object-contain w-full h-full" />
+                      </div>
+                    </Link>
+                    <HeartIcon product={product} />
+                    <button
+                      onClick={() => handleCart(product)}
+                      className={`w-full mt-4 font-semibold py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105 ${isDarkMode ? "bg-gray-200 hover:bg-gray-300 text-black" : "bg-white hover:bg-gray-100 text-pink-500"}`}
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <div className={`col-span-full text-center text-lg ${isDarkMode ? "text-gray-500" : "text-gray-400"}`}>
+                  No products found. Try a different category or search term.
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
 
         {showAddModal && <ProductModal />}
       </div>
     </div>
-
   );
 }
