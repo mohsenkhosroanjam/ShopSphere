@@ -1,5 +1,6 @@
 import Category from "../models/categoryModel.js";
 import asyncHandler from "../middleware/asyncHandler.js";
+import Product from "../models/productModel.js";
 
 const createCategory = asyncHandler(async (req, res) => {
   try {
@@ -75,10 +76,42 @@ const readCategory = asyncHandler(async (req, res) => {
   }
 });
 
+const getProductsByCategory = asyncHandler(async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+    const pageSize = 6;
+    const page = Number(req.query.page) || 1;
+
+    // Validate if category exists
+    const category = await Category.findById(categoryId);
+    if (!category) {
+      return res.status(404).json({ error: "Category not found" });
+    }
+
+    const count = await Product.countDocuments({ category: categoryId });
+    const products = await Product.find({ category: categoryId })
+      .limit(pageSize)
+      .skip(pageSize * (page - 1))
+      .populate('category', 'name');
+
+    res.json({
+      products,
+      page,
+      pages: Math.ceil(count / pageSize),
+      hasMore: page * pageSize < count,
+      totalProducts: count
+    });
+  } catch (error) {
+    console.error("Error in getProductsByCategory:", error);
+    res.status(500).json({ error: "Server Error" });
+  }
+});
+
 export {
   createCategory,
   updateCategory,
   removeCategory,
   listCategory,
   readCategory,
+  getProductsByCategory
 };
