@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { TruckIcon, ArrowPathIcon, CurrencyDollarIcon, QueueListIcon } from '@heroicons/react/24/outline';
+import Scrollbtn from "../components/scrollbtn";
 
 const Shipping = () => {
   const { isDarkMode } = useTheme();
@@ -39,6 +40,8 @@ const Shipping = () => {
   ];
 
   return (
+    <>
+    <Scrollbtn />
     <div className={`min-h-screen ${isDarkMode ? 'bg-gradient-to-br from-[#0d1321] to-[#1a2336]' : 'bg-gradient-to-br from-gray-50 to-gray-100'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
         <div className="text-center mb-12 animate-fade-in-up">
@@ -157,6 +160,7 @@ const Shipping = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

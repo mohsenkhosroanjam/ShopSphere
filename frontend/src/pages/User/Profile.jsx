@@ -8,6 +8,7 @@ import { useProfileMutation, useRequestAccountDeletionMutation } from "../redux/
 import Modal from "../../components/Modal";
 import { useTheme } from "../../context/ThemeContext";
 import { FaUser, FaCog, FaShoppingBag, FaKey } from "react-icons/fa";
+import Scrollbtn from "../../components/scrollbtn";
 
 const UserProfileAvatar = ({ username, size = "md", bgColor = "bg-purple-600" }) => {
   // Get initials from username (first letter or first two letters)
@@ -120,6 +121,8 @@ const Profile = () => {
   };
 
   return (
+    <>
+    <Scrollbtn />
     <div className={`min-h-screen py-16 ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'}`}>
       <div className="container mx-auto px-4 mt-[2rem]">
         <div className={`max-w-4xl mx-auto ${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-xl overflow-hidden`}>
@@ -396,6 +399,7 @@ const Profile = () => {
         </Modal>
       )}
     </div>
+    </>
   );
 };
 

@@ -13,6 +13,7 @@ import SearchBar from './SearchBar';
 import CategoryFilter from './CategoryFilter';
 import { useNavigate } from 'react-router-dom';
 import { CATEGORY_URL } from '../redux/constants';
+import Scrollbtn from "../../components/scrollbtn";
 
 export default function ShopPage() {
   const { isDarkMode } = useTheme();
@@ -198,6 +199,8 @@ export default function ShopPage() {
     };
 
     return (
+      <>
+      <Scrollbtn />
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto backdrop-blur-sm
                       animate-[fadeIn_0.3s_ease-in-out]">
         <div className="w-full max-w-2xl mx-auto bg-black/60 rounded-lg border border-pink-500/40 p-4 sm:p-6 md:p-8 my-4 sm:my-8
@@ -409,6 +412,7 @@ export default function ShopPage() {
           </form>
         </div>
       </div>
+      </>
     );
   };
 
@@ -434,6 +438,8 @@ export default function ShopPage() {
   document.head.appendChild(style);
 
   return (
+    <>
+    <Scrollbtn />
     <div className={`min-h-screen p-6 ${isDarkMode ? "bg-black text-white" : "bg-white text-black"}`}>
       <div className="container mx-auto">
         <div className="text-center mb-8">
@@ -528,5 +534,6 @@ export default function ShopPage() {
         {showAddModal && <ProductModal />}
       </div>
     </div>
+    </>
   );
 }

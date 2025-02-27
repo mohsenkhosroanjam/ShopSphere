@@ -10,6 +10,7 @@ import HomeImage from "../assets/HomeFinal.png";
 import NewsletterSection from "../components/NewsLetter";
 import { useTheme } from '../context/ThemeContext';
 import OurServices from "../components/OurServices";
+import Scrollbtn from "../components/scrollbtn";
 
 const Home = () => {
   const { keyword } = useParams();
@@ -34,6 +35,7 @@ const Home = () => {
 
   return (
     <>
+      <Scrollbtn />
       {!keyword && <Header />}
       {isLoading ? (
         <Loader />

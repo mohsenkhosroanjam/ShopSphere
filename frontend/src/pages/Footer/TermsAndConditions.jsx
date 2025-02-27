@@ -1,5 +1,6 @@
 import React, {useEffect} from "react";
 import { useTheme } from "../../context/ThemeContext";
+import Scrollbtn from "../../components/scrollbtn";
 
 export const TermsAndConditions = () => {
     const {isDarkMode} = useTheme();
@@ -41,6 +42,8 @@ export const TermsAndConditions = () => {
     };
 
     return (
+        <>
+        <Scrollbtn />
         <div className={`min-h-screen ${isDarkMode ? 'bg-black text-pink-200' : 'bg-white text-black'} p-6`}>
             <div key={isDarkMode} className={`max-w-5xl mx-auto border border-pink-500 shadow-lg rounded-lg overflow-hidden`}>
                 {/* Header */}
@@ -77,6 +80,7 @@ export const TermsAndConditions = () => {
                 </footer>
             </div>
         </div>
+        </>
     );
 };
 

@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import HeartIcon from "./HeartIcon";
 import { useState } from "react";
 import { useTheme } from "../../context/ThemeContext";
+import Scrollbtn from "../../components/scrollbtn";
 
 const Favorites = () => {
   const favorites = useSelector((state) => state.favorites?.favorites || []);
@@ -23,6 +24,8 @@ const Favorites = () => {
   });
 
   return (
+    <>
+    <Scrollbtn />
     <div className={`min-h-screen p-6 ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-black"}`}>
       <div className="container mx-auto">
         <div className="text-center mb-8">
@@ -102,6 +105,7 @@ const Favorites = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

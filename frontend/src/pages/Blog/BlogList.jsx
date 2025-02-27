@@ -5,6 +5,7 @@ import Loader from "../../components/Loader";
 import { format } from "date-fns";
 import { useSelector } from "react-redux";
 import CreateBlogModal from './CreateBlogModal';
+import Scrollbtn from "../../components/scrollbtn";
 
 const BlogList = () => {
     const [page, setPage] = useState(1);
@@ -48,6 +49,8 @@ const BlogList = () => {
     if (error) return <div>Error: {error.message}</div>;
 
     return (
+        <>
+        <Scrollbtn />
         <div className="bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-[#0f0f10] py-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center mb-8">
@@ -127,6 +130,7 @@ const BlogList = () => {
                 )}
             </div>
         </div>
+        </>
     );
 };
 
